@@ -31,9 +31,8 @@ yarn-error.log*
 # vercel
 .vercel
 
-# local music files (too large for git – host separately)
+# local music source (working copy – not needed for build)
 /Music/
-/public/Music/
 
 # typescript
 *.tsbuildinfo
