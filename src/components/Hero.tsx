@@ -281,11 +281,19 @@ export default function Hero() {
         </div>
 
         {/* carousel */}
-        <div style={{ display: "flex", alignItems: "center", gap: "2rem", marginBottom: "2rem" }}>
+        <style>{`
+          .carousel-row { display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; }
+          .carousel-img { width: clamp(220px, 30vw, 300px); height: clamp(220px, 30vw, 300px); }
+          @media (max-width: 640px) {
+            .carousel-row { gap: 0.75rem; }
+            .carousel-img { width: min(200px, 52vw); height: min(200px, 52vw); }
+          }
+        `}</style>
+        <div className="carousel-row">
           <button
             onClick={prev}
             aria-label="前の作品"
-            style={{ background: "none", border: "none", color: "var(--fg-muted)", fontSize: "2.2rem", cursor: "pointer", lineHeight: 1, opacity: 0.55, padding: "0.5rem", transition: "opacity 0.2s" }}
+            style={{ background: "none", border: "none", color: "var(--fg-muted)", fontSize: "2.2rem", cursor: "pointer", lineHeight: 1, opacity: 0.55, padding: "0.25rem", transition: "opacity 0.2s", flexShrink: 0 }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.55")}
           >‹</button>
@@ -296,9 +304,8 @@ export default function Hero() {
               key={current}
               src={slides[current].img}
               alt={slides[current].title}
+              className="carousel-img"
               style={{
-                width: "clamp(220px, 30vw, 300px)",
-                height: "clamp(220px, 30vw, 300px)",
                 objectFit: "cover",
                 display: "block",
                 boxShadow: "0 28px 72px rgba(0,0,0,0.65)",
@@ -311,7 +318,7 @@ export default function Hero() {
           <button
             onClick={next}
             aria-label="次の作品"
-            style={{ background: "none", border: "none", color: "var(--fg-muted)", fontSize: "2.2rem", cursor: "pointer", lineHeight: 1, opacity: 0.55, padding: "0.5rem", transition: "opacity 0.2s" }}
+            style={{ background: "none", border: "none", color: "var(--fg-muted)", fontSize: "2.2rem", cursor: "pointer", lineHeight: 1, opacity: 0.55, padding: "0.25rem", transition: "opacity 0.2s", flexShrink: 0 }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.55")}
           >›</button>
