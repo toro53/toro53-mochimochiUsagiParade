@@ -29,38 +29,42 @@ export default function Nav() {
         backdropFilter: scrolled ? "blur(8px)" : "none",
         borderBottom: scrolled ? "1px solid var(--border)" : "none",
         transition: "background 0.4s, border-color 0.4s",
-        padding: "1rem 2rem",
+        padding: "0.7rem 1.5rem",
       }}
     >
-      <div
-        style={{
-          maxWidth: "960px",
-          margin: "0 auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <style>{`
+        .nav-inner {
+          max-width: 960px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        @media (max-width: 640px) {
+          .nav-inner {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.45rem;
+          }
+        }
+      `}</style>
+      <div className="nav-inner">
         <a
           href="#hero"
           style={{
             fontFamily: "var(--font-fell), serif",
-            fontSize: "clamp(0.75rem, 2.5vw, 1rem)",
+            fontSize: "clamp(0.8rem, 2.5vw, 1rem)",
             letterSpacing: "0.05em",
             color: "var(--fg)",
             textDecoration: "none",
             opacity: 0.85,
             whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            minWidth: 0,
-            flexShrink: 1,
           }}
         >
           もちもちうさぎパレード
         </a>
 
-        <nav style={{ display: "flex", gap: "clamp(1rem, 3vw, 2rem)", flexShrink: 0 }}>
+        <nav style={{ display: "flex", gap: "clamp(1.2rem, 3vw, 2rem)", flexShrink: 0 }}>
           {links.map((l) => (
             <a
               key={l.href}
