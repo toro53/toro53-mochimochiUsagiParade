@@ -415,7 +415,7 @@ export default function Discography() {
         .disc-modal-inner {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          align-items: start;
+          align-items: center;
           width: 100%;
           max-width: 800px;
           max-height: 88vh;
