@@ -271,7 +271,7 @@ export default function Hero() {
         }}
       />
 
-      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
 
         {/* label */}
         <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "3rem", width: "100%", maxWidth: "380px" }}>
