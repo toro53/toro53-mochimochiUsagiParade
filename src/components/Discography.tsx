@@ -173,168 +173,104 @@ function AlbumModal({ w, onClose }: { w: Work; onClose: () => void }) {
     }
   };
 
-  // Escape で閉じる
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // スクロールロック
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
 
   return (
-    <div
-      className="disc-modal-overlay"
-      onClick={onClose}
-    >
-      <div
-        className="disc-modal-inner"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 閉じるボタン */}
-        <button className="disc-modal-close" onClick={onClose} aria-label="閉じる">✕</button>
+    <div className="disc-modal-overlay" onClick={onClose}>
+      <div className="disc-modal-inner" onClick={(e) => e.stopPropagation()}>
 
-        {/* コンテンツ */}
-        <div className="disc-modal-body">
-          {/* ジャケット */}
-          <div className="disc-modal-jacket">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={w.img}
-              alt={w.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            />
+        {/* ── 左: ジャケット ── */}
+        <div className="disc-modal-jacket">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={w.img} alt={w.title} />
+        </div>
+
+        {/* ── 右: 情報 ── */}
+        <div className="disc-modal-info">
+
+          {/* 閉じるボタン */}
+          <button className="disc-modal-close" onClick={onClose} aria-label="閉じる">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+              <line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" strokeWidth="1.5"/>
+              <line x1="11" y1="1" x2="1" y2="11" stroke="currentColor" strokeWidth="1.5"/>
+            </svg>
+          </button>
+
+          {/* メタ情報 */}
+          <div className="disc-modal-meta">
+            <span className="disc-modal-event">{w.event}</span>
+            <h2 className="disc-modal-title">{w.title}</h2>
+            <p className="disc-modal-price">{w.price}</p>
           </div>
 
-          {/* 情報 */}
-          <div className="disc-modal-info">
-            <div style={{ fontSize: "0.55rem", letterSpacing: "0.18em", color: "var(--fg-muted)", marginBottom: "0.4rem" }}>
-              {w.event}
-            </div>
-            <h2 style={{ fontSize: "clamp(1rem, 3vw, 1.35rem)", fontWeight: 700, color: "var(--fg)", margin: "0 0 0.25rem", lineHeight: 1.3 }}>
-              {w.title}
-            </h2>
-            <div style={{ fontSize: "0.65rem", color: "var(--fg-muted)", marginBottom: "1.25rem", letterSpacing: "0.06em" }}>
-              {w.price}
-            </div>
-
-            {/* 再生ボタン（アルバム全体） */}
-            {allTracks.length > 0 && (
-              <button
-                onClick={handleAlbumPlay}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.6rem",
-                  background: "var(--accent)",
-                  border: "none",
-                  color: "#fff",
-                  fontSize: "0.65rem",
-                  letterSpacing: "0.15em",
-                  padding: "0.55rem 1.1rem",
-                  cursor: "pointer",
-                  marginBottom: "1.5rem",
-                  transition: "opacity 0.2s",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.8"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
-              >
-                {isThisAlbum && isPlaying ? (
-                  <svg width="10" height="10" viewBox="0 0 14 14" fill="currentColor">
-                    <rect x="2" y="1" width="4" height="12" />
-                    <rect x="8" y="1" width="4" height="12" />
-                  </svg>
-                ) : (
-                  <svg width="10" height="10" viewBox="0 0 14 14" fill="currentColor">
-                    <polygon points="3,1 13,7 3,13" />
-                  </svg>
-                )}
-                {isThisAlbum && isPlaying ? "一時停止" : "すべて再生"}
-              </button>
-            )}
-
-            {/* トラックリスト */}
-            {allTracks.length > 0 && (
-              <div>
-                <div style={{ fontSize: "0.5rem", letterSpacing: "0.2em", color: "var(--fg-muted)", marginBottom: "0.6rem" }}>
-                  TRACKLIST
-                </div>
-                <ol style={{ margin: 0, padding: "0 0 0 1rem", listStyle: "decimal", display: "flex", flexDirection: "column", gap: "0.1rem" }}>
-                  {allTracks.map((t, i) => {
-                    const active = currentTrack?.file === t.file;
-                    return (
-                      <li key={i}>
-                        <button
-                          onClick={() => handleTrackPlay(t)}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            padding: "0.2rem 0",
-                            cursor: "pointer",
-                            fontSize: "0.75rem",
-                            color: active ? "var(--accent)" : "var(--fg)",
-                            fontWeight: active ? 700 : 400,
-                            textAlign: "left",
-                            lineHeight: 1.6,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.4rem",
-                            width: "100%",
-                          }}
-                        >
+          {/* トラックリスト */}
+          {allTracks.length > 0 && (
+            <div className="disc-modal-tracks">
+              <div className="disc-modal-track-label">Tracklist</div>
+              <ol>
+                {allTracks.map((t, i) => {
+                  const active = currentTrack?.file === t.file;
+                  return (
+                    <li key={i} className={active ? "active" : ""}>
+                      <button onClick={() => handleTrackPlay(t)}>
+                        <span className="track-num">{String(i + 1).padStart(2, "0")}</span>
+                        <span className="track-title">{t.title}</span>
+                        <span className="track-icon">
                           {active && isPlaying ? (
-                            <svg width="9" height="9" viewBox="0 0 14 14" fill="var(--accent)">
+                            <svg width="8" height="8" viewBox="0 0 14 14" fill="currentColor">
                               <rect x="2" y="1" width="4" height="12" />
                               <rect x="8" y="1" width="4" height="12" />
                             </svg>
                           ) : (
-                            <svg width="9" height="9" viewBox="0 0 14 14" fill="currentColor" style={{ opacity: 0.45 }}>
+                            <svg width="8" height="8" viewBox="0 0 14 14" fill="currentColor">
                               <polygon points="3,1 13,7 3,13" />
                             </svg>
                           )}
-                          {t.title}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
-            )}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          )}
 
-            {/* BOOTH リンク */}
+          {/* アクション */}
+          <div className="disc-modal-actions">
+            {allTracks.length > 0 && (
+              <button className="disc-modal-play-btn" onClick={handleAlbumPlay}>
+                {isThisAlbum && isPlaying ? (
+                  <svg width="9" height="9" viewBox="0 0 14 14" fill="currentColor">
+                    <rect x="2" y="1" width="4" height="12" />
+                    <rect x="8" y="1" width="4" height="12" />
+                  </svg>
+                ) : (
+                  <svg width="9" height="9" viewBox="0 0 14 14" fill="currentColor">
+                    <polygon points="3,1 13,7 3,13" />
+                  </svg>
+                )}
+                {isThisAlbum && isPlaying ? "Pause" : "Play All"}
+              </button>
+            )}
             <a
+              className="disc-modal-booth-link"
               href={w.href}
               target="_blank"
               rel="noopener noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                marginTop: "1.5rem",
-                fontSize: "0.6rem",
-                letterSpacing: "0.15em",
-                color: "var(--fg-muted)",
-                textDecoration: "none",
-                border: "1px solid var(--border)",
-                padding: "0.45rem 1rem",
-                transition: "border-color 0.2s, color 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--fg)";
-                (e.currentTarget as HTMLElement).style.color = "var(--fg)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
-                (e.currentTarget as HTMLElement).style.color = "var(--fg-muted)";
-              }}
             >
-              BOOTHで見る →
+              BOOTH →
             </a>
           </div>
+
         </div>
       </div>
     </div>
@@ -450,6 +386,7 @@ export default function Discography() {
       }}
     >
       <style>{`
+        /* ── グリッド ── */
         .disc-grid {
           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         }
@@ -457,70 +394,229 @@ export default function Discography() {
           opacity: 1 !important;
         }
 
-        /* modal */
+        /* ── モーダル オーバーレイ ── */
         .disc-modal-overlay {
           position: fixed;
           inset: 0;
           z-index: 2000;
-          background: rgba(0,0,0,0.82);
+          background: rgba(10, 18, 22, 0.88);
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.5rem;
-          animation: discFadeIn 0.18s ease;
+          padding: 1.25rem;
+          animation: discFadeIn 0.2s ease;
         }
         @keyframes discFadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
         }
+
+        /* ── モーダル本体 ── */
         .disc-modal-inner {
-          position: relative;
+          display: grid;
+          grid-template-columns: 280px 1fr;
           width: 100%;
-          max-width: 760px;
+          max-width: 720px;
+          max-height: 88vh;
           background: var(--bg-dark);
           border: 1px solid var(--border);
-          animation: discScaleIn 0.2s ease;
-          max-height: 90vh;
-          overflow-y: auto;
+          animation: discScaleIn 0.22s cubic-bezier(0.22,1,0.36,1);
+          overflow: hidden;
         }
         @keyframes discScaleIn {
-          from { transform: scale(0.95); opacity: 0; }
-          to   { transform: scale(1);   opacity: 1; }
+          from { transform: translateY(12px) scale(0.97); opacity: 0; }
+          to   { transform: translateY(0)    scale(1);    opacity: 1; }
         }
+
+        /* ── ジャケット ── */
+        .disc-modal-jacket {
+          position: relative;
+          overflow: hidden;
+          background: #0d1a20;
+        }
+        .disc-modal-jacket img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          filter: sepia(0.08) saturate(0.95);
+        }
+        .disc-modal-jacket::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to right,
+            transparent 60%,
+            rgba(22, 32, 40, 0.55) 100%
+          );
+          pointer-events: none;
+        }
+
+        /* ── 情報パネル ── */
+        .disc-modal-info {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          padding: 1.75rem 1.75rem 1.5rem;
+          overflow-y: auto;
+          gap: 0;
+        }
+
+        /* 閉じるボタン */
         .disc-modal-close {
           position: absolute;
-          top: 0.9rem;
+          top: 1rem;
           right: 1rem;
           background: none;
           border: none;
           color: var(--fg-muted);
           cursor: pointer;
-          font-size: 1rem;
-          line-height: 1;
-          padding: 0.2rem 0.4rem;
-          z-index: 1;
-          transition: color 0.2s;
+          padding: 0.3rem;
+          line-height: 0;
+          transition: color 0.15s;
         }
         .disc-modal-close:hover { color: var(--fg); }
 
-        .disc-modal-body {
-          display: grid;
-          grid-template-columns: 260px 1fr;
+        /* メタ情報 */
+        .disc-modal-meta {
+          margin-bottom: 1.4rem;
+          padding-right: 1.5rem; /* close button との重なり防止 */
         }
-        .disc-modal-jacket {
-          width: 260px;
-          aspect-ratio: 1 / 1;
-          overflow: hidden;
-          flex-shrink: 0;
+        .disc-modal-event {
+          display: inline-block;
+          font-size: 0.52rem;
+          letter-spacing: 0.2em;
+          color: var(--accent-light);
+          border: 1px solid var(--accent-light);
+          padding: 0.12rem 0.5rem;
+          margin-bottom: 0.65rem;
+          opacity: 0.75;
         }
-        .disc-modal-info {
-          padding: 2rem 2rem 2rem 1.75rem;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
+        .disc-modal-title {
+          font-size: clamp(1.05rem, 2.8vw, 1.4rem);
+          font-weight: 700;
+          color: var(--fg);
+          line-height: 1.35;
+          margin: 0 0 0.4rem;
+          letter-spacing: 0.04em;
+        }
+        .disc-modal-price {
+          font-size: 0.62rem;
+          color: var(--fg-muted);
+          letter-spacing: 0.08em;
+          margin: 0;
         }
 
-        /* モバイル */
+        /* トラックリスト */
+        .disc-modal-tracks {
+          border-top: 1px solid var(--border);
+          padding-top: 1rem;
+          margin-bottom: 1.25rem;
+          flex: 1;
+        }
+        .disc-modal-track-label {
+          font-size: 0.48rem;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: var(--fg-muted);
+          margin-bottom: 0.55rem;
+          opacity: 0.7;
+        }
+        .disc-modal-tracks ol {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+        }
+        .disc-modal-tracks li button {
+          width: 100%;
+          background: none;
+          border: none;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          padding: 0.42rem 0.5rem;
+          cursor: pointer;
+          text-align: left;
+          transition: background 0.12s;
+          border-radius: 2px;
+        }
+        .disc-modal-tracks li button:hover {
+          background: rgba(255,255,255,0.04);
+        }
+        .disc-modal-tracks li.active button {
+          background: rgba(58,170,196,0.08);
+        }
+        .track-num {
+          font-size: 0.52rem;
+          letter-spacing: 0.05em;
+          color: var(--fg-muted);
+          font-variant-numeric: tabular-nums;
+          flex-shrink: 0;
+          width: 1.4rem;
+        }
+        .disc-modal-tracks li.active .track-num {
+          color: var(--accent);
+        }
+        .track-title {
+          font-size: 0.75rem;
+          color: var(--fg);
+          flex: 1;
+          line-height: 1.5;
+        }
+        .disc-modal-tracks li.active .track-title {
+          color: var(--accent);
+          font-weight: 600;
+        }
+        .track-icon {
+          color: var(--fg-muted);
+          flex-shrink: 0;
+          line-height: 0;
+          opacity: 0.5;
+        }
+        .disc-modal-tracks li.active .track-icon {
+          color: var(--accent);
+          opacity: 1;
+        }
+
+        /* アクションエリア */
+        .disc-modal-actions {
+          border-top: 1px solid var(--border);
+          padding-top: 1.1rem;
+          display: flex;
+          align-items: center;
+          gap: 1.25rem;
+        }
+        .disc-modal-play-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: none;
+          border: 1px solid var(--accent);
+          color: var(--accent);
+          font-size: 0.6rem;
+          letter-spacing: 0.18em;
+          padding: 0.5rem 1.1rem;
+          cursor: pointer;
+          transition: background 0.15s, color 0.15s;
+        }
+        .disc-modal-play-btn:hover {
+          background: var(--accent);
+          color: #fff;
+        }
+        .disc-modal-booth-link {
+          font-size: 0.58rem;
+          letter-spacing: 0.16em;
+          color: var(--fg-muted);
+          text-decoration: none;
+          transition: color 0.15s;
+          margin-left: auto;
+        }
+        .disc-modal-booth-link:hover { color: var(--fg); }
+
+        /* ── モバイル ── */
         @media (max-width: 640px) {
           .disc-grid {
             grid-template-columns: repeat(2, 1fr);
@@ -535,15 +631,29 @@ export default function Discography() {
           .card-info {
             padding: 0.6rem 0.75rem 0.75rem !important;
           }
-          .disc-modal-body {
+          .disc-modal-inner {
             grid-template-columns: 1fr;
+            grid-template-rows: 46vw 1fr;
+            max-height: 92vh;
           }
           .disc-modal-jacket {
-            width: 100%;
-            aspect-ratio: 1 / 1;
+            max-height: 46vw;
+          }
+          .disc-modal-jacket::after {
+            background: linear-gradient(
+              to bottom,
+              transparent 60%,
+              rgba(22, 32, 40, 0.55) 100%
+            );
           }
           .disc-modal-info {
-            padding: 1.25rem 1.25rem 1.5rem;
+            padding: 1.25rem 1.25rem 1.25rem;
+          }
+          .disc-modal-meta {
+            margin-bottom: 1rem;
+          }
+          .disc-modal-track-label {
+            display: none;
           }
         }
       `}</style>
