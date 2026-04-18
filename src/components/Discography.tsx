@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePlayer, Track } from "@/context/PlayerContext";
 
 type Work = {
@@ -141,9 +141,10 @@ const works: Work[] = [
   },
 ];
 
-function AlbumCard({ w }: { w: Work }) {
+// ─── Modal ────────────────────────────────────────────────────────────────────
+
+function AlbumModal({ w, onClose }: { w: Work; onClose: () => void }) {
   const { play, currentTrack, isPlaying, pause, resume } = usePlayer();
-  const [open, setOpen] = useState(false);
 
   const toTrack = (t: { title: string; file: string }): Track => ({
     title: t.title,
@@ -155,8 +156,7 @@ function AlbumCard({ w }: { w: Work }) {
   const allTracks = w.tracks.map(toTrack);
   const isThisAlbum = currentTrack && allTracks.some((t) => t.file === currentTrack.file);
 
-  const handleAlbumPlay = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleAlbumPlay = () => {
     if (allTracks.length === 0) return;
     if (isThisAlbum) {
       isPlaying ? pause() : resume();
@@ -173,197 +173,270 @@ function AlbumCard({ w }: { w: Work }) {
     }
   };
 
+  // Escape で閉じる
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  // スクロールロック
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
   return (
-    <div className="vintage-card" style={{ display: "flex", flexDirection: "column" }}>
-      {/* jacket */}
-      <div className="card-jacket"
-        style={{
-          width: "100%",
-          aspectRatio: "1 / 1",
-          overflow: "hidden",
-          position: "relative",
-          background: "#1a2e38",
-          cursor: allTracks.length > 0 ? "pointer" : "default",
-        }}
-        onClick={allTracks.length > 0 ? handleAlbumPlay : undefined}
+    <div
+      className="disc-modal-overlay"
+      onClick={onClose}
+    >
+      <div
+        className="disc-modal-inner"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={w.img}
-          alt={w.title}
+        {/* 閉じるボタン */}
+        <button className="disc-modal-close" onClick={onClose} aria-label="閉じる">✕</button>
+
+        {/* コンテンツ */}
+        <div className="disc-modal-body">
+          {/* ジャケット */}
+          <div className="disc-modal-jacket">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={w.img}
+              alt={w.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          </div>
+
+          {/* 情報 */}
+          <div className="disc-modal-info">
+            <div style={{ fontSize: "0.55rem", letterSpacing: "0.18em", color: "var(--fg-muted)", marginBottom: "0.4rem" }}>
+              {w.event}
+            </div>
+            <h2 style={{ fontSize: "clamp(1rem, 3vw, 1.35rem)", fontWeight: 700, color: "var(--fg)", margin: "0 0 0.25rem", lineHeight: 1.3 }}>
+              {w.title}
+            </h2>
+            <div style={{ fontSize: "0.65rem", color: "var(--fg-muted)", marginBottom: "1.25rem", letterSpacing: "0.06em" }}>
+              {w.price}
+            </div>
+
+            {/* 再生ボタン（アルバム全体） */}
+            {allTracks.length > 0 && (
+              <button
+                onClick={handleAlbumPlay}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.6rem",
+                  background: "var(--accent)",
+                  border: "none",
+                  color: "#fff",
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.15em",
+                  padding: "0.55rem 1.1rem",
+                  cursor: "pointer",
+                  marginBottom: "1.5rem",
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.8"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+              >
+                {isThisAlbum && isPlaying ? (
+                  <svg width="10" height="10" viewBox="0 0 14 14" fill="currentColor">
+                    <rect x="2" y="1" width="4" height="12" />
+                    <rect x="8" y="1" width="4" height="12" />
+                  </svg>
+                ) : (
+                  <svg width="10" height="10" viewBox="0 0 14 14" fill="currentColor">
+                    <polygon points="3,1 13,7 3,13" />
+                  </svg>
+                )}
+                {isThisAlbum && isPlaying ? "一時停止" : "すべて再生"}
+              </button>
+            )}
+
+            {/* トラックリスト */}
+            {allTracks.length > 0 && (
+              <div>
+                <div style={{ fontSize: "0.5rem", letterSpacing: "0.2em", color: "var(--fg-muted)", marginBottom: "0.6rem" }}>
+                  TRACKLIST
+                </div>
+                <ol style={{ margin: 0, padding: "0 0 0 1rem", listStyle: "decimal", display: "flex", flexDirection: "column", gap: "0.1rem" }}>
+                  {allTracks.map((t, i) => {
+                    const active = currentTrack?.file === t.file;
+                    return (
+                      <li key={i}>
+                        <button
+                          onClick={() => handleTrackPlay(t)}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            padding: "0.2rem 0",
+                            cursor: "pointer",
+                            fontSize: "0.75rem",
+                            color: active ? "var(--accent)" : "var(--fg)",
+                            fontWeight: active ? 700 : 400,
+                            textAlign: "left",
+                            lineHeight: 1.6,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.4rem",
+                            width: "100%",
+                          }}
+                        >
+                          {active && isPlaying ? (
+                            <svg width="9" height="9" viewBox="0 0 14 14" fill="var(--accent)">
+                              <rect x="2" y="1" width="4" height="12" />
+                              <rect x="8" y="1" width="4" height="12" />
+                            </svg>
+                          ) : (
+                            <svg width="9" height="9" viewBox="0 0 14 14" fill="currentColor" style={{ opacity: 0.45 }}>
+                              <polygon points="3,1 13,7 3,13" />
+                            </svg>
+                          )}
+                          {t.title}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+            )}
+
+            {/* BOOTH リンク */}
+            <a
+              href={w.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                marginTop: "1.5rem",
+                fontSize: "0.6rem",
+                letterSpacing: "0.15em",
+                color: "var(--fg-muted)",
+                textDecoration: "none",
+                border: "1px solid var(--border)",
+                padding: "0.45rem 1rem",
+                transition: "border-color 0.2s, color 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--fg)";
+                (e.currentTarget as HTMLElement).style.color = "var(--fg)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                (e.currentTarget as HTMLElement).style.color = "var(--fg-muted)";
+              }}
+            >
+              BOOTHで見る →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Card ─────────────────────────────────────────────────────────────────────
+
+function AlbumCard({ w }: { w: Work }) {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  return (
+    <>
+      <div
+        className="vintage-card"
+        style={{ display: "flex", flexDirection: "column", cursor: "pointer" }}
+        onClick={() => setModalOpen(true)}
+        role="button"
+        tabIndex={0}
+        aria-label={`${w.title} の詳細を見る`}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setModalOpen(true); }}
+      >
+        {/* jacket */}
+        <div
+          className="card-jacket"
           style={{
             width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-            filter: "sepia(0.15) saturate(0.9)",
-            transition: "transform 0.4s ease, filter 0.4s ease",
+            aspectRatio: "1 / 1",
+            overflow: "hidden",
+            position: "relative",
+            background: "#1a2e38",
+            flexShrink: 0,
           }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLImageElement).style.transform = "scale(1.04)";
-            (e.currentTarget as HTMLImageElement).style.filter = "sepia(0) saturate(1)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLImageElement).style.transform = "scale(1)";
-            (e.currentTarget as HTMLImageElement).style.filter = "sepia(0.15) saturate(0.9)";
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.25) 100%)",
-            pointerEvents: "none",
-          }}
-        />
-        {allTracks.length > 0 && (
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={w.img}
+            alt={w.title}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+              filter: "sepia(0.15) saturate(0.9)",
+              transition: "transform 0.4s ease, filter 0.4s ease",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLImageElement).style.transform = "scale(1.04)";
+              (e.currentTarget as HTMLImageElement).style.filter = "sepia(0) saturate(1)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLImageElement).style.transform = "scale(1)";
+              (e.currentTarget as HTMLImageElement).style.filter = "sepia(0.15) saturate(0.9)";
+            }}
+          />
           <div
-            className="play-overlay"
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.25) 100%)",
+              pointerEvents: "none",
+            }}
+          />
+          {/* hover overlay */}
+          <div
+            className="card-hover-overlay"
             style={{
               position: "absolute",
               inset: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              opacity: isThisAlbum ? 1 : 0,
+              background: "rgba(0,0,0,0.35)",
+              opacity: 0,
               transition: "opacity 0.2s",
               pointerEvents: "none",
             }}
           >
-            <div
-              style={{
-                background: "rgba(0,0,0,0.55)",
-                borderRadius: "50%",
-                width: "44px",
-                height: "44px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "1.1rem",
-                color: "#fff",
-              }}
-            >
-              {isThisAlbum && isPlaying ? (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                  <rect x="2" y="1" width="4" height="12" />
-                  <rect x="8" y="1" width="4" height="12" />
-                </svg>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                  <polygon points="3,1 13,7 3,13" />
-                </svg>
-              )}
-            </div>
+            <span style={{ fontSize: "0.55rem", letterSpacing: "0.2em", color: "#fff" }}>DETAIL</span>
           </div>
-        )}
-      </div>
-
-      {/* info */}
-      <div className="card-info" style={{ padding: "0.75rem 1rem 0.6rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem", minWidth: 0 }}>
-        <div style={{ fontSize: "0.55rem", letterSpacing: "0.15em", color: "var(--fg-muted)" }}>
-          {w.event}
-        </div>
-        <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", lineHeight: 1.4, margin: 0 }}>
-          {w.title}
-        </h3>
-
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "0.5rem" }}>
-          {allTracks.length > 0 && (
-            <button
-              onClick={() => setOpen((v) => !v)}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                fontSize: "0.6rem",
-                letterSpacing: "0.1em",
-                color: "var(--fg-muted)",
-                textAlign: "left",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.3rem",
-              }}
-            >
-              <span>{open ? "▲" : "▼"}</span>
-              <span>TRACKLIST</span>
-            </button>
-          )}
-          <a
-            href={w.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: "0.55rem",
-              letterSpacing: "0.12em",
-              color: "var(--fg-muted)",
-              textDecoration: "none",
-              marginLeft: "auto",
-            }}
-          >
-            BOOTH →
-          </a>
         </div>
 
-        {allTracks.length > 0 && (
-          <>
-
-            {open && (
-              <ol
-                style={{
-                  margin: "0.4rem 0 0",
-                  padding: "0 0 0 1rem",
-                  listStyle: "decimal",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.15rem",
-                }}
-              >
-                {allTracks.map((t, i) => {
-                  const active = currentTrack?.file === t.file;
-                  return (
-                    <li key={i}>
-                      <button
-                        onClick={() => handleTrackPlay(t)}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          padding: 0,
-                          cursor: "pointer",
-                          fontSize: "0.68rem",
-                          color: active ? "var(--accent)" : "var(--fg)",
-                          fontWeight: active ? 700 : 400,
-                          textAlign: "left",
-                          lineHeight: 1.6,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "0.3rem",
-                        }}
-                      >
-                        {active && isPlaying ? (
-                          <svg width="8" height="8" viewBox="0 0 14 14" fill="var(--accent)">
-                            <rect x="2" y="1" width="4" height="12" />
-                            <rect x="8" y="1" width="4" height="12" />
-                          </svg>
-                        ) : (
-                          <svg width="8" height="8" viewBox="0 0 14 14" fill="currentColor" style={{ opacity: 0.4 }}>
-                            <polygon points="3,1 13,7 3,13" />
-                          </svg>
-                        )}
-                        {t.title}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ol>
-            )}
-          </>
-        )}
+        {/* info */}
+        <div
+          className="card-info"
+          style={{ padding: "0.75rem 1rem 0.85rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.2rem", minWidth: 0 }}
+        >
+          <div style={{ fontSize: "0.55rem", letterSpacing: "0.15em", color: "var(--fg-muted)" }}>
+            {w.event}
+          </div>
+          <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", lineHeight: 1.4, margin: 0 }}>
+            {w.title}
+          </h3>
+        </div>
       </div>
 
-    </div>
+      {modalOpen && <AlbumModal w={w} onClose={() => setModalOpen(false)} />}
+    </>
   );
 }
+
+// ─── Section ──────────────────────────────────────────────────────────────────
 
 export default function Discography() {
   return (
@@ -376,6 +449,105 @@ export default function Discography() {
         borderBottom: "1px solid var(--border)",
       }}
     >
+      <style>{`
+        .disc-grid {
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        }
+        .vintage-card:hover .card-hover-overlay {
+          opacity: 1 !important;
+        }
+
+        /* modal */
+        .disc-modal-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 2000;
+          background: rgba(0,0,0,0.82);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1.5rem;
+          animation: discFadeIn 0.18s ease;
+        }
+        @keyframes discFadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        .disc-modal-inner {
+          position: relative;
+          width: 100%;
+          max-width: 760px;
+          background: var(--bg-dark);
+          border: 1px solid var(--border);
+          animation: discScaleIn 0.2s ease;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+        @keyframes discScaleIn {
+          from { transform: scale(0.95); opacity: 0; }
+          to   { transform: scale(1);   opacity: 1; }
+        }
+        .disc-modal-close {
+          position: absolute;
+          top: 0.9rem;
+          right: 1rem;
+          background: none;
+          border: none;
+          color: var(--fg-muted);
+          cursor: pointer;
+          font-size: 1rem;
+          line-height: 1;
+          padding: 0.2rem 0.4rem;
+          z-index: 1;
+          transition: color 0.2s;
+        }
+        .disc-modal-close:hover { color: var(--fg); }
+
+        .disc-modal-body {
+          display: grid;
+          grid-template-columns: 260px 1fr;
+        }
+        .disc-modal-jacket {
+          width: 260px;
+          aspect-ratio: 1 / 1;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+        .disc-modal-info {
+          padding: 2rem 2rem 2rem 1.75rem;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        /* モバイル */
+        @media (max-width: 640px) {
+          .disc-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          .vintage-card {
+            flex-direction: column !important;
+          }
+          .card-jacket {
+            width: 100% !important;
+            aspect-ratio: 1 / 1;
+          }
+          .card-info {
+            padding: 0.6rem 0.75rem 0.75rem !important;
+          }
+          .disc-modal-body {
+            grid-template-columns: 1fr;
+          }
+          .disc-modal-jacket {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+          }
+          .disc-modal-info {
+            padding: 1.25rem 1.25rem 1.5rem;
+          }
+        }
+      `}</style>
+
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
         <span className="section-label">Discography</span>
 
@@ -385,31 +557,6 @@ export default function Discography() {
           ))}
         </div>
       </div>
-
-      <style>{`
-        .disc-grid {
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        }
-        .vintage-card:hover .play-overlay {
-          opacity: 1 !important;
-        }
-        @media (max-width: 640px) {
-          .disc-grid {
-            grid-template-columns: 1fr;
-          }
-          .vintage-card {
-            flex-direction: row !important;
-          }
-          .card-jacket {
-            width: 100px !important;
-            flex-shrink: 0;
-            aspect-ratio: 1 / 1;
-          }
-          .card-info {
-            padding: 0.6rem 0.75rem !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }
