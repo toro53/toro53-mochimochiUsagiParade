@@ -260,6 +260,17 @@ export default function Hero() {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        .carousel-row { display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; }
+        .carousel-img { width: clamp(220px, 30vw, 300px); height: clamp(220px, 30vw, 300px); }
+        .hero-controls { width: min(260px, 80vw); }
+        @media (max-width: 640px) {
+          .carousel-row { gap: 0.75rem; }
+          .carousel-img { width: min(200px, 52vw); height: min(200px, 52vw); }
+          .hero-volume-slider { display: none; }
+        }
+      `}</style>
+
       {/* radial vignette */}
       <div
         style={{
@@ -281,14 +292,6 @@ export default function Hero() {
         </div>
 
         {/* carousel */}
-        <style>{`
-          .carousel-row { display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; }
-          .carousel-img { width: clamp(220px, 30vw, 300px); height: clamp(220px, 30vw, 300px); }
-          @media (max-width: 640px) {
-            .carousel-row { gap: 0.75rem; }
-            .carousel-img { width: min(200px, 52vw); height: min(200px, 52vw); }
-          }
-        `}</style>
         <div className="carousel-row">
           <button
             onClick={prev}
@@ -335,7 +338,7 @@ export default function Hero() {
         </div>
 
         {/* audio controls */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.9rem", width: "260px" }}>
+        <div className="hero-controls" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.9rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <button
               onClick={togglePlay}
@@ -401,7 +404,7 @@ export default function Hero() {
                 className="hero-volume-slider"
                 style={{ width: "72px", accentColor: "var(--accent-light)", cursor: "pointer" }}
               />
-              <style>{`@media (max-width: 640px) { .hero-volume-slider { display: none; } }`}</style>
+
             </div>
           </div>
 
