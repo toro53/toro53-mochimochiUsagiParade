@@ -633,11 +633,17 @@ export default function Discography() {
           }
           .disc-modal-inner {
             grid-template-columns: 1fr;
-            grid-template-rows: 46vw 1fr;
+            grid-template-rows: auto 1fr;
             max-height: 92vh;
           }
           .disc-modal-jacket {
-            max-height: 46vw;
+            width: 100%;
+            /* overlay padding 1.25rem × 2 = 2.5rem なので width = 100vw - 2.5rem */
+            height: min(calc(100vw - 2.5rem), 45vh);
+            max-height: unset;
+          }
+          .disc-modal-jacket img {
+            object-fit: contain;
           }
           .disc-modal-jacket::after {
             background: linear-gradient(
