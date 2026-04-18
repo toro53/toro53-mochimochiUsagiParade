@@ -53,50 +53,23 @@ export default function News() {
             <article
               key={i}
               style={{
-                display: "grid",
-                gridTemplateColumns: "140px 1fr",
-                gap: "1.5rem",
-                padding: "1.4rem 0",
+                display: "flex",
+                alignItems: "baseline",
+                gap: "0.9rem",
+                padding: "0.75rem 0",
                 borderBottom: "1px solid var(--border)",
+                flexWrap: "wrap",
               }}
             >
-              <div>
-                <time
-                  style={{
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.08em",
-                    color: "var(--fg-muted)",
-                    display: "block",
-                    marginBottom: "0.4rem",
-                  }}
-                >
-                  {item.date}
-                </time>
-                <span
-                  style={{
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.1em",
-                    border: "1px solid var(--border)",
-                    color: "var(--fg-muted)",
-                    padding: "0.15rem 0.5rem",
-                  }}
-                >
-                  {item.tag}
-                </span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <h3
-                  style={{
-                    fontSize: "0.9rem",
-                    fontWeight: 700,
-                    color: "var(--fg)",
-                    margin: 0,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {item.title}
-                </h3>
-              </div>
+              <time style={{ fontSize: "0.65rem", letterSpacing: "0.06em", color: "var(--fg-muted)", flexShrink: 0 }}>
+                {item.date}
+              </time>
+              <span style={{ fontSize: "0.55rem", letterSpacing: "0.1em", border: "1px solid var(--border)", color: "var(--fg-muted)", padding: "0.1rem 0.4rem", flexShrink: 0 }}>
+                {item.tag}
+              </span>
+              <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", margin: 0, lineHeight: 1.5 }}>
+                {item.title}
+              </h3>
             </article>
           ))}
         </div>
