@@ -334,22 +334,62 @@ function AlbumCard({ w }: { w: Work }) {
               pointerEvents: "none",
             }}
           />
-          {/* hover overlay */}
+          {/* 常時表示: トラック数バッジ */}
+          {w.tracks.length > 0 && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: "0.5rem",
+                left: "0.55rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.3rem",
+                background: "rgba(0,0,0,0.55)",
+                backdropFilter: "blur(4px)",
+                padding: "0.18rem 0.5rem",
+                pointerEvents: "none",
+              }}
+            >
+              <svg width="8" height="8" viewBox="0 0 14 14" fill="var(--accent-light)">
+                <polygon points="3,1 13,7 3,13" />
+              </svg>
+              <span style={{ fontSize: "0.48rem", letterSpacing: "0.1em", color: "var(--fg)", lineHeight: 1 }}>
+                {w.tracks.length} tracks
+              </span>
+            </div>
+          )}
+
+          {/* hover overlay: 大きな再生ボタン */}
           <div
             className="card-hover-overlay"
             style={{
               position: "absolute",
               inset: 0,
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              background: "rgba(0,0,0,0.35)",
+              gap: "0.5rem",
+              background: "rgba(0,0,0,0.45)",
               opacity: 0,
-              transition: "opacity 0.2s",
+              transition: "opacity 0.22s",
               pointerEvents: "none",
             }}
           >
-            <span style={{ fontSize: "0.55rem", letterSpacing: "0.2em", color: "#fff" }}>DETAIL</span>
+            <div style={{
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              border: "1.5px solid rgba(255,255,255,0.75)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="#fff" style={{ marginLeft: "2px" }}>
+                <polygon points="3,1 13,7 3,13" />
+              </svg>
+            </div>
+            <span style={{ fontSize: "0.48rem", letterSpacing: "0.22em", color: "rgba(255,255,255,0.85)" }}>LISTEN</span>
           </div>
         </div>
 
@@ -364,6 +404,16 @@ function AlbumCard({ w }: { w: Work }) {
           <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", lineHeight: 1.4, margin: 0 }}>
             {w.title}
           </h3>
+          {w.tracks.length > 0 && (
+            <div style={{ display: "flex", alignItems: "center", gap: "0.3rem", marginTop: "0.25rem" }}>
+              <svg width="7" height="7" viewBox="0 0 14 14" fill="var(--accent)">
+                <polygon points="3,1 13,7 3,13" />
+              </svg>
+              <span style={{ fontSize: "0.5rem", letterSpacing: "0.1em", color: "var(--accent)", opacity: 0.85 }}>
+                試聴できます
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
