@@ -227,7 +227,7 @@ export default function Hero() {
         {/* label */}
         <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "3rem", width: "100%", maxWidth: "380px" }}>
           <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
-          <span style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "var(--fg-muted)" }}>DOUJIN MUSIC CIRCLE</span>
+          <span style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "var(--fg-muted)" }}>Mochimochi Usagi Parade</span>
           <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
         </div>
 

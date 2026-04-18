@@ -4,7 +4,7 @@ const linkItems = [
   {
     label: "X (Twitter)",
     handle: "@toro4nba",
-    href: "https://twitter.com/toro4nba",
+    href: "https://x.com/mochiusaparade",
     icon: "𝕏",
   },
   {
@@ -127,14 +127,9 @@ export default function About() {
                 <span style={{ fontSize: "1rem", width: "1.5rem", textAlign: "center", color: "var(--accent-light)", flexShrink: 0 }}>
                   {item.icon}
                 </span>
-                <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "var(--fg-muted)", marginBottom: "0.2rem" }}>
-                    {item.label}
-                  </div>
-                  <div style={{ fontSize: "0.85rem", color: "inherit", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {item.handle}
-                  </div>
-                </div>
+                <span style={{ flex: 1, fontSize: "0.75rem", letterSpacing: "0.18em", color: "var(--fg)" }}>
+                  {item.label}
+                </span>
                 <span style={{ flexShrink: 0, fontSize: "0.65rem", color: "var(--border)" }}>→</span>
               </a>
             ))}
