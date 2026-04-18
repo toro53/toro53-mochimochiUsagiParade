@@ -64,7 +64,7 @@ export default function News() {
               <time style={{ fontSize: "0.65rem", letterSpacing: "0.06em", color: "var(--fg-muted)", flexShrink: 0 }}>
                 {item.date}
               </time>
-              <span style={{ fontSize: "0.55rem", letterSpacing: "0.1em", border: "1px solid var(--border)", color: "var(--fg-muted)", padding: "0.1rem 0.4rem", flexShrink: 0 }}>
+              <span style={{ fontSize: "0.55rem", letterSpacing: "0.1em", border: "1px solid var(--border)", color: "var(--fg-muted)", padding: "0.1rem 0", flexShrink: 0, width: "4.5rem", textAlign: "center", display: "inline-block" }}>
                 {item.tag}
               </span>
               <p style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", margin: 0, lineHeight: 1.5 }}>
