@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+:root {
+  /* 晴天に一羽 ジャケット由来 — 薄暗いトーン */
+  --bg: #1e2e35;           /* 深夜の水面 */
+  --bg-dark: #162028;      /* さらに深い闇 */
+  --fg: #c8dde5;           /* 霧がかった空色 */
+  --fg-muted: #7aaab8;     /* くすんだ水色 */
+  --accent: #3aaac4;       /* ジャケットの青緑 */
+  --accent-light: #5aaec2; /* 明るい水色 */
+  --border: #2e4a58;       /* 暗い水面の罫線 */
+  --card-bg: #243840;      /* 夜の水色 */
+  --nav-bg: rgba(30, 46, 53, 0.92);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Noto Serif JP", "Times New Roman", serif;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* grain texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+h1, h2, h3 {
+  letter-spacing: 0.05em;
+}
+
+.section-label {
+  display: inline-block;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+
+.vintage-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+
+/* sepia tint for album placeholder art */
+.album-art {
+  background: linear-gradient(135deg, #c9b8a0, #a89070);
+  filter: sepia(0.3) saturate(0.8);
+}
