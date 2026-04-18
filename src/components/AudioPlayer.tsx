@@ -163,11 +163,15 @@ export default function AudioPlayer() {
             border: "none",
             color: hasPrev ? "var(--fg)" : "var(--border)",
             cursor: hasPrev ? "pointer" : "default",
-            fontSize: "1rem",
             padding: "0.2rem 0.4rem",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          ◀◀
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <polygon points="8,2 2,8 8,14" />
+            <rect x="9" y="2" width="3" height="12" />
+          </svg>
         </button>
         <button
           onClick={isPlaying ? pause : resume}
@@ -180,13 +184,22 @@ export default function AudioPlayer() {
             width: "36px",
             height: "36px",
             borderRadius: "50%",
-            fontSize: "1rem",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            flexShrink: 0,
           }}
         >
-          {isPlaying ? "⏸" : "▶"}
+          {isPlaying ? (
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="2" y="1" width="4" height="12" />
+              <rect x="8" y="1" width="4" height="12" />
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <polygon points="3,1 13,7 3,13" />
+            </svg>
+          )}
         </button>
         <button
           onClick={next}
@@ -197,11 +210,15 @@ export default function AudioPlayer() {
             border: "none",
             color: hasNext ? "var(--fg)" : "var(--border)",
             cursor: hasNext ? "pointer" : "default",
-            fontSize: "1rem",
             padding: "0.2rem 0.4rem",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          ▶▶
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <polygon points="8,2 14,8 8,14" />
+            <rect x="4" y="2" width="3" height="12" />
+          </svg>
         </button>
       </div>
 

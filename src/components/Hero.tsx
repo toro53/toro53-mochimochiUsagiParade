@@ -297,7 +297,16 @@ export default function Hero() {
             onMouseEnter={(e) => { const el = e.currentTarget; el.style.background = "var(--accent-light)"; el.style.color = "var(--bg)"; }}
             onMouseLeave={(e) => { const el = e.currentTarget; el.style.background = "none"; el.style.color = "var(--accent-light)"; }}
           >
-            {playing ? "⏸" : "▶"}
+            {playing ? (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                <rect x="2" y="1" width="4" height="12" />
+                <rect x="8" y="1" width="4" height="12" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                <polygon points="3,1 13,7 3,13" />
+              </svg>
+            )}
           </button>
 
           <div

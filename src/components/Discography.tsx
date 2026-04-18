@@ -243,7 +243,16 @@ function AlbumCard({ w }: { w: Work }) {
                 color: "#fff",
               }}
             >
-              {isThisAlbum && isPlaying ? "⏸" : "▶"}
+              {isThisAlbum && isPlaying ? (
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <rect x="2" y="1" width="4" height="12" />
+                  <rect x="8" y="1" width="4" height="12" />
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <polygon points="3,1 13,7 3,13" />
+                </svg>
+              )}
             </div>
           </div>
         )}
@@ -314,9 +323,14 @@ function AlbumCard({ w }: { w: Work }) {
                         }}
                       >
                         {active && isPlaying ? (
-                          <span style={{ fontSize: "0.5rem" }}>♪</span>
+                          <svg width="8" height="8" viewBox="0 0 14 14" fill="var(--accent)">
+                            <rect x="2" y="1" width="4" height="12" />
+                            <rect x="8" y="1" width="4" height="12" />
+                          </svg>
                         ) : (
-                          <span style={{ fontSize: "0.5rem", opacity: 0.4 }}>▶</span>
+                          <svg width="8" height="8" viewBox="0 0 14 14" fill="currentColor" style={{ opacity: 0.4 }}>
+                            <polygon points="3,1 13,7 3,13" />
+                          </svg>
                         )}
                         {t.title}
                       </button>
