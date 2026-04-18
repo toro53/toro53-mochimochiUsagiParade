@@ -267,12 +267,11 @@ function AlbumCard({ w }: { w: Work }) {
           {w.title}
         </h3>
 
-        {allTracks.length > 0 && (
-          <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "0.5rem" }}>
+          {allTracks.length > 0 && (
             <button
               onClick={() => setOpen((v) => !v)}
               style={{
-                marginTop: "0.5rem",
                 background: "none",
                 border: "none",
                 padding: 0,
@@ -289,6 +288,25 @@ function AlbumCard({ w }: { w: Work }) {
               <span>{open ? "▲" : "▼"}</span>
               <span>TRACKLIST</span>
             </button>
+          )}
+          <a
+            href={w.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: "0.55rem",
+              letterSpacing: "0.12em",
+              color: "var(--fg-muted)",
+              textDecoration: "none",
+              marginLeft: "auto",
+            }}
+          >
+            BOOTH →
+          </a>
+        </div>
+
+        {allTracks.length > 0 && (
+          <>
 
             {open && (
               <ol
@@ -343,24 +361,6 @@ function AlbumCard({ w }: { w: Work }) {
         )}
       </div>
 
-      {/* BOOTH link */}
-      <a
-        href={w.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          display: "block",
-          padding: "0.4rem 1rem",
-          fontSize: "0.55rem",
-          letterSpacing: "0.12em",
-          color: "var(--fg-muted)",
-          borderTop: "1px solid var(--border)",
-          textDecoration: "none",
-          textAlign: "right",
-        }}
-      >
-        BOOTH →
-      </a>
     </div>
   );
 }
