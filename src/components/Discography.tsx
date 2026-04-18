@@ -414,9 +414,10 @@ export default function Discography() {
         /* ── モーダル本体 ── */
         .disc-modal-inner {
           display: grid;
-          grid-template-columns: 280px 1fr;
+          grid-template-columns: 1fr 1fr;
+          align-items: start;
           width: 100%;
-          max-width: 720px;
+          max-width: 800px;
           max-height: 88vh;
           background: var(--bg-dark);
           border: 1px solid var(--border);
@@ -433,15 +434,13 @@ export default function Discography() {
           position: relative;
           overflow: hidden;
           background: #0d1a20;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          aspect-ratio: 1 / 1;
+          width: 100%;
         }
         .disc-modal-jacket img {
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          object-position: center;
+          object-fit: cover;
           display: block;
           filter: sepia(0.08) saturate(0.95);
         }
