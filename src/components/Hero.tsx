@@ -101,6 +101,7 @@ export default function Hero() {
   const [imgVisible, setImgVisible] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(0.75);
   const [progress, setProgress] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -191,11 +192,10 @@ export default function Hero() {
     }
   }, [playerIsPlaying]);
 
-  const fadeIn = (audio: HTMLAudioElement) => {
+  const fadeIn = (audio: HTMLAudioElement, target: number) => {
     if (fadeRef.current) clearInterval(fadeRef.current);
     audio.volume = 0;
-    const target = muted ? 0 : 0.75;
-    if (muted) return;
+    if (target === 0) return;
     fadeRef.current = setInterval(() => {
       if (audio.volume < target - 0.05) {
         audio.volume = Math.min(target, audio.volume + 0.05);
@@ -204,6 +204,13 @@ export default function Hero() {
         if (fadeRef.current) clearInterval(fadeRef.current);
       }
     }, 50);
+  };
+
+  const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = parseFloat(e.target.value);
+    setVolume(v);
+    setMuted(v === 0);
+    if (audioRef.current) audioRef.current.volume = v;
   };
 
   const togglePlay = () => {
@@ -216,7 +223,7 @@ export default function Hero() {
     } else {
       // グローバルプレイヤーを止めてから再生
       pausePlayer();
-      audio.play().then(() => { setPlaying(true); fadeIn(audio); }).catch(() => {});
+      audio.play().then(() => { setPlaying(true); fadeIn(audio, muted ? 0 : volume); }).catch(() => {});
     }
   };
 
@@ -225,7 +232,7 @@ export default function Hero() {
     if (!audio) return;
     const next = !muted;
     setMuted(next);
-    audio.volume = next ? 0 : 0.75;
+    audio.volume = next ? 0 : volume;
   };
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -351,30 +358,42 @@ export default function Hero() {
               )}
             </button>
 
-            {/* mute button */}
-            <button
-              onClick={toggleMute}
-              aria-label={muted ? "ミュート解除" : "ミュート"}
-              style={{
-                background: "none",
-                border: "none",
-                color: muted ? "var(--border)" : "var(--accent-light)",
-                cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                padding: "0.3rem",
-                opacity: 0.8,
-              }}
-            >
-              {muted ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97V10.18L16.45 12.63C16.48 12.43 16.5 12.22 16.5 12ZM19 12C19 12.94 18.8 13.82 18.46 14.64L19.97 16.15C20.63 14.91 21 13.5 21 12C21 7.72 18.01 4.14 14 3.23V5.29C16.89 6.15 19 8.83 19 12ZM4.27 3L3 4.27 7.73 9H3V15H7L12 20V13.27L16.25 17.52C15.58 18.04 14.83 18.45 14 18.7V20.76C15.38 20.45 16.63 19.82 17.68 18.96L19.73 21 21 19.73 12 10.73 4.27 3ZM12 4L9.91 6.09 12 8.18V4Z"/>
-                </svg>
-              ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 9V15H7L12 20V4L7 9H3ZM16.5 12C16.5 10.23 15.48 8.71 14 7.97V16.02C15.48 15.29 16.5 13.77 16.5 12ZM14 3.23V5.29C16.89 6.15 19 8.83 19 12C19 15.17 16.89 17.85 14 18.71V20.77C18.01 19.86 21 16.28 21 12C21 7.72 18.01 4.14 14 3.23Z"/>
-                </svg>
-              )}
-            </button>
+            {/* mute button + volume slider */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <button
+                onClick={toggleMute}
+                aria-label={muted ? "ミュート解除" : "ミュート"}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: muted ? "var(--border)" : "var(--accent-light)",
+                  cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  padding: "0.2rem",
+                  flexShrink: 0,
+                }}
+              >
+                {muted ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97V10.18L16.45 12.63C16.48 12.43 16.5 12.22 16.5 12ZM19 12C19 12.94 18.8 13.82 18.46 14.64L19.97 16.15C20.63 14.91 21 13.5 21 12C21 7.72 18.01 4.14 14 3.23V5.29C16.89 6.15 19 8.83 19 12ZM4.27 3L3 4.27 7.73 9H3V15H7L12 20V13.27L16.25 17.52C15.58 18.04 14.83 18.45 14 18.7V20.76C15.38 20.45 16.63 19.82 17.68 18.96L19.73 21 21 19.73 12 10.73 4.27 3ZM12 4L9.91 6.09 12 8.18V4Z"/>
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 9V15H7L12 20V4L7 9H3ZM16.5 12C16.5 10.23 15.48 8.71 14 7.97V16.02C15.48 15.29 16.5 13.77 16.5 12ZM14 3.23V5.29C16.89 6.15 19 8.83 19 12C19 15.17 16.89 17.85 14 18.71V20.77C18.01 19.86 21 16.28 21 12C21 7.72 18.01 4.14 14 3.23Z"/>
+                  </svg>
+                )}
+              </button>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={muted ? 0 : volume}
+                onChange={changeVolume}
+                aria-label="音量"
+                style={{ width: "72px", accentColor: "var(--accent-light)", cursor: "pointer" }}
+              />
+            </div>
           </div>
 
           <div
