@@ -371,7 +371,7 @@ export default function Discography() {
       id="discography"
       style={{
         padding: "6rem 2rem",
-        background: "var(--bg-dark)",
+        background: "var(--bg)",
         borderTop: "1px solid var(--border)",
         borderBottom: "1px solid var(--border)",
       }}

@@ -33,7 +33,7 @@ export default function About() {
       id="about"
       className="about-section"
       style={{
-        background: "var(--bg)",
+        background: "var(--bg-dark)",
         borderTop: "1px solid var(--border)",
       }}
     >

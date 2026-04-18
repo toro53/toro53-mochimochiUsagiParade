@@ -35,7 +35,7 @@ export default function LiveVideos() {
       id="live"
       style={{
         padding: "6rem 2rem",
-        background: "var(--bg)",
+        background: "var(--bg-dark)",
         borderTop: "1px solid var(--border)",
       }}
     >
