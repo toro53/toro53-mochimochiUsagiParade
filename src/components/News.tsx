@@ -53,18 +53,18 @@ export default function News() {
             <article
               key={i}
               style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: "0.9rem",
+                display: "grid",
+                gridTemplateColumns: "6.5rem 4.5rem 1fr",
+                alignItems: "center",
+                gap: "0.75rem",
                 padding: "0.75rem 0",
                 borderBottom: "1px solid var(--border)",
-                flexWrap: "wrap",
               }}
             >
-              <time style={{ fontSize: "0.65rem", letterSpacing: "0.06em", color: "var(--fg-muted)", flexShrink: 0 }}>
+              <time style={{ fontSize: "0.65rem", letterSpacing: "0.06em", color: "var(--fg-muted)" }}>
                 {item.date}
               </time>
-              <span style={{ fontSize: "0.55rem", letterSpacing: "0.1em", border: "1px solid var(--border)", color: "var(--fg-muted)", padding: "0.1rem 0", flexShrink: 0, width: "4.5rem", textAlign: "center", display: "inline-block" }}>
+              <span style={{ fontSize: "0.55rem", letterSpacing: "0.1em", border: "1px solid var(--border)", color: "var(--fg-muted)", padding: "0.1rem 0", textAlign: "center" }}>
                 {item.tag}
               </span>
               <p style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", margin: 0, lineHeight: 1.5 }}>
