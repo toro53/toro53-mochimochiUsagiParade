@@ -176,7 +176,7 @@ function AlbumCard({ w }: { w: Work }) {
   return (
     <div className="vintage-card" style={{ display: "flex", flexDirection: "column" }}>
       {/* jacket */}
-      <div
+      <div className="card-jacket"
         style={{
           width: "100%",
           aspectRatio: "1 / 1",
@@ -259,7 +259,7 @@ function AlbumCard({ w }: { w: Work }) {
       </div>
 
       {/* info */}
-      <div style={{ padding: "0.75rem 1rem 0.6rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+      <div className="card-info" style={{ padding: "0.75rem 1rem 0.6rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem", minWidth: 0 }}>
         <div style={{ fontSize: "0.55rem", letterSpacing: "0.15em", color: "var(--fg-muted)" }}>
           {w.event}
         </div>
@@ -379,13 +379,7 @@ export default function Discography() {
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
         <span className="section-label">Discography</span>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: "1.5rem",
-          }}
-        >
+        <div className="disc-grid" style={{ display: "grid", gap: "1rem" }}>
           {works.map((w, i) => (
             <AlbumCard key={i} w={w} />
           ))}
@@ -393,8 +387,27 @@ export default function Discography() {
       </div>
 
       <style>{`
+        .disc-grid {
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
         .vintage-card:hover .play-overlay {
           opacity: 1 !important;
+        }
+        @media (max-width: 640px) {
+          .disc-grid {
+            grid-template-columns: 1fr;
+          }
+          .vintage-card {
+            flex-direction: row !important;
+          }
+          .card-jacket {
+            width: 100px !important;
+            flex-shrink: 0;
+            aspect-ratio: 1 / 1;
+          }
+          .card-info {
+            padding: 0.6rem 0.75rem !important;
+          }
         }
       `}</style>
     </section>
