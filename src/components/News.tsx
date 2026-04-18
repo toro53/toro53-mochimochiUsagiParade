@@ -30,7 +30,7 @@ const newsItems = [
   },
 ];
 
-const INITIAL_COUNT = 2;
+const INITIAL_COUNT = 3;
 
 export default function News() {
   const [expanded, setExpanded] = useState(false);
