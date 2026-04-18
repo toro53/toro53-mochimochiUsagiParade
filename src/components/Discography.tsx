@@ -433,11 +433,13 @@ export default function Discography() {
           position: relative;
           overflow: hidden;
           background: #0d1a20;
+          aspect-ratio: 1 / 1;
+          align-self: start;
         }
         .disc-modal-jacket img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           display: block;
           filter: sepia(0.08) saturate(0.95);
         }
