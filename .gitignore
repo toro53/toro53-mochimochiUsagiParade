@@ -31,6 +31,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local music files (too large for git – host separately)
+/Music/
+/public/Music/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

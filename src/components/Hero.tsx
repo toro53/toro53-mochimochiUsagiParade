@@ -2,54 +2,53 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
-// audio: public/audio/ 以下に mp3 を配置してください
 // bgColor: ジャケットの雰囲気に合わせた暗い背景色
 const slides = [
   {
     title: "夏、嘘をついたぜ",
     event: "最新作",
     img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/7558547/1cdf3950-edfc-42fa-afa3-39fa2061752e_base_resized.jpg",
-    audio: "/audio/01_natsu.mp3",
+    audio: "/Music/summer-lies/summer-lies.m4a",
     href: "https://torosanshin.booth.pm/items/7558547",
     bgColor: "#182030",
   },
   {
     title: "晴天に一羽",
     event: "M3-2025春",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/6822016/3c953147-18ae-4daf-9ab6-9c67ebddadda_base_resized.jpg",
-    audio: "/audio/02_seiten.mp3",
+    img: "/Music/clear-sky-one-bird/jacket.png",
+    audio: "/Music/clear-sky-one-bird/clear-sky-solitude.mp3",
     href: "https://torosanshin.booth.pm/items/6822016",
     bgColor: "#142028",
   },
   {
     title: "シュレーディンガーの星",
     event: "M3-2024秋",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/6208804/f3e9d471-84fe-4965-977e-87bff77e38f7_base_resized.jpg",
-    audio: "/audio/03_schrodinger.mp3",
+    img: "/Music/schrodingers-star/jacket.png",
+    audio: "/Music/schrodingers-star/schrodingers-star.mp3",
     href: "https://torosanshin.booth.pm/items/6208804",
     bgColor: "#14142a",
   },
   {
     title: "花明かり",
     event: "M3-2024春",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/5660837/5bb9dfa8-4ef6-4475-bb48-15e7d932b92a_base_resized.jpg",
-    audio: "/audio/04_hanaakari.mp3",
+    img: "/Music/flower-light/jacket.jpg",
+    audio: "/Music/flower-light/flower-light-dazzles.mp3",
     href: "https://torosanshin.booth.pm/items/5660837",
     bgColor: "#28181a",
   },
   {
     title: "月面鈍行",
     event: "M3-2023春",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/4724535/8e638382-2a73-4318-85c6-5b3b8daa0f25_base_resized.jpg",
-    audio: "/audio/05_getsumen.mp3",
+    img: "/Music/lunar-local-train/jacket.png",
+    audio: "/Music/lunar-local-train/lunar-local-train.mp3",
     href: "https://torosanshin.booth.pm/items/4724535",
     bgColor: "#141418",
   },
   {
     title: "忘憂のもの",
     event: "M3-2022秋",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/4267952/f1456c31-fa04-4efc-8d9e-5fcbbb2f2077_base_resized.jpg",
-    audio: "/audio/06_bouyu.mp3",
+    img: "/Music/forget-melancholy/jacket.jpg",
+    audio: "/Music/forget-melancholy/rock-n-roll-will-die-someday.mp3",
     href: "https://torosanshin.booth.pm/items/4267952",
     bgColor: "#1c1c20",
   },
@@ -57,31 +56,31 @@ const slides = [
     title: "憑き身に憂",
     event: "M3-2022秋",
     img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/3826662/7bc4c6bc-d243-4b53-9293-055afce514b3_base_resized.jpg",
-    audio: "/audio/07_tsukimi.mp3",
+    audio: "/Music/possessed-melancholy.m4a",
     href: "https://torosanshin.booth.pm/items/3826662",
     bgColor: "#201010",
   },
   {
     title: "空中分解する春",
     event: "M3-2022春",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/3809571/69799000-987d-433e-a4f5-a4ebc7e21ce1_base_resized.jpg",
-    audio: "/audio/08_kuchu.mp3",
+    img: "/Music/midair-disintegration/jacket.png",
+    audio: "/Music/midair-disintegration/02-midair-disintegration.mp3",
     href: "https://torosanshin.booth.pm/items/3809571",
     bgColor: "#101c12",
   },
   {
     title: "月見に卯",
     event: "M3-2021秋",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/3318343/555e644d-be7a-4314-839c-b5023a54f0ec_base_resized.jpg",
-    audio: "/audio/09_tsukimiu.mp3",
+    img: "/Music/moon-viewing/jacket.jpg",
+    audio: "/Music/moon-viewing/moon-viewing.mp3",
     href: "https://torosanshin.booth.pm/items/3318343",
     bgColor: "#101820",
   },
   {
     title: "嘘憑き EP",
     event: "M3-2021春",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/2898014/71b597c0-3210-47c0-bae7-081217be7524_base_resized.jpg",
-    audio: "/audio/10_usotsuki.mp3",
+    img: "/Music/usotsuki-ep/jacket.jpg",
+    audio: "/Music/usotsuki-ep/liar.mp3",
     href: "https://torosanshin.booth.pm/items/2898014",
     bgColor: "#10101e",
   },
@@ -89,7 +88,7 @@ const slides = [
     title: "VOICEROIDとうるさいギター",
     event: "—",
     img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/2800198/b4fd0b5c-433a-49af-a872-738b85fb065f_base_resized.jpg",
-    audio: "/audio/11_voiceroid.mp3",
+    audio: "",
     href: "https://torosanshin.booth.pm/items/2800198",
     bgColor: "#141414",
   },
@@ -149,10 +148,15 @@ export default function Hero() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.src = slides[current].audio;
-    audio.load();
+    audio.pause();
     setPlaying(false);
     setProgress(0);
+    if (slides[current].audio) {
+      audio.src = slides[current].audio;
+      audio.load();
+    } else {
+      audio.removeAttribute("src");
+    }
   }, [current]);
 
   // Audio event listeners
