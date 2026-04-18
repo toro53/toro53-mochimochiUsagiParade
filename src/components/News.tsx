@@ -67,9 +67,9 @@ export default function News() {
               <span style={{ fontSize: "0.55rem", letterSpacing: "0.1em", border: "1px solid var(--border)", color: "var(--fg-muted)", padding: "0.1rem 0.4rem", flexShrink: 0 }}>
                 {item.tag}
               </span>
-              <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", margin: 0, lineHeight: 1.5 }}>
+              <p style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", margin: 0, lineHeight: 1.5 }}>
                 {item.title}
-              </h3>
+              </p>
             </article>
           ))}
         </div>
