@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { usePlayer } from "@/context/PlayerContext";
 
 // bgColor: ジャケットの雰囲気に合わせた暗い背景色
 const slides = [
@@ -95,12 +96,15 @@ const slides = [
 ];
 
 export default function Hero() {
+  const { pause: pausePlayer, isPlaying: playerIsPlaying } = usePlayer();
   const [current, setCurrent] = useState(0);
   const [imgVisible, setImgVisible] = useState(true);
   const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
   const [progress, setProgress] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const applyBg = useCallback((color: string) => {
     if (sectionRef.current) {
@@ -175,15 +179,53 @@ export default function Hero() {
     };
   }, []);
 
+  // グローバルプレイヤーが再生を始めたら Hero を止める
+  useEffect(() => {
+    if (playerIsPlaying) {
+      const audio = audioRef.current;
+      if (audio && !audio.paused) {
+        if (fadeRef.current) clearInterval(fadeRef.current);
+        audio.pause();
+        setPlaying(false);
+      }
+    }
+  }, [playerIsPlaying]);
+
+  const fadeIn = (audio: HTMLAudioElement) => {
+    if (fadeRef.current) clearInterval(fadeRef.current);
+    audio.volume = 0;
+    const target = muted ? 0 : 0.75;
+    if (muted) return;
+    fadeRef.current = setInterval(() => {
+      if (audio.volume < target - 0.05) {
+        audio.volume = Math.min(target, audio.volume + 0.05);
+      } else {
+        audio.volume = target;
+        if (fadeRef.current) clearInterval(fadeRef.current);
+      }
+    }, 50);
+  };
+
   const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
     if (playing) {
+      if (fadeRef.current) clearInterval(fadeRef.current);
       audio.pause();
       setPlaying(false);
     } else {
-      audio.play().then(() => setPlaying(true)).catch(() => {});
+      // グローバルプレイヤーを止めてから再生
+      pausePlayer();
+      audio.play().then(() => { setPlaying(true); fadeIn(audio); }).catch(() => {});
     }
+  };
+
+  const toggleMute = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const next = !muted;
+    setMuted(next);
+    audio.volume = next ? 0 : 0.75;
   };
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -280,34 +322,60 @@ export default function Hero() {
 
         {/* audio controls */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.9rem", width: "260px" }}>
-          <button
-            onClick={togglePlay}
-            aria-label={playing ? "一時停止" : "再生"}
-            style={{
-              background: "none",
-              border: "1px solid var(--accent-light)",
-              color: "var(--accent-light)",
-              width: "2.8rem", height: "2.8rem",
-              borderRadius: "50%",
-              cursor: "pointer",
-              fontSize: "0.85rem",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "background 0.2s, color 0.2s",
-            }}
-            onMouseEnter={(e) => { const el = e.currentTarget; el.style.background = "var(--accent-light)"; el.style.color = "var(--bg)"; }}
-            onMouseLeave={(e) => { const el = e.currentTarget; el.style.background = "none"; el.style.color = "var(--accent-light)"; }}
-          >
-            {playing ? (
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                <rect x="2" y="1" width="4" height="12" />
-                <rect x="8" y="1" width="4" height="12" />
-              </svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                <polygon points="3,1 13,7 3,13" />
-              </svg>
-            )}
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <button
+              onClick={togglePlay}
+              aria-label={playing ? "一時停止" : "再生"}
+              style={{
+                background: "none",
+                border: "1px solid var(--accent-light)",
+                color: "var(--accent-light)",
+                width: "2.8rem", height: "2.8rem",
+                borderRadius: "50%",
+                cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                transition: "background 0.2s, color 0.2s",
+              }}
+              onMouseEnter={(e) => { const el = e.currentTarget; el.style.background = "var(--accent-light)"; el.style.color = "var(--bg)"; }}
+              onMouseLeave={(e) => { const el = e.currentTarget; el.style.background = "none"; el.style.color = "var(--accent-light)"; }}
+            >
+              {playing ? (
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <rect x="2" y="1" width="4" height="12" />
+                  <rect x="8" y="1" width="4" height="12" />
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <polygon points="3,1 13,7 3,13" />
+                </svg>
+              )}
+            </button>
+
+            {/* mute button */}
+            <button
+              onClick={toggleMute}
+              aria-label={muted ? "ミュート解除" : "ミュート"}
+              style={{
+                background: "none",
+                border: "none",
+                color: muted ? "var(--border)" : "var(--accent-light)",
+                cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                padding: "0.3rem",
+                opacity: 0.8,
+              }}
+            >
+              {muted ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97V10.18L16.45 12.63C16.48 12.43 16.5 12.22 16.5 12ZM19 12C19 12.94 18.8 13.82 18.46 14.64L19.97 16.15C20.63 14.91 21 13.5 21 12C21 7.72 18.01 4.14 14 3.23V5.29C16.89 6.15 19 8.83 19 12ZM4.27 3L3 4.27 7.73 9H3V15H7L12 20V13.27L16.25 17.52C15.58 18.04 14.83 18.45 14 18.7V20.76C15.38 20.45 16.63 19.82 17.68 18.96L19.73 21 21 19.73 12 10.73 4.27 3ZM12 4L9.91 6.09 12 8.18V4Z"/>
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 9V15H7L12 20V4L7 9H3ZM16.5 12C16.5 10.23 15.48 8.71 14 7.97V16.02C15.48 15.29 16.5 13.77 16.5 12ZM14 3.23V5.29C16.89 6.15 19 8.83 19 12C19 15.17 16.89 17.85 14 18.71V20.77C18.01 19.86 21 16.28 21 12C21 7.72 18.01 4.14 14 3.23Z"/>
+                </svg>
+              )}
+            </button>
+          </div>
 
           <div
             onClick={seek}
