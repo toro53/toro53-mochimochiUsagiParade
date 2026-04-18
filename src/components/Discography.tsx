@@ -404,16 +404,6 @@ function AlbumCard({ w }: { w: Work }) {
           <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", lineHeight: 1.4, margin: 0 }}>
             {w.title}
           </h3>
-          {w.tracks.length > 0 && (
-            <div style={{ display: "flex", alignItems: "center", gap: "0.3rem", marginTop: "0.25rem" }}>
-              <svg width="7" height="7" viewBox="0 0 14 14" fill="var(--accent)">
-                <polygon points="3,1 13,7 3,13" />
-              </svg>
-              <span style={{ fontSize: "0.5rem", letterSpacing: "0.1em", color: "var(--accent)", opacity: 0.85 }}>
-                試聴できます
-              </span>
-            </div>
-          )}
         </div>
       </div>
 
