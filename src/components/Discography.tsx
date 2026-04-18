@@ -461,6 +461,7 @@ export default function Discography() {
           position: relative;
           display: flex;
           flex-direction: column;
+          align-self: stretch;
           padding: 1.75rem 1.75rem 1.5rem;
           overflow-y: auto;
           gap: 0;
@@ -586,6 +587,7 @@ export default function Discography() {
 
         /* アクションエリア */
         .disc-modal-actions {
+          margin-top: auto;
           border-top: 1px solid var(--border);
           padding-top: 1.1rem;
           display: flex;
