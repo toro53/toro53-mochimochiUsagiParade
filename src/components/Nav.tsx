@@ -45,17 +45,22 @@ export default function Nav() {
           href="#hero"
           style={{
             fontFamily: "var(--font-fell), serif",
-            fontSize: "1rem",
-            letterSpacing: "0.08em",
+            fontSize: "clamp(0.75rem, 2.5vw, 1rem)",
+            letterSpacing: "0.05em",
             color: "var(--fg)",
             textDecoration: "none",
             opacity: 0.85,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            minWidth: 0,
+            flexShrink: 1,
           }}
         >
           もちもちうさぎパレード
         </a>
 
-        <nav style={{ display: "flex", gap: "2rem" }}>
+        <nav style={{ display: "flex", gap: "clamp(1rem, 3vw, 2rem)", flexShrink: 0 }}>
           {links.map((l) => (
             <a
               key={l.href}

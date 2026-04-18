@@ -70,11 +70,20 @@ export default function AudioPlayer() {
 
   if (!currentTrack) return null;
 
+  const playerStyle = `
+    @media (max-width: 640px) {
+      .player-jacket { display: none !important; }
+      .player-volume { display: none !important; }
+    }
+  `;
+
   const idx = queue.findIndex((t) => t.file === currentTrack.file);
   const hasPrev = idx > 0;
   const hasNext = idx < queue.length - 1;
 
   return (
+    <>
+    <style>{playerStyle}</style>
     <div
       style={{
         position: "fixed",
@@ -85,19 +94,20 @@ export default function AudioPlayer() {
         background: "rgba(14, 24, 30, 0.97)",
         borderTop: "1px solid var(--border)",
         backdropFilter: "blur(12px)",
-        padding: "0.6rem 1.5rem",
+        padding: "0.6rem 1rem",
         display: "flex",
         alignItems: "center",
-        gap: "1rem",
+        gap: "0.75rem",
       }}
     >
       {/* hidden audio element */}
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} />
 
-      {/* jacket */}
+      {/* jacket – hidden on small screens */}
       {currentTrack.jacket && (
         <div
+          className="player-jacket"
           style={{
             width: "44px",
             height: "44px",
@@ -116,7 +126,7 @@ export default function AudioPlayer() {
       )}
 
       {/* track info */}
-      <div style={{ minWidth: 0, flexShrink: 0, maxWidth: "180px" }}>
+      <div style={{ minWidth: 0, flex: "1 1 0", maxWidth: "180px" }}>
         <div
           style={{
             fontSize: "0.78rem",
@@ -228,8 +238,8 @@ export default function AudioPlayer() {
         </span>
       </div>
 
-      {/* volume */}
-      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", flexShrink: 0 }}>
+      {/* volume – hidden on small screens */}
+      <div className="player-volume" style={{ display: "flex", alignItems: "center", gap: "0.4rem", flexShrink: 0 }}>
         <span style={{ fontSize: "0.75rem", color: "var(--fg-muted)" }}>🔊</span>
         <input
           type="range"
@@ -242,5 +252,6 @@ export default function AudioPlayer() {
         />
       </div>
     </div>
+    </>
   );
 }

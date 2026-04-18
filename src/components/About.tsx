@@ -31,22 +31,35 @@ export default function About() {
   return (
     <section
       id="about"
+      className="about-section"
       style={{
-        padding: "6rem 2rem",
         background: "var(--bg)",
         borderTop: "1px solid var(--border)",
       }}
     >
-      <div
-        style={{
-          maxWidth: "960px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "5rem",
-          alignItems: "start",
-        }}
-      >
+      <style>{`
+        .about-section {
+          padding: 6rem 2rem;
+        }
+        .about-grid {
+          max-width: 960px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 5rem;
+          align-items: start;
+        }
+        @media (max-width: 640px) {
+          .about-section {
+            padding: 4rem 1.5rem;
+          }
+          .about-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+          }
+        }
+      `}</style>
+      <div className="about-grid">
         {/* About */}
         <div>
           <span className="section-label">About</span>
@@ -114,15 +127,15 @@ export default function About() {
                 <span style={{ fontSize: "1rem", width: "1.5rem", textAlign: "center", color: "var(--accent-light)", flexShrink: 0 }}>
                   {item.icon}
                 </span>
-                <div>
+                <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "var(--fg-muted)", marginBottom: "0.2rem" }}>
                     {item.label}
                   </div>
-                  <div style={{ fontSize: "0.85rem", color: "inherit" }}>
+                  <div style={{ fontSize: "0.85rem", color: "inherit", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {item.handle}
                   </div>
                 </div>
-                <span style={{ marginLeft: "auto", fontSize: "0.65rem", color: "var(--border)" }}>→</span>
+                <span style={{ flexShrink: 0, fontSize: "0.65rem", color: "var(--border)" }}>→</span>
               </a>
             ))}
           </div>
