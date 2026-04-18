@@ -391,8 +391,10 @@ export default function Hero() {
                 value={muted ? 0 : volume}
                 onChange={changeVolume}
                 aria-label="音量"
+                className="hero-volume-slider"
                 style={{ width: "72px", accentColor: "var(--accent-light)", cursor: "pointer" }}
               />
+              <style>{`@media (max-width: 640px) { .hero-volume-slider { display: none; } }`}</style>
             </div>
           </div>
 
