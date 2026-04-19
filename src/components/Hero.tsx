@@ -239,12 +239,10 @@ export default function Hero() {
       ref={sectionRef}
       id="hero"
       className="min-h-screen flex flex-col items-center justify-center text-center px-8 pt-24 pb-16 relative overflow-hidden"
-      style={{ backgroundColor: slides[0].bgColor, transition: "background-color 1.4s ease" }}
+      style={{ backgroundColor: slides[0].bgColor }}
     >
       {/* radial vignette */}
-      <div className="absolute inset-0 pointer-events-none z-0"
-        style={{ background: "radial-gradient(ellipse at 50% 40%, transparent 25%, rgba(0,0,0,0.62) 100%)" }}
-      />
+      <div className="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_25%,rgba(0,0,0,0.62)_100%)]" />
 
       <div className="relative z-10 flex flex-col items-center w-full">
 
@@ -269,14 +267,8 @@ export default function Hero() {
               key={current}
               src={slides[current].img}
               alt={slides[current].title}
-              className="object-cover block max-sm:w-[min(200px,52vw)] max-sm:h-[min(200px,52vw)]"
-              style={{
-                width: "clamp(220px, 30vw, 300px)",
-                height: "clamp(220px, 30vw, 300px)",
-                boxShadow: "0 28px 72px rgba(0,0,0,0.65)",
-                opacity: imgVisible ? 1 : 0,
-                transition: "opacity 0.18s ease",
-              }}
+              className="object-cover block w-[clamp(220px,30vw,300px)] h-[clamp(220px,30vw,300px)] shadow-[0_28px_72px_rgba(0,0,0,0.65)] transition-opacity duration-[180ms] max-sm:w-[min(200px,52vw)] max-sm:h-[min(200px,52vw)]"
+              style={{ opacity: imgVisible ? 1 : 0 }}
             />
           </a>
 
@@ -365,11 +357,9 @@ export default function Hero() {
               key={i}
               onClick={() => goTo(i)}
               aria-label={`スライド ${i + 1}`}
-              className="h-[0.4rem] border-none cursor-pointer p-0 transition-[width,background] duration-300"
-              style={{
-                width: i === current ? "1.4rem" : "0.4rem",
-                background: i === current ? "var(--accent-light)" : "var(--border)",
-              }}
+              className={`h-[0.4rem] border-none cursor-pointer p-0 transition-[width,background-color] duration-300 ${
+                i === current ? "w-[1.4rem] bg-accent-light" : "w-[0.4rem] bg-border"
+              }`}
             />
           ))}
         </div>
@@ -379,10 +369,7 @@ export default function Hero() {
 
       {/* scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-[0.4rem] opacity-40">
-        <div
-          className="w-px h-10 bg-fg-muted"
-          style={{ animation: "scrollLine 1.6s ease-in-out infinite" }}
-        />
+        <div className="w-px h-10 bg-fg-muted animate-scroll-line" />
       </div>
     </section>
   );

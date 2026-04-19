@@ -86,8 +86,7 @@ export default function AudioPlayer() {
         onClick={prev}
         disabled={!hasPrev}
         aria-label="前のトラック"
-        className={`bg-transparent border-none p-[0.2rem_0.4rem] flex items-center cursor-${hasPrev ? "pointer" : "default"}`}
-        style={{ color: hasPrev ? "var(--fg)" : "var(--border)" }}
+        className={`bg-transparent border-none p-[0.2rem_0.4rem] flex items-center ${hasPrev ? "text-fg cursor-pointer" : "text-border cursor-default"}`}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
           <polygon points="8,2 2,8 8,14" /><rect x="9" y="2" width="3" height="12" />
@@ -112,8 +111,7 @@ export default function AudioPlayer() {
         onClick={next}
         disabled={!hasNext}
         aria-label="次のトラック"
-        className={`bg-transparent border-none p-[0.2rem_0.4rem] flex items-center cursor-${hasNext ? "pointer" : "default"}`}
-        style={{ color: hasNext ? "var(--fg)" : "var(--border)" }}
+        className={`bg-transparent border-none p-[0.2rem_0.4rem] flex items-center ${hasNext ? "text-fg cursor-pointer" : "text-border cursor-default"}`}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
           <polygon points="8,2 14,8 8,14" /><rect x="4" y="2" width="3" height="12" />

@@ -22,34 +22,17 @@ function AlbumCard({ w }: { w: Work }) {
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setModalOpen(true); }}
       >
         {/* jacket */}
-        <div
-          className="card-jacket w-full overflow-hidden relative flex-shrink-0"
-          style={{ aspectRatio: "1 / 1", background: "#1a2e38" }}
-        >
+        <div className="card-jacket w-full aspect-square overflow-hidden relative flex-shrink-0 bg-[#1a2e38]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={w.img}
             alt={w.title}
-            className="w-full h-full object-cover block transition-[transform,filter] duration-400"
-            style={{ filter: "sepia(0.15) saturate(0.9)" }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLImageElement).style.transform = "scale(1.04)";
-              (e.currentTarget as HTMLImageElement).style.filter = "sepia(0) saturate(1)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLImageElement).style.transform = "scale(1)";
-              (e.currentTarget as HTMLImageElement).style.filter = "sepia(0.15) saturate(0.9)";
-            }}
+            className="w-full h-full object-cover block"
           />
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.25) 100%)" }}
-          />
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(0,0,0,0.25)_100%)]" />
           {/* 常時表示: トラック数バッジ */}
           {w.tracks.length > 0 && (
-            <div className="absolute bottom-2 left-[0.55rem] flex items-center gap-[0.3rem] pointer-events-none px-2 py-[0.18rem]"
-              style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
-            >
+            <div className="absolute bottom-2 left-[0.55rem] flex items-center gap-[0.3rem] pointer-events-none px-2 py-[0.18rem] bg-black/55 backdrop-blur-sm">
               <svg width="8" height="8" viewBox="0 0 14 14" fill="var(--accent-light)">
                 <polygon points="3,1 13,7 3,13" />
               </svg>
@@ -60,14 +43,9 @@ function AlbumCard({ w }: { w: Work }) {
           )}
 
           {/* hover overlay: 大きな再生ボタン */}
-          <div
-            className="card-hover-overlay absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none transition-opacity duration-200"
-            style={{ background: "rgba(0,0,0,0.45)", opacity: 0 }}
-          >
-            <div className="w-11 h-11 rounded-full flex items-center justify-center"
-              style={{ border: "1.5px solid rgba(255,255,255,0.75)" }}
-            >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="#fff" style={{ marginLeft: "2px" }}>
+          <div className="card-hover-overlay absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none transition-opacity duration-200 bg-black/45 opacity-0">
+            <div className="w-11 h-11 rounded-full flex items-center justify-center border-[1.5px] border-white/75">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="#fff" className="ml-0.5">
                 <polygon points="3,1 13,7 3,13" />
               </svg>
             </div>
@@ -76,9 +54,7 @@ function AlbumCard({ w }: { w: Work }) {
         </div>
 
         {/* info */}
-        <div className="card-info flex-1 flex flex-col gap-[0.2rem] min-w-0"
-          style={{ padding: "0.75rem 1rem 0.85rem" }}
-        >
+        <div className="card-info flex-1 flex flex-col gap-[0.2rem] min-w-0 pt-3 px-4 pb-[0.85rem]">
           <div className="text-[0.55rem] tracking-[0.15em] text-fg-muted">
             {w.event}
           </div>
@@ -127,7 +103,7 @@ export default function Discography() {
     >
       <div className="max-w-[960px] mx-auto">
         <div className="flex items-center justify-between mb-10">
-          <span className="section-label" style={{ marginBottom: 0 }}>Discography</span>
+          <span className="section-label mb-0">Discography</span>
           <button
             onClick={handleShuffle}
             title="シャッフル再生"
