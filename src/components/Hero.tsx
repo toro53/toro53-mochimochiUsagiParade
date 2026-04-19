@@ -262,9 +262,25 @@ export default function Hero() {
           <div className="flex-1 h-px bg-border" />
         </div>
 
-        {/* carousel */}
-        <div className="mb-8">
-          <a href={slides[current].href} target="_blank" rel="noopener noreferrer" className="block">
+        {/* carousel — 前後のジャケットを左右に表示 */}
+        <div className="flex items-center gap-4 mb-8 max-sm:gap-2">
+
+          {/* 前の作品 */}
+          <button
+            onClick={prev}
+            aria-label="前の作品"
+            className="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 opacity-40 hover:opacity-70 transition-opacity max-sm:hidden"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={slides[(current - 1 + slides.length) % slides.length].img}
+              alt="前の作品"
+              className="object-cover block w-[clamp(80px,10vw,120px)] h-[clamp(80px,10vw,120px)] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+            />
+          </button>
+
+          {/* 現在の作品 */}
+          <a href={slides[current].href} target="_blank" rel="noopener noreferrer" className="block flex-shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               key={current}
@@ -274,19 +290,22 @@ export default function Hero() {
               style={{ opacity: imgVisible ? 1 : 0 }}
             />
           </a>
-        </div>
 
-        {/* 左右ナビ — セクション端に固定 */}
-        <button
-          onClick={prev}
-          aria-label="前の作品"
-          className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 border border-white/20 text-white/60 text-xl cursor-pointer transition-[background,color] hover:bg-black/60 hover:text-white backdrop-blur-sm"
-        >‹</button>
-        <button
-          onClick={next}
-          aria-label="次の作品"
-          className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 border border-white/20 text-white/60 text-xl cursor-pointer transition-[background,color] hover:bg-black/60 hover:text-white backdrop-blur-sm"
-        >›</button>
+          {/* 次の作品 */}
+          <button
+            onClick={next}
+            aria-label="次の作品"
+            className="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 opacity-40 hover:opacity-70 transition-opacity max-sm:hidden"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={slides[(current + 1) % slides.length].img}
+              alt="次の作品"
+              className="object-cover block w-[clamp(80px,10vw,120px)] h-[clamp(80px,10vw,120px)] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+            />
+          </button>
+
+        </div>
 
         {/* track info */}
         <div className="mb-[1.8rem] min-h-[3.5rem]">
