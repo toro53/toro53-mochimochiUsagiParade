@@ -263,19 +263,19 @@ export default function Hero() {
         </div>
 
         {/* carousel — 前後のジャケットを左右に表示 */}
-        <div className="flex items-center gap-4 mb-8 max-sm:gap-2">
+        <div className="flex items-center gap-2 mb-8 w-full overflow-hidden justify-center sm:gap-4">
 
-          {/* 前の作品 */}
+          {/* 前の作品 — 外側へのフェード */}
           <button
             onClick={prev}
             aria-label="前の作品"
-            className="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 opacity-40 hover:opacity-70 transition-opacity max-sm:hidden"
+            className="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 opacity-55 hover:opacity-80 transition-opacity [mask-image:linear-gradient(to_right,transparent_0%,black_55%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_55%)]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={slides[(current - 1 + slides.length) % slides.length].img}
               alt="前の作品"
-              className="object-cover block w-[clamp(80px,10vw,120px)] h-[clamp(80px,10vw,120px)] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+              className="object-cover block w-[clamp(60px,13vw,120px)] h-[clamp(60px,13vw,120px)] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
             />
           </button>
 
@@ -286,22 +286,22 @@ export default function Hero() {
               key={current}
               src={slides[current].img}
               alt={slides[current].title}
-              className="object-cover block w-[clamp(220px,30vw,300px)] h-[clamp(220px,30vw,300px)] shadow-[0_28px_72px_rgba(0,0,0,0.65)] transition-opacity duration-[180ms] max-sm:w-[min(200px,52vw)] max-sm:h-[min(200px,52vw)]"
+              className="object-cover block w-[clamp(180px,46vw,300px)] h-[clamp(180px,46vw,300px)] shadow-[0_28px_72px_rgba(0,0,0,0.65)] transition-opacity duration-[180ms] sm:w-[clamp(220px,30vw,300px)] sm:h-[clamp(220px,30vw,300px)]"
               style={{ opacity: imgVisible ? 1 : 0 }}
             />
           </a>
 
-          {/* 次の作品 */}
+          {/* 次の作品 — 外側へのフェード */}
           <button
             onClick={next}
             aria-label="次の作品"
-            className="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 opacity-40 hover:opacity-70 transition-opacity max-sm:hidden"
+            className="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 opacity-55 hover:opacity-80 transition-opacity [mask-image:linear-gradient(to_left,transparent_0%,black_55%)] [-webkit-mask-image:linear-gradient(to_left,transparent_0%,black_55%)]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={slides[(current + 1) % slides.length].img}
               alt="次の作品"
-              className="object-cover block w-[clamp(80px,10vw,120px)] h-[clamp(80px,10vw,120px)] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+              className="object-cover block w-[clamp(60px,13vw,120px)] h-[clamp(60px,13vw,120px)] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
             />
           </button>
 
