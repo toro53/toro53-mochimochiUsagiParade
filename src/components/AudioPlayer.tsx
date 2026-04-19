@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { works } from "@/data/works";
 import AlbumModal from "@/components/AlbumModal";
@@ -174,10 +175,13 @@ export default function AudioPlayer() {
         </div>
       )}
 
-      {/* アルバムモーダル */}
-      {modalOpen && currentWork && (
-        <AlbumModal w={currentWork} onClose={() => setModalOpen(false)} />
-      )}
+      {/* アルバムモーダル — fixed 親の外に Portal でレンダリング */}
+      {modalOpen && currentWork &&
+        createPortal(
+          <AlbumModal w={currentWork} onClose={() => setModalOpen(false)} />,
+          document.body
+        )
+      }
 
       {/* トラック情報 */}
       <div className="player-info">
