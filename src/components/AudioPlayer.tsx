@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePlayer } from "@/context/PlayerContext";
+import { works } from "@/data/works";
+import AlbumModal from "@/components/AlbumModal";
 
 export default function AudioPlayer() {
   const { currentTrack, queue, isPlaying, pause, resume, next, prev, audioRef } =
@@ -9,7 +11,13 @@ export default function AudioPlayer() {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
+  const [modalOpen, setModalOpen] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
+
+  // 現在再生中のアルバムを works から検索
+  const currentWork = currentTrack
+    ? works.find((w) => w.title === currentTrack.albumTitle) ?? null
+    : null;
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -135,10 +143,13 @@ export default function AudioPlayer() {
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} />
 
-      {/* ジャケット */}
+      {/* ジャケット (クリックでモーダル) */}
       {currentTrack.jacket ? (
-        <div
-          className="player-jacket w-[52px] h-[52px] flex-shrink-0 overflow-hidden border border-border"
+        <button
+          className="player-jacket w-[52px] h-[52px] flex-shrink-0 overflow-hidden border border-border p-0 bg-transparent cursor-pointer relative group"
+          onClick={() => currentWork && setModalOpen(true)}
+          aria-label="アルバム詳細を表示"
+          title={currentWork ? "アルバム詳細を表示" : undefined}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -146,7 +157,14 @@ export default function AudioPlayer() {
             alt={currentTrack.albumTitle}
             className="w-full h-full object-cover"
           />
-        </div>
+          {currentWork && (
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="#fff">
+                <polygon points="3,1 13,7 3,13" />
+              </svg>
+            </div>
+          )}
+        </button>
       ) : (
         <div className="player-jacket w-[52px] h-[52px] flex-shrink-0 bg-card border border-border flex items-center justify-center">
           <svg width="18" height="18" viewBox="0 0 20 20" fill="var(--fg-muted)">
@@ -154,6 +172,11 @@ export default function AudioPlayer() {
             <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         </div>
+      )}
+
+      {/* アルバムモーダル */}
+      {modalOpen && currentWork && (
+        <AlbumModal w={currentWork} onClose={() => setModalOpen(false)} />
       )}
 
       {/* トラック情報 */}
