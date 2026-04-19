@@ -85,14 +85,6 @@ const slides = [
     href: "https://torosanshin.booth.pm/items/2898014",
     bgColor: "#10101e",
   },
-  {
-    title: "VOICEROIDとうるさいギター",
-    event: "—",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/2800198/b4fd0b5c-433a-49af-a872-738b85fb065f_base_resized.jpg",
-    audio: "",
-    href: "https://torosanshin.booth.pm/items/2800198",
-    bgColor: "#141414",
-  },
 ];
 
 export default function Hero() {
