@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
+import { flushSync } from "react-dom";
 import { usePlayer } from "@/context/PlayerContext";
 
 // bgColor: ジャケットの雰囲気に合わせた暗い背景色
@@ -148,13 +149,12 @@ export default function Hero() {
       track.style.transform = `translateX(${target}px)`;
 
       const onEnd = (e: TransitionEvent) => {
-        // 子要素のopacityなどのtransitionendがバブルしてくるのを無視
         if (e.target !== track || e.propertyName !== "transform") return;
         track.removeEventListener("transitionend", onEnd);
-        // 瞬時にリセット → インデックス更新後も中央スロットが同じ画像のまま
         track.style.transition = "none";
+        // スナップ前に先に画像を更新 → スナップ後に古い画像が一瞬見えるのを防ぐ
+        flushSync(() => setCurrent(i));
         track.style.transform = `translateX(${baseOffsetRef.current}px)`;
-        setCurrent(i);
         requestAnimationFrame(() => requestAnimationFrame(() => {
           track.style.transition = "";
           animatingRef.current = false;
