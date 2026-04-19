@@ -14,7 +14,7 @@ export const works: Work[] = [
     title: "夏、嘘をついたぜ",
     event: "最新作",
     price: "—",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/7558547/1cdf3950-edfc-42fa-afa3-39fa2061752e_base_resized.jpg",
+    img: "/Music/summer-lies/jacket.jpg",
     href: "https://torosanshin.booth.pm/items/7558547",
     tracks: [
       { title: "夏、嘘をついたぜ。", file: m("summer-lies", "summer-lies.m4a") },
@@ -88,7 +88,7 @@ export const works: Work[] = [
     title: "憑き身に憂",
     event: "M3-2022秋",
     price: "無料",
-    img: "https://booth.pximg.net/c/300x300_a2_g5/79faddcc-0781-49fb-bd28-11cb82dafc14/i/3826662/7bc4c6bc-d243-4b53-9293-055afce514b3_base_resized.jpg",
+    img: "/Music/possessed-melancholy/jacket.jpg",
     href: "https://torosanshin.booth.pm/items/3826662",
     tracks: [
       { title: "憑き身に憂", file: "/Music/possessed-melancholy.m4a" },
