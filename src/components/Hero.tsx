@@ -95,6 +95,7 @@ export default function Hero() {
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.75);
   const [progress, setProgress] = useState(0);
+  const [autoScroll, setAutoScroll] = useState(true);
   const sectionRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -130,6 +131,13 @@ export default function Hero() {
   useEffect(() => {
     applyBg(slides[0].bgColor);
   }, [applyBg]);
+
+  // オートスクロール（再生したら停止）
+  useEffect(() => {
+    if (!autoScroll) return;
+    const timer = setInterval(next, 5000);
+    return () => clearInterval(timer);
+  }, [autoScroll, next]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -213,6 +221,7 @@ export default function Hero() {
       audio.pause();
       setPlaying(false);
     } else {
+      setAutoScroll(false); // 一度再生したらオートスクロール停止
       // グローバルプレイヤーを止めてから再生
       pausePlayer();
       audio.play().then(() => { setPlaying(true); fadeIn(audio, muted ? 0 : volume); }).catch(() => {});
@@ -254,14 +263,8 @@ export default function Hero() {
         </div>
 
         {/* carousel */}
-        <div className="flex items-center gap-8 mb-8 max-sm:gap-3">
-          <button
-            onClick={prev}
-            aria-label="前の作品"
-            className="bg-transparent border-none text-fg-muted text-[2.2rem] cursor-pointer leading-none opacity-55 p-1 transition-opacity hover:opacity-100 flex-shrink-0"
-          >‹</button>
-
-          <a href={slides[current].href} target="_blank" rel="noopener noreferrer" className="block flex-shrink-0">
+        <div className="mb-8">
+          <a href={slides[current].href} target="_blank" rel="noopener noreferrer" className="block">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               key={current}
@@ -271,13 +274,19 @@ export default function Hero() {
               style={{ opacity: imgVisible ? 1 : 0 }}
             />
           </a>
-
-          <button
-            onClick={next}
-            aria-label="次の作品"
-            className="bg-transparent border-none text-fg-muted text-[2.2rem] cursor-pointer leading-none opacity-55 p-1 transition-opacity hover:opacity-100 flex-shrink-0"
-          >›</button>
         </div>
+
+        {/* 左右ナビ — セクション端に固定 */}
+        <button
+          onClick={prev}
+          aria-label="前の作品"
+          className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 border border-white/20 text-white/60 text-xl cursor-pointer transition-[background,color] hover:bg-black/60 hover:text-white backdrop-blur-sm"
+        >‹</button>
+        <button
+          onClick={next}
+          aria-label="次の作品"
+          className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 border border-white/20 text-white/60 text-xl cursor-pointer transition-[background,color] hover:bg-black/60 hover:text-white backdrop-blur-sm"
+        >›</button>
 
         {/* track info */}
         <div className="mb-[1.8rem] min-h-[3.5rem]">
