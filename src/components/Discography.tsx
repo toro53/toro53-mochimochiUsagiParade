@@ -113,7 +113,7 @@ export default function Discography() {
         title: t.title,
         albumTitle: w.title,
         file: t.file,
-        jacket: w.img.startsWith("/") ? w.img : undefined,
+        jacket: w.img,
       }))
     );
     const shuffled = shuffleArray(allTracks);
