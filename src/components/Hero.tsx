@@ -147,7 +147,9 @@ export default function Hero() {
       track.style.transition = "transform 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
       track.style.transform = `translateX(${target}px)`;
 
-      const onEnd = () => {
+      const onEnd = (e: TransitionEvent) => {
+        // 子要素のopacityなどのtransitionendがバブルしてくるのを無視
+        if (e.target !== track || e.propertyName !== "transform") return;
         track.removeEventListener("transitionend", onEnd);
         // 瞬時にリセット → インデックス更新後も中央スロットが同じ画像のまま
         track.style.transition = "none";
