@@ -33,96 +33,33 @@ const linkItems = [
 
 export default function Links() {
   return (
-    <section
-      id="links"
-      style={{
-        padding: "6rem 2rem",
-        background: "var(--bg-dark)",
-        borderTop: "1px solid var(--border)",
-      }}
-    >
-      <div style={{ maxWidth: "780px", margin: "0 auto" }}>
+    <section id="links" className="py-24 px-8 bg-bg-dark border-t border-border">
+      <div className="max-w-[780px] mx-auto">
         <span className="section-label">Links</span>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "1px",
-            border: "1px solid var(--border)",
-            overflow: "hidden",
-          }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-px border border-border overflow-hidden">
           {linkItems.map((item, i) => (
             <a
               key={i}
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="vintage-card"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "1.2rem",
-                padding: "1.5rem 1.8rem",
-                textDecoration: "none",
-                color: "var(--fg)",
-                borderRadius: 0,
-                border: "none",
-                borderBottom: i < linkItems.length - 1 ? "1px solid var(--border)" : "none",
-                transition: "background 0.25s",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "#ede8de";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "var(--card-bg)";
-              }}
+              className={`vintage-card flex items-center gap-[1.2rem] px-[1.8rem] py-6 no-underline text-fg transition-[background] duration-250 hover:bg-[#ede8de] rounded-none border-none ${
+                i < linkItems.length - 1 ? "border-b border-border" : ""
+              }`}
             >
-              <span
-                style={{
-                  fontSize: "1.4rem",
-                  width: "2.5rem",
-                  textAlign: "center",
-                  color: "var(--accent-light)",
-                  flexShrink: 0,
-                }}
-              >
+              <span className="text-[1.4rem] w-10 text-center text-accent-light flex-shrink-0">
                 {item.icon}
               </span>
               <div>
-                <div
-                  style={{
-                    fontSize: "0.65rem",
-                    letterSpacing: "0.18em",
-                    color: "var(--fg-muted)",
-                    marginBottom: "0.2rem",
-                  }}
-                >
+                <div className="text-[0.65rem] tracking-[0.18em] text-fg-muted mb-1">
                   {item.label}
                 </div>
-                <div
-                  style={{
-                    fontSize: "0.88rem",
-                    fontWeight: 700,
-                    marginBottom: "0.2rem",
-                  }}
-                >
+                <div className="text-[0.88rem] font-bold">
                   {item.handle}
                 </div>
-                <div style={{ display: "none" }}>
-                  {item.desc}
-                </div>
               </div>
-              <span
-                style={{
-                  marginLeft: "auto",
-                  fontSize: "0.7rem",
-                  color: "var(--border)",
-                }}
-              >
-                →
-              </span>
+              <span className="ml-auto text-[0.7rem] text-border">→</span>
             </a>
           ))}
         </div>

@@ -31,67 +31,42 @@ export default function About() {
   return (
     <section
       id="about"
-      className="about-section"
-      style={{
-        background: "var(--bg-dark)",
-        borderTop: "1px solid var(--border)",
-      }}
+      className="py-24 px-8 max-sm:py-16 max-sm:px-6 bg-bg-dark border-t border-border"
     >
-      <style>{`
-        .about-section {
-          padding: 6rem 2rem;
-        }
-        .about-grid {
-          max-width: 960px;
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 5rem;
-          align-items: start;
-        }
-        @media (max-width: 640px) {
-          .about-section {
-            padding: 4rem 1.5rem;
-          }
-          .about-grid {
-            grid-template-columns: 1fr;
-            gap: 3rem;
-          }
-        }
-      `}</style>
-      <div className="about-grid">
+      <div className="max-w-[960px] mx-auto grid grid-cols-2 gap-20 items-start max-sm:grid-cols-1 max-sm:gap-12">
+
         {/* About */}
         <div>
           <span className="section-label">About</span>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div className="flex flex-col gap-6">
             {[
               { label: "サークル名", value: "もちもちうさぎパレード" },
               { label: "メンバー", value: "toro4nba / sinra_vansho" },
             ].map((item) => (
-              <div key={item.label} style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
-                <dt style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "var(--fg-muted)", marginBottom: "0.3rem" }}>
+              <div key={item.label} className="border-b border-border pb-4">
+                <dt className="text-[0.6rem] tracking-[0.2em] text-fg-muted mb-1">
                   {item.label}
                 </dt>
-                <dd style={{ fontSize: "0.85rem", color: "var(--fg)", margin: 0 }}>
+                <dd className="text-[0.85rem] text-fg m-0">
                   {item.value}
                 </dd>
               </div>
             ))}
 
-            <div style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
-              <dt style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "var(--fg-muted)", marginBottom: "0.7rem" }}>
+            <div className="border-b border-border pb-4">
+              <dt className="text-[0.6rem] tracking-[0.2em] text-fg-muted mb-[0.7rem]">
                 主な活動
               </dt>
-              <dd style={{ margin: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <dd className="m-0 flex flex-col gap-2">
                 {[
                   { cat: "ライブ", detail: "リアル / VR" },
                   { cat: "即売会", detail: "M3 / ボーマス / メタフェス / MusicVket" },
                 ].map((a) => (
-                  <div key={a.cat} style={{ display: "flex", alignItems: "baseline", gap: "0.75rem" }}>
-                    <span style={{ fontSize: "0.6rem", letterSpacing: "0.12em", color: "var(--accent-light)", border: "1px solid var(--accent-light)", padding: "0.1rem 0.45rem", flexShrink: 0, opacity: 0.8 }}>
+                  <div key={a.cat} className="flex items-baseline gap-3">
+                    <span className="text-[0.6rem] tracking-[0.12em] text-accent-light border border-accent-light px-[0.45rem] py-[0.1rem] flex-shrink-0 opacity-80">
                       {a.cat}
                     </span>
-                    <span style={{ fontSize: "0.8rem", color: "var(--fg)", letterSpacing: "0.04em" }}>
+                    <span className="text-[0.8rem] text-fg tracking-[0.04em]">
                       {a.detail}
                     </span>
                   </div>
@@ -104,37 +79,27 @@ export default function About() {
         {/* Links */}
         <div>
           <span className="section-label">Links</span>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div className="flex flex-col">
             {linkItems.map((item, i) => (
               <a
                 key={i}
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                  padding: "0.9rem 0",
-                  textDecoration: "none",
-                  color: "var(--fg)",
-                  borderBottom: "1px solid var(--border)",
-                  transition: "color 0.2s",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--accent-light)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--fg)"; }}
+                className="flex items-center gap-4 py-[0.9rem] no-underline text-fg border-b border-border transition-colors hover:text-accent-light"
               >
-                <span style={{ fontSize: "1rem", width: "1.5rem", textAlign: "center", color: "var(--accent-light)", flexShrink: 0 }}>
+                <span className="text-base w-6 text-center text-accent-light flex-shrink-0">
                   {item.icon}
                 </span>
-                <span style={{ flex: 1, fontSize: "0.75rem", letterSpacing: "0.18em", color: "var(--fg)" }}>
+                <span className="flex-1 text-[0.75rem] tracking-[0.18em] text-fg">
                   {item.label}
                 </span>
-                <span style={{ flexShrink: 0, fontSize: "0.65rem", color: "var(--border)" }}>→</span>
+                <span className="flex-shrink-0 text-[0.65rem] text-border">→</span>
               </a>
             ))}
           </div>
         </div>
+
       </div>
     </section>
   );

@@ -1,31 +1,10 @@
 export default function Footer() {
   return (
-    <footer
-      style={{
-        padding: "3rem 2rem",
-        background: "var(--bg-dark)",
-        borderTop: "1px solid var(--border)",
-        textAlign: "center",
-      }}
-    >
-      <p
-        style={{
-          fontFamily: "var(--font-fell), serif",
-          fontSize: "0.85rem",
-          letterSpacing: "0.12em",
-          color: "var(--fg-muted)",
-          marginBottom: "0.6rem",
-        }}
-      >
+    <footer className="py-12 px-8 bg-bg-dark border-t border-border text-center">
+      <p className="font-[family-name:var(--font-fell)] text-sm tracking-[0.12em] text-fg-muted mb-2.5">
         Mochimochi Usagi Parade
       </p>
-      <p
-        style={{
-          fontSize: "0.6rem",
-          letterSpacing: "0.15em",
-          color: "var(--border)",
-        }}
-      >
+      <p className="text-[0.6rem] tracking-[0.15em] text-border">
         © 2024 もちもちうさぎパレード. All Rights Reserved.
       </p>
     </footer>

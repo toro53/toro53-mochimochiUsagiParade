@@ -20,69 +20,26 @@ export default function Nav() {
 
   return (
     <header
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        background: scrolled ? "var(--nav-bg)" : "transparent",
-        backdropFilter: scrolled ? "blur(8px)" : "none",
-        borderBottom: scrolled ? "1px solid var(--border)" : "none",
-        transition: "background 0.4s, border-color 0.4s",
-        padding: "0.7rem 1.5rem",
-      }}
+      className={`fixed top-0 left-0 right-0 z-[100] px-6 py-[0.7rem] transition-[background,backdrop-filter,border-color] duration-400 ${
+        scrolled
+          ? "bg-nav backdrop-blur-[8px] border-b border-border"
+          : "bg-transparent"
+      }`}
     >
-      <style>{`
-        .nav-inner {
-          max-width: 960px;
-          margin: 0 auto;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        @media (max-width: 640px) {
-          .nav-inner {
-            flex-direction: column;
-            align-items: center;
-            gap: 0.45rem;
-          }
-        }
-      `}</style>
-      <div className="nav-inner">
+      <div className="max-w-[960px] mx-auto flex items-center justify-between max-sm:flex-col max-sm:items-center max-sm:gap-[0.45rem]">
         <a
           href="#hero"
-          style={{
-            fontFamily: "var(--font-fell), serif",
-            fontSize: "clamp(0.8rem, 2.5vw, 1rem)",
-            letterSpacing: "0.05em",
-            color: "var(--fg)",
-            textDecoration: "none",
-            opacity: 0.85,
-            whiteSpace: "nowrap",
-          }}
+          className="font-[family-name:var(--font-fell)] text-[clamp(0.8rem,2.5vw,1rem)] tracking-[0.05em] text-fg no-underline opacity-85 whitespace-nowrap"
         >
           もちもちうさぎパレード
         </a>
 
-        <nav style={{ display: "flex", gap: "clamp(1.2rem, 3vw, 2rem)", flexShrink: 0 }}>
+        <nav className="flex gap-[clamp(1.2rem,3vw,2rem)] flex-shrink-0">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              style={{
-                fontSize: "0.65rem",
-                letterSpacing: "0.22em",
-                color: "var(--fg-muted)",
-                textDecoration: "none",
-                transition: "color 0.2s",
-              }}
-              onMouseEnter={(e) =>
-                ((e.target as HTMLElement).style.color = "var(--fg)")
-              }
-              onMouseLeave={(e) =>
-                ((e.target as HTMLElement).style.color = "var(--fg-muted)")
-              }
+              className="text-[0.65rem] tracking-[0.22em] text-fg-muted no-underline transition-colors hover:text-fg"
             >
               {l.label}
             </a>

@@ -246,71 +246,41 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="hero"
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        padding: "6rem 2rem 4rem",
-        position: "relative",
-        backgroundColor: slides[0].bgColor,
-        transition: "background-color 1.4s ease",
-        overflow: "hidden",
-      }}
+      className="min-h-screen flex flex-col items-center justify-center text-center px-8 pt-24 pb-16 relative overflow-hidden"
+      style={{ backgroundColor: slides[0].bgColor, transition: "background-color 1.4s ease" }}
     >
-      <style>{`
-        .carousel-row { display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; }
-        .carousel-img { width: clamp(220px, 30vw, 300px); height: clamp(220px, 30vw, 300px); }
-        .hero-controls { width: min(260px, 80vw); }
-        @media (max-width: 640px) {
-          .carousel-row { gap: 0.75rem; }
-          .carousel-img { width: min(200px, 52vw); height: min(200px, 52vw); }
-          .hero-volume-slider { display: none; }
-        }
-      `}</style>
-
       {/* radial vignette */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "radial-gradient(ellipse at 50% 40%, transparent 25%, rgba(0,0,0,0.62) 100%)",
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
+      <div className="absolute inset-0 pointer-events-none z-0"
+        style={{ background: "radial-gradient(ellipse at 50% 40%, transparent 25%, rgba(0,0,0,0.62) 100%)" }}
       />
 
-      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+      <div className="relative z-10 flex flex-col items-center w-full">
 
         {/* label */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "3rem", width: "100%", maxWidth: "380px" }}>
-          <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
-          <span style={{ fontSize: "0.6rem", letterSpacing: "0.3em", color: "var(--fg-muted)" }}>Mochimochi Usagi Parade</span>
-          <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+        <div className="flex items-center gap-4 mb-12 w-full max-w-[380px]">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-[0.6rem] tracking-[0.3em] text-fg-muted">Mochimochi Usagi Parade</span>
+          <div className="flex-1 h-px bg-border" />
         </div>
 
         {/* carousel */}
-        <div className="carousel-row">
+        <div className="flex items-center gap-8 mb-8 max-sm:gap-3">
           <button
             onClick={prev}
             aria-label="前の作品"
-            style={{ background: "none", border: "none", color: "var(--fg-muted)", fontSize: "2.2rem", cursor: "pointer", lineHeight: 1, opacity: 0.55, padding: "0.25rem", transition: "opacity 0.2s", flexShrink: 0 }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.55")}
+            className="bg-transparent border-none text-fg-muted text-[2.2rem] cursor-pointer leading-none opacity-55 p-1 transition-opacity hover:opacity-100 flex-shrink-0"
           >‹</button>
 
-          <a href={slides[current].href} target="_blank" rel="noopener noreferrer" style={{ display: "block", flexShrink: 0 }}>
+          <a href={slides[current].href} target="_blank" rel="noopener noreferrer" className="block flex-shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               key={current}
               src={slides[current].img}
               alt={slides[current].title}
-              className="carousel-img"
+              className="object-cover block max-sm:w-[min(200px,52vw)] max-sm:h-[min(200px,52vw)]"
               style={{
-                objectFit: "cover",
-                display: "block",
+                width: "clamp(220px, 30vw, 300px)",
+                height: "clamp(220px, 30vw, 300px)",
                 boxShadow: "0 28px 72px rgba(0,0,0,0.65)",
                 opacity: imgVisible ? 1 : 0,
                 transition: "opacity 0.18s ease",
@@ -321,40 +291,27 @@ export default function Hero() {
           <button
             onClick={next}
             aria-label="次の作品"
-            style={{ background: "none", border: "none", color: "var(--fg-muted)", fontSize: "2.2rem", cursor: "pointer", lineHeight: 1, opacity: 0.55, padding: "0.25rem", transition: "opacity 0.2s", flexShrink: 0 }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.55")}
+            className="bg-transparent border-none text-fg-muted text-[2.2rem] cursor-pointer leading-none opacity-55 p-1 transition-opacity hover:opacity-100 flex-shrink-0"
           >›</button>
         </div>
 
         {/* track info */}
-        <div style={{ marginBottom: "1.8rem", minHeight: "3.5rem" }}>
-          <div style={{ fontSize: "0.6rem", letterSpacing: "0.22em", color: "var(--fg-muted)", marginBottom: "0.45rem" }}>
+        <div className="mb-[1.8rem] min-h-[3.5rem]">
+          <div className="text-[0.6rem] tracking-[0.22em] text-fg-muted mb-[0.45rem]">
             {slides[current].event}
           </div>
-          <div style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--fg)", letterSpacing: "0.08em" }}>
+          <div className="text-[1.25rem] font-bold text-fg tracking-[0.08em]">
             {slides[current].title}
           </div>
         </div>
 
         {/* audio controls */}
-        <div className="hero-controls" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.9rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <div className="flex flex-col items-center gap-[0.9rem] w-[min(260px,80vw)]">
+          <div className="flex items-center gap-4">
             <button
               onClick={togglePlay}
               aria-label={playing ? "一時停止" : "再生"}
-              style={{
-                background: "none",
-                border: "1px solid var(--accent-light)",
-                color: "var(--accent-light)",
-                width: "2.8rem", height: "2.8rem",
-                borderRadius: "50%",
-                cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "background 0.2s, color 0.2s",
-              }}
-              onMouseEnter={(e) => { const el = e.currentTarget; el.style.background = "var(--accent-light)"; el.style.color = "var(--bg)"; }}
-              onMouseLeave={(e) => { const el = e.currentTarget; el.style.background = "none"; el.style.color = "var(--accent-light)"; }}
+              className="bg-transparent border border-accent-light text-accent-light w-[2.8rem] h-[2.8rem] rounded-full cursor-pointer flex items-center justify-center transition-[background,color] hover:bg-accent-light hover:text-bg"
             >
               {playing ? (
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
@@ -369,19 +326,11 @@ export default function Hero() {
             </button>
 
             {/* mute button + volume slider */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+            <div className="flex items-center gap-[0.4rem]">
               <button
                 onClick={toggleMute}
                 aria-label={muted ? "ミュート解除" : "ミュート"}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: muted ? "var(--border)" : "var(--accent-light)",
-                  cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  padding: "0.2rem",
-                  flexShrink: 0,
-                }}
+                className={`bg-transparent border-none cursor-pointer flex items-center justify-center p-[0.2rem] flex-shrink-0 ${muted ? "text-border" : "text-accent-light"}`}
               >
                 {muted ? (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -401,36 +350,33 @@ export default function Hero() {
                 value={muted ? 0 : volume}
                 onChange={changeVolume}
                 aria-label="音量"
-                className="hero-volume-slider"
-                style={{ width: "72px", accentColor: "var(--accent-light)", cursor: "pointer" }}
+                className="w-[72px] accent-accent-light cursor-pointer max-sm:hidden"
               />
-
             </div>
           </div>
 
           <div
             onClick={seek}
-            style={{ width: "100%", height: "2px", background: "var(--border)", cursor: "pointer", position: "relative" }}
+            className="w-full h-[2px] bg-border cursor-pointer relative"
           >
-            <div style={{ width: `${progress}%`, height: "100%", background: "var(--accent-light)", transition: "width 0.25s linear" }} />
+            <div
+              className="h-full bg-accent-light transition-[width] duration-[0.25s] linear"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
 
         {/* dots */}
-        <div style={{ display: "flex", gap: "0.45rem", marginTop: "2.5rem", flexWrap: "wrap", justifyContent: "center", maxWidth: "320px" }}>
+        <div className="flex gap-[0.45rem] mt-10 flex-wrap justify-center max-w-[320px]">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
               aria-label={`スライド ${i + 1}`}
+              className="h-[0.4rem] border-none cursor-pointer p-0 transition-[width,background] duration-300"
               style={{
                 width: i === current ? "1.4rem" : "0.4rem",
-                height: "0.4rem",
                 background: i === current ? "var(--accent-light)" : "var(--border)",
-                border: "none",
-                cursor: "pointer",
-                padding: 0,
-                transition: "width 0.3s ease, background 0.3s ease",
               }}
             />
           ))}
@@ -440,9 +386,11 @@ export default function Hero() {
       <audio ref={audioRef} />
 
       {/* scroll indicator */}
-      <div style={{ position: "absolute", bottom: "2.5rem", left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.4rem", opacity: 0.4 }}>
-        <div style={{ width: "1px", height: "40px", background: "var(--fg-muted)", animation: "scrollLine 1.6s ease-in-out infinite" }} />
-        <style>{`@keyframes scrollLine { 0%,100% { opacity:1; transform:scaleY(1); transform-origin:top; } 50% { opacity:0.3; transform:scaleY(0.5); transform-origin:top; } }`}</style>
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-[0.4rem] opacity-40">
+        <div
+          className="w-px h-10 bg-fg-muted"
+          style={{ animation: "scrollLine 1.6s ease-in-out infinite" }}
+        />
       </div>
     </section>
   );

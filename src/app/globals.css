@@ -16,6 +16,16 @@
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--fg);
+  /* デザイントークンを Tailwind カラーユーティリティとして公開 */
+  --color-bg: var(--bg);
+  --color-bg-dark: var(--bg-dark);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-border: var(--border);
+  --color-card: var(--card-bg);
+  --color-nav: var(--nav-bg);
 }
 
 * {
@@ -69,9 +79,415 @@ h1, h2, h3 {
   overflow: hidden;
 }
 
-
 /* sepia tint for album placeholder art */
 .album-art {
   background: linear-gradient(135deg, #c9b8a0, #a89070);
   filter: sepia(0.3) saturate(0.8);
+}
+
+/* ── Hero animations ── */
+@keyframes scrollLine {
+  0%, 100% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+  50%       { opacity: 0.3; transform: scaleY(0.5); transform-origin: top; }
+}
+
+/* ── AudioPlayer ── */
+.player-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(14, 24, 30, 0.97);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.player-info {
+  min-width: 0;
+  flex: 1 1 0;
+  max-width: 200px;
+}
+.player-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player-album {
+  font-size: 0.6rem;
+  color: var(--fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.player-seek-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.player-volume {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.player-mobile-bottom {
+  display: none;
+}
+@media (max-width: 640px) {
+  .player-bar {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 0.7rem;
+    row-gap: 0.4rem;
+    padding: 0.6rem 0.85rem 0.65rem;
+  }
+  .player-jacket { grid-column: 1; grid-row: 1 / 3; align-self: center; }
+  .player-info   { grid-column: 2; grid-row: 1; max-width: none; }
+  .player-title  { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.3; font-size: 0.8rem; }
+  .player-album  { display: none; }
+  .player-controls-row { display: none !important; }
+  .player-seek-row     { display: none !important; }
+  .player-volume       { display: none !important; }
+  .player-mobile-bottom {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+}
+
+/* ── LiveVideos ── */
+.live-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+@media (max-width: 640px) {
+  .live-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+.live-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+  cursor: pointer;
+  display: block;
+  border: none;
+  padding: 0;
+  width: 100%;
+}
+.live-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease, transform 0.4s ease;
+  opacity: 0.72;
+}
+.live-thumb:hover img { opacity: 0.5; transform: scale(1.03); }
+.live-play-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.live-play-icon svg {
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,0.7));
+  transition: transform 0.2s ease;
+}
+.live-thumb:hover .live-play-icon svg { transform: scale(1.12); }
+
+/* modal */
+@keyframes liveModalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes liveModalScaleIn {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.live-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0,0,0,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: liveModalFadeIn 0.18s ease;
+}
+.live-modal-inner {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  animation: liveModalScaleIn 0.2s ease;
+}
+.live-modal-embed {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+.live-modal-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.live-modal-close {
+  position: absolute;
+  top: -2.4rem;
+  right: 0;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
+  transition: color 0.2s;
+}
+.live-modal-close:hover { color: #fff; }
+
+/* ── Discography ── */
+.disc-grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+@media (max-width: 640px) {
+  .disc-grid { grid-template-columns: repeat(2, 1fr); }
+  .card-info  { padding: 0.6rem 0.75rem 0.75rem !important; }
+}
+.vintage-card:hover .card-hover-overlay { opacity: 1 !important; }
+
+@keyframes discFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes discScaleIn {
+  from { transform: translateY(12px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+.disc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(10, 18, 22, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  animation: discFadeIn 0.2s ease;
+}
+.disc-modal-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  max-height: 88vh;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  animation: discScaleIn 0.22s cubic-bezier(0.22,1,0.36,1);
+  overflow: hidden;
+}
+.disc-modal-jacket {
+  position: relative;
+  overflow: hidden;
+  background: #0d1a20;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+}
+.disc-modal-jacket img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: sepia(0.08) saturate(0.95);
+}
+.disc-modal-jacket::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent 60%, rgba(22, 32, 40, 0.55) 100%);
+  pointer-events: none;
+}
+.disc-modal-info {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 1.75rem 1.75rem 1.5rem;
+  overflow-y: auto;
+}
+.disc-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--fg-muted);
+  cursor: pointer;
+  padding: 0.3rem;
+  line-height: 0;
+  transition: color 0.15s;
+}
+.disc-modal-close:hover { color: var(--fg); }
+.disc-modal-meta {
+  margin-bottom: 1.4rem;
+  padding-right: 1.5rem;
+}
+.disc-modal-event {
+  display: inline-block;
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  color: var(--accent-light);
+  border: 1px solid var(--accent-light);
+  padding: 0.12rem 0.5rem;
+  margin-bottom: 0.65rem;
+  opacity: 0.75;
+}
+.disc-modal-title {
+  font-size: clamp(1.05rem, 2.8vw, 1.4rem);
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.35;
+  margin: 0 0 0.4rem;
+  letter-spacing: 0.04em;
+}
+.disc-modal-price {
+  font-size: 0.62rem;
+  color: var(--fg-muted);
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+.disc-modal-tracks {
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+.disc-modal-track-label {
+  font-size: 0.48rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 0.55rem;
+  opacity: 0.7;
+}
+.disc-modal-tracks ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.disc-modal-tracks li button {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.42rem 0.5rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+  border-radius: 2px;
+}
+.disc-modal-tracks li button:hover { background: rgba(255,255,255,0.04); }
+.disc-modal-tracks li.active button  { background: rgba(58,170,196,0.08); }
+.track-num {
+  font-size: 0.52rem;
+  letter-spacing: 0.05em;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  width: 1.4rem;
+}
+.disc-modal-tracks li.active .track-num  { color: var(--accent); }
+.track-title {
+  font-size: 0.75rem;
+  color: var(--fg);
+  flex: 1;
+  line-height: 1.5;
+}
+.disc-modal-tracks li.active .track-title { color: var(--accent); font-weight: 600; }
+.track-icon {
+  color: var(--fg-muted);
+  flex-shrink: 0;
+  line-height: 0;
+  opacity: 0.5;
+}
+.disc-modal-tracks li.active .track-icon { color: var(--accent); opacity: 1; }
+.disc-modal-actions {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.disc-modal-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.disc-modal-play-btn:hover { background: var(--accent); color: #fff; }
+.disc-modal-booth-link {
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  color: var(--fg-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+  margin-left: auto;
+}
+.disc-modal-booth-link:hover { color: var(--fg); }
+
+@media (max-width: 640px) {
+  .disc-modal-inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    max-height: 92vh;
+  }
+  .disc-modal-jacket {
+    width: 100%;
+    height: min(calc(100vw - 2.5rem), 45vh);
+    max-height: unset;
+    aspect-ratio: unset;
+  }
+  .disc-modal-jacket img { object-fit: contain; }
+  .disc-modal-jacket::after {
+    background: linear-gradient(to bottom, transparent 60%, rgba(22, 32, 40, 0.55) 100%);
+  }
+  .disc-modal-info    { padding: 1.25rem; }
+  .disc-modal-meta    { margin-bottom: 1rem; }
+  .disc-modal-track-label { display: none; }
 }

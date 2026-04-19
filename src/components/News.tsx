@@ -37,37 +37,23 @@ export default function News() {
   const visible = expanded ? newsItems : newsItems.slice(0, INITIAL_COUNT);
 
   return (
-    <section
-      id="news"
-      style={{
-        padding: "6rem 2rem",
-        background: "var(--bg)",
-        borderTop: "1px solid var(--border)",
-      }}
-    >
-      <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+    <section id="news" className="py-24 px-8 bg-bg border-t border-border">
+      <div className="max-w-[960px] mx-auto">
         <span className="section-label">News &amp; Updates</span>
 
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div className="flex flex-col">
           {visible.map((item, i) => (
             <article
               key={i}
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: "0.9rem",
-                padding: "0.75rem 0",
-                borderBottom: "1px solid var(--border)",
-                flexWrap: "wrap",
-              }}
+              className="flex items-baseline gap-[0.9rem] py-3 border-b border-border flex-wrap"
             >
-              <time style={{ fontSize: "0.65rem", letterSpacing: "0.06em", color: "var(--fg-muted)", flexShrink: 0 }}>
+              <time className="text-[0.65rem] tracking-[0.06em] text-fg-muted flex-shrink-0">
                 {item.date}
               </time>
-              <span style={{ fontSize: "0.55rem", letterSpacing: "0.1em", border: "1px solid var(--border)", color: "var(--fg-muted)", padding: "0.1rem 0", flexShrink: 0, width: "4.5rem", textAlign: "center", display: "inline-block" }}>
+              <span className="text-[0.55rem] tracking-[0.1em] border border-border text-fg-muted py-[0.1rem] flex-shrink-0 w-[4.5rem] text-center inline-block">
                 {item.tag}
               </span>
-              <p style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", margin: 0, lineHeight: 1.5 }}>
+              <p className="text-[0.85rem] font-bold text-fg m-0 leading-relaxed">
                 {item.title}
               </p>
             </article>
@@ -77,25 +63,7 @@ export default function News() {
         {newsItems.length > INITIAL_COUNT && (
           <button
             onClick={() => setExpanded((v) => !v)}
-            style={{
-              marginTop: "1.5rem",
-              background: "none",
-              border: "1px solid var(--border)",
-              color: "var(--fg-muted)",
-              fontSize: "0.65rem",
-              letterSpacing: "0.2em",
-              padding: "0.5rem 1.4rem",
-              cursor: "pointer",
-              transition: "border-color 0.2s, color 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--fg)";
-              (e.currentTarget as HTMLElement).style.color = "var(--fg)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
-              (e.currentTarget as HTMLElement).style.color = "var(--fg-muted)";
-            }}
+            className="mt-6 bg-transparent border border-border text-fg-muted text-[0.65rem] tracking-[0.2em] px-[1.4rem] py-2 cursor-pointer transition-colors hover:border-fg hover:text-fg"
           >
             {expanded ? "閉じる" : "もっと見る"}
           </button>

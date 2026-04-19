@@ -285,8 +285,7 @@ function AlbumCard({ w }: { w: Work }) {
   return (
     <>
       <div
-        className="vintage-card"
-        style={{ display: "flex", flexDirection: "column", cursor: "pointer" }}
+        className="vintage-card flex flex-col cursor-pointer"
         onClick={() => setModalOpen(true)}
         role="button"
         tabIndex={0}
@@ -295,28 +294,15 @@ function AlbumCard({ w }: { w: Work }) {
       >
         {/* jacket */}
         <div
-          className="card-jacket"
-          style={{
-            width: "100%",
-            aspectRatio: "1 / 1",
-            overflow: "hidden",
-            position: "relative",
-            background: "#1a2e38",
-            flexShrink: 0,
-          }}
+          className="card-jacket w-full overflow-hidden relative flex-shrink-0"
+          style={{ aspectRatio: "1 / 1", background: "#1a2e38" }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={w.img}
             alt={w.title}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-              filter: "sepia(0.15) saturate(0.9)",
-              transition: "transform 0.4s ease, filter 0.4s ease",
-            }}
+            className="w-full h-full object-cover block transition-[transform,filter] duration-400"
+            style={{ filter: "sepia(0.15) saturate(0.9)" }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLImageElement).style.transform = "scale(1.04)";
               (e.currentTarget as HTMLImageElement).style.filter = "sepia(0) saturate(1)";
@@ -327,33 +313,18 @@ function AlbumCard({ w }: { w: Work }) {
             }}
           />
           <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.25) 100%)",
-              pointerEvents: "none",
-            }}
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.25) 100%)" }}
           />
           {/* 常時表示: トラック数バッジ */}
           {w.tracks.length > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                bottom: "0.5rem",
-                left: "0.55rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.3rem",
-                background: "rgba(0,0,0,0.55)",
-                backdropFilter: "blur(4px)",
-                padding: "0.18rem 0.5rem",
-                pointerEvents: "none",
-              }}
+            <div className="absolute bottom-2 left-[0.55rem] flex items-center gap-[0.3rem] pointer-events-none px-2 py-[0.18rem]"
+              style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
             >
               <svg width="8" height="8" viewBox="0 0 14 14" fill="var(--accent-light)">
                 <polygon points="3,1 13,7 3,13" />
               </svg>
-              <span style={{ fontSize: "0.48rem", letterSpacing: "0.1em", color: "var(--fg)", lineHeight: 1 }}>
+              <span className="text-[0.48rem] tracking-[0.1em] text-fg leading-none">
                 {w.tracks.length} tracks
               </span>
             </div>
@@ -361,47 +332,28 @@ function AlbumCard({ w }: { w: Work }) {
 
           {/* hover overlay: 大きな再生ボタン */}
           <div
-            className="card-hover-overlay"
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.5rem",
-              background: "rgba(0,0,0,0.45)",
-              opacity: 0,
-              transition: "opacity 0.22s",
-              pointerEvents: "none",
-            }}
+            className="card-hover-overlay absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none transition-opacity duration-200"
+            style={{ background: "rgba(0,0,0,0.45)", opacity: 0 }}
           >
-            <div style={{
-              width: "44px",
-              height: "44px",
-              borderRadius: "50%",
-              border: "1.5px solid rgba(255,255,255,0.75)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
+            <div className="w-11 h-11 rounded-full flex items-center justify-center"
+              style={{ border: "1.5px solid rgba(255,255,255,0.75)" }}
+            >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="#fff" style={{ marginLeft: "2px" }}>
                 <polygon points="3,1 13,7 3,13" />
               </svg>
             </div>
-            <span style={{ fontSize: "0.48rem", letterSpacing: "0.22em", color: "rgba(255,255,255,0.85)" }}>LISTEN</span>
+            <span className="text-[0.48rem] tracking-[0.22em] text-white/85">LISTEN</span>
           </div>
         </div>
 
         {/* info */}
-        <div
-          className="card-info"
-          style={{ padding: "0.75rem 1rem 0.85rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.2rem", minWidth: 0 }}
+        <div className="card-info px-4 py-[0.75rem_1rem_0.85rem] flex-1 flex flex-col gap-[0.2rem] min-w-0"
+          style={{ padding: "0.75rem 1rem 0.85rem" }}
         >
-          <div style={{ fontSize: "0.55rem", letterSpacing: "0.15em", color: "var(--fg-muted)" }}>
+          <div className="text-[0.55rem] tracking-[0.15em] text-fg-muted">
             {w.event}
           </div>
-          <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--fg)", lineHeight: 1.4, margin: 0 }}>
+          <h3 className="text-[0.85rem] font-bold text-fg leading-[1.4] m-0">
             {w.title}
           </h3>
         </div>
@@ -442,326 +394,16 @@ export default function Discography() {
   return (
     <section
       id="discography"
-      style={{
-        padding: "6rem 2rem",
-        background: "var(--bg)",
-        borderTop: "1px solid var(--border)",
-        borderBottom: "1px solid var(--border)",
-      }}
+      className="py-24 px-8 bg-bg border-t border-b border-border"
     >
-      <style>{`
-        /* ── グリッド ── */
-        .disc-grid {
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        }
-        .vintage-card:hover .card-hover-overlay {
-          opacity: 1 !important;
-        }
-
-        /* ── モーダル オーバーレイ ── */
-        .disc-modal-overlay {
-          position: fixed;
-          inset: 0;
-          z-index: 2000;
-          background: rgba(10, 18, 22, 0.88);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 1.25rem;
-          animation: discFadeIn 0.2s ease;
-        }
-        @keyframes discFadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-
-        /* ── モーダル本体 ── */
-        .disc-modal-inner {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          align-items: center;
-          width: 100%;
-          max-width: 800px;
-          max-height: 88vh;
-          background: var(--bg-dark);
-          border: 1px solid var(--border);
-          animation: discScaleIn 0.22s cubic-bezier(0.22,1,0.36,1);
-          overflow: hidden;
-        }
-        @keyframes discScaleIn {
-          from { transform: translateY(12px) scale(0.97); opacity: 0; }
-          to   { transform: translateY(0)    scale(1);    opacity: 1; }
-        }
-
-        /* ── ジャケット ── */
-        .disc-modal-jacket {
-          position: relative;
-          overflow: hidden;
-          background: #0d1a20;
-          aspect-ratio: 1 / 1;
-          width: 100%;
-        }
-        .disc-modal-jacket img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-          filter: sepia(0.08) saturate(0.95);
-        }
-        .disc-modal-jacket::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to right,
-            transparent 60%,
-            rgba(22, 32, 40, 0.55) 100%
-          );
-          pointer-events: none;
-        }
-
-        /* ── 情報パネル ── */
-        .disc-modal-info {
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          align-self: stretch;
-          padding: 1.75rem 1.75rem 1.5rem;
-          overflow-y: auto;
-          gap: 0;
-        }
-
-        /* 閉じるボタン */
-        .disc-modal-close {
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-          background: none;
-          border: none;
-          color: var(--fg-muted);
-          cursor: pointer;
-          padding: 0.3rem;
-          line-height: 0;
-          transition: color 0.15s;
-        }
-        .disc-modal-close:hover { color: var(--fg); }
-
-        /* メタ情報 */
-        .disc-modal-meta {
-          margin-bottom: 1.4rem;
-          padding-right: 1.5rem; /* close button との重なり防止 */
-        }
-        .disc-modal-event {
-          display: inline-block;
-          font-size: 0.52rem;
-          letter-spacing: 0.2em;
-          color: var(--accent-light);
-          border: 1px solid var(--accent-light);
-          padding: 0.12rem 0.5rem;
-          margin-bottom: 0.65rem;
-          opacity: 0.75;
-        }
-        .disc-modal-title {
-          font-size: clamp(1.05rem, 2.8vw, 1.4rem);
-          font-weight: 700;
-          color: var(--fg);
-          line-height: 1.35;
-          margin: 0 0 0.4rem;
-          letter-spacing: 0.04em;
-        }
-        .disc-modal-price {
-          font-size: 0.62rem;
-          color: var(--fg-muted);
-          letter-spacing: 0.08em;
-          margin: 0;
-        }
-
-        /* トラックリスト */
-        .disc-modal-tracks {
-          border-top: 1px solid var(--border);
-          padding-top: 1rem;
-          margin-bottom: 1.25rem;
-          flex: 1;
-        }
-        .disc-modal-track-label {
-          font-size: 0.48rem;
-          letter-spacing: 0.28em;
-          text-transform: uppercase;
-          color: var(--fg-muted);
-          margin-bottom: 0.55rem;
-          opacity: 0.7;
-        }
-        .disc-modal-tracks ol {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          display: flex;
-          flex-direction: column;
-        }
-        .disc-modal-tracks li button {
-          width: 100%;
-          background: none;
-          border: none;
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          padding: 0.42rem 0.5rem;
-          cursor: pointer;
-          text-align: left;
-          transition: background 0.12s;
-          border-radius: 2px;
-        }
-        .disc-modal-tracks li button:hover {
-          background: rgba(255,255,255,0.04);
-        }
-        .disc-modal-tracks li.active button {
-          background: rgba(58,170,196,0.08);
-        }
-        .track-num {
-          font-size: 0.52rem;
-          letter-spacing: 0.05em;
-          color: var(--fg-muted);
-          font-variant-numeric: tabular-nums;
-          flex-shrink: 0;
-          width: 1.4rem;
-        }
-        .disc-modal-tracks li.active .track-num {
-          color: var(--accent);
-        }
-        .track-title {
-          font-size: 0.75rem;
-          color: var(--fg);
-          flex: 1;
-          line-height: 1.5;
-        }
-        .disc-modal-tracks li.active .track-title {
-          color: var(--accent);
-          font-weight: 600;
-        }
-        .track-icon {
-          color: var(--fg-muted);
-          flex-shrink: 0;
-          line-height: 0;
-          opacity: 0.5;
-        }
-        .disc-modal-tracks li.active .track-icon {
-          color: var(--accent);
-          opacity: 1;
-        }
-
-        /* アクションエリア */
-        .disc-modal-actions {
-          margin-top: auto;
-          border-top: 1px solid var(--border);
-          padding-top: 1.1rem;
-          display: flex;
-          align-items: center;
-          gap: 1.25rem;
-        }
-        .disc-modal-play-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          background: none;
-          border: 1px solid var(--accent);
-          color: var(--accent);
-          font-size: 0.6rem;
-          letter-spacing: 0.18em;
-          padding: 0.5rem 1.1rem;
-          cursor: pointer;
-          transition: background 0.15s, color 0.15s;
-        }
-        .disc-modal-play-btn:hover {
-          background: var(--accent);
-          color: #fff;
-        }
-        .disc-modal-booth-link {
-          font-size: 0.58rem;
-          letter-spacing: 0.16em;
-          color: var(--fg-muted);
-          text-decoration: none;
-          transition: color 0.15s;
-          margin-left: auto;
-        }
-        .disc-modal-booth-link:hover { color: var(--fg); }
-
-        /* ── モバイル ── */
-        @media (max-width: 640px) {
-          .disc-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .vintage-card {
-            flex-direction: column !important;
-          }
-          .card-jacket {
-            width: 100% !important;
-            aspect-ratio: 1 / 1;
-          }
-          .card-info {
-            padding: 0.6rem 0.75rem 0.75rem !important;
-          }
-          .disc-modal-inner {
-            grid-template-columns: 1fr;
-            grid-template-rows: auto 1fr;
-            max-height: 92vh;
-          }
-          .disc-modal-jacket {
-            width: 100%;
-            /* overlay padding 1.25rem × 2 = 2.5rem なので width = 100vw - 2.5rem */
-            height: min(calc(100vw - 2.5rem), 45vh);
-            max-height: unset;
-          }
-          .disc-modal-jacket img {
-            object-fit: contain;
-          }
-          .disc-modal-jacket::after {
-            background: linear-gradient(
-              to bottom,
-              transparent 60%,
-              rgba(22, 32, 40, 0.55) 100%
-            );
-          }
-          .disc-modal-info {
-            padding: 1.25rem 1.25rem 1.25rem;
-          }
-          .disc-modal-meta {
-            margin-bottom: 1rem;
-          }
-          .disc-modal-track-label {
-            display: none;
-          }
-        }
-      `}</style>
-
-      <div style={{ maxWidth: "960px", margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2.5rem" }}>
+      <div className="max-w-[960px] mx-auto">
+        <div className="flex items-center justify-between mb-10">
           <span className="section-label" style={{ marginBottom: 0 }}>Discography</span>
           <button
             onClick={handleShuffle}
             title="シャッフル再生"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.45rem",
-              background: "none",
-              border: "1px solid var(--border)",
-              color: "var(--fg-muted)",
-              fontSize: "0.55rem",
-              letterSpacing: "0.18em",
-              padding: "0.4rem 0.9rem",
-              cursor: "pointer",
-              transition: "border-color 0.2s, color 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--accent)";
-              (e.currentTarget as HTMLElement).style.color = "var(--accent)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
-              (e.currentTarget as HTMLElement).style.color = "var(--fg-muted)";
-            }}
+            className="flex items-center gap-[0.45rem] bg-transparent border border-border text-fg-muted text-[0.55rem] tracking-[0.18em] px-[0.9rem] py-[0.4rem] cursor-pointer transition-colors hover:border-accent hover:text-accent"
           >
-            {/* shuffle icon */}
             <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="16,3 20,3 20,7" />
               <polyline points="16,17 20,17 20,13" />
@@ -772,7 +414,7 @@ export default function Discography() {
           </button>
         </div>
 
-        <div className="disc-grid" style={{ display: "grid", gap: "1rem" }}>
+        <div className="disc-grid grid gap-4">
           {works.map((w, i) => (
             <AlbumCard key={i} w={w} />
           ))}
