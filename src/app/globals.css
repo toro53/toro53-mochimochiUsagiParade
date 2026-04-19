@@ -90,10 +90,20 @@ h1, h2, h3 {
 /* ── Hero ── */
 #hero { transition: background-color 1.4s ease; }
 .animate-scroll-line { animation: scrollLine 1.6s ease-in-out infinite; }
+.slide-from-right { animation: slideFromRight 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+.slide-from-left  { animation: slideFromLeft  0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
 
 @keyframes scrollLine {
   0%, 100% { opacity: 1; transform: scaleY(1); transform-origin: top; }
   50%       { opacity: 0.3; transform: scaleY(0.5); transform-origin: top; }
+}
+@keyframes slideFromRight {
+  from { transform: translateX(38%); opacity: 0; }
+  to   { transform: translateX(0);   opacity: 1; }
+}
+@keyframes slideFromLeft {
+  from { transform: translateX(-38%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
 }
 
 /* ── AudioPlayer ── */

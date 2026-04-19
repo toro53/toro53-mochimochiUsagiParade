@@ -90,7 +90,7 @@ const slides = [
 export default function Hero() {
   const { pause: pausePlayer, isPlaying: playerIsPlaying } = usePlayer();
   const [current, setCurrent] = useState(0);
-  const [imgVisible, setImgVisible] = useState(true);
+  const [slideDir, setSlideDir] = useState<"next" | "prev">("next");
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.75);
@@ -107,13 +107,10 @@ export default function Hero() {
   }, []);
 
   const goTo = useCallback(
-    (i: number) => {
-      setImgVisible(false);
-      setTimeout(() => {
-        setCurrent(i);
-        applyBg(slides[i].bgColor);
-        setImgVisible(true);
-      }, 180);
+    (i: number, dir: "next" | "prev" = "next") => {
+      setSlideDir(dir);
+      setCurrent(i);
+      applyBg(slides[i].bgColor);
       const audio = audioRef.current;
       if (audio) {
         audio.pause();
@@ -124,8 +121,8 @@ export default function Hero() {
     [applyBg]
   );
 
-  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length), [current, goTo]);
-  const next = useCallback(() => goTo((current + 1) % slides.length), [current, goTo]);
+  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length, "prev"), [current, goTo]);
+  const next = useCallback(() => goTo((current + 1) % slides.length, "next"), [current, goTo]);
 
   // Initialize background color
   useEffect(() => {
@@ -280,14 +277,13 @@ export default function Hero() {
           </button>
 
           {/* 現在の作品 */}
-          <a href={slides[current].href} target="_blank" rel="noopener noreferrer" className="block flex-shrink-0">
+          <a href={slides[current].href} target="_blank" rel="noopener noreferrer" className="block flex-shrink-0 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               key={current}
               src={slides[current].img}
               alt={slides[current].title}
-              className="object-cover block w-[clamp(180px,46vw,300px)] h-[clamp(180px,46vw,300px)] shadow-[0_28px_72px_rgba(0,0,0,0.65)] transition-opacity duration-[180ms] sm:w-[clamp(220px,30vw,300px)] sm:h-[clamp(220px,30vw,300px)]"
-              style={{ opacity: imgVisible ? 1 : 0 }}
+              className={`object-cover block w-[clamp(180px,46vw,300px)] h-[clamp(180px,46vw,300px)] shadow-[0_28px_72px_rgba(0,0,0,0.65)] sm:w-[clamp(220px,30vw,300px)] sm:h-[clamp(220px,30vw,300px)] ${slideDir === "next" ? "slide-from-right" : "slide-from-left"}`}
             />
           </a>
 
@@ -383,7 +379,7 @@ export default function Hero() {
           {slides.map((_, i) => (
             <button
               key={i}
-              onClick={() => goTo(i)}
+              onClick={() => goTo(i, i > current ? "next" : "prev")}
               aria-label={`スライド ${i + 1}`}
               className={`h-[0.4rem] border-none cursor-pointer p-0 transition-[width,background-color] duration-300 ${
                 i === current ? "w-[1.4rem] bg-accent-light" : "w-[0.4rem] bg-border"
