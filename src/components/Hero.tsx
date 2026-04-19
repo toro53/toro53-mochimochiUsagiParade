@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 
 // bgColor: ジャケットの雰囲気に合わせた暗い背景色
@@ -98,14 +98,34 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const animatingRef = useRef(false);
+  const baseOffsetRef = useRef(0);
 
   const applyBg = useCallback((color: string) => {
     if (sectionRef.current) {
       sectionRef.current.style.backgroundColor = color;
     }
   }, []);
+
+  // トラック中央を画面中央に揃える（マウント・リサイズ時）
+  const updateBaseOffset = useCallback(() => {
+    const track = trackRef.current;
+    const container = containerRef.current;
+    if (!track || !container || animatingRef.current) return;
+    const slots = Array.from(track.children) as HTMLElement[];
+    const center = slots[2]; // offset=0 のスロット
+    const offset = container.offsetWidth / 2 - (center.offsetLeft + center.offsetWidth / 2);
+    baseOffsetRef.current = offset;
+    track.style.transform = `translateX(${offset}px)`;
+  }, []);
+
+  useLayoutEffect(() => {
+    updateBaseOffset();
+    window.addEventListener("resize", updateBaseOffset);
+    return () => window.removeEventListener("resize", updateBaseOffset);
+  }, [updateBaseOffset]);
 
   const goTo = useCallback(
     (i: number, dir: "next" | "prev" = "next") => {
@@ -119,17 +139,20 @@ export default function Hero() {
       const track = trackRef.current;
       if (!track) { setCurrent(i); animatingRef.current = false; return; }
 
-      // スライドアニメーション開始
+      // スロット幅 + ギャップを実測してスライド量を決定
+      const slots = Array.from(track.children) as HTMLElement[];
+      const step = slots[3].offsetLeft - slots[2].offsetLeft; // 1スロット分の距離
+      const target = baseOffsetRef.current + (dir === "next" ? -step : step);
+
       track.style.transition = "transform 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-      track.style.transform = dir === "next" ? "translateX(-66.6667%)" : "translateX(0%)";
+      track.style.transform = `translateX(${target}px)`;
 
       const onEnd = () => {
         track.removeEventListener("transitionend", onEnd);
-        // 瞬時にリセット（中央スロットが新インデックスになる）
+        // 瞬時にリセット → インデックス更新後も中央スロットが同じ画像のまま
         track.style.transition = "none";
-        track.style.transform = "translateX(-33.3333%)";
+        track.style.transform = `translateX(${baseOffsetRef.current}px)`;
         setCurrent(i);
-        // 次フレームで transition を戻す
         requestAnimationFrame(() => requestAnimationFrame(() => {
           track.style.transition = "";
           animatingRef.current = false;
@@ -139,9 +162,6 @@ export default function Hero() {
     },
     [applyBg]
   );
-
-  const prevIdx = (current - 1 + slides.length) % slides.length;
-  const nextIdx = (current + 1) % slides.length;
 
   const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length, "prev"), [current, goTo]);
   const next = useCallback(() => goTo((current + 1) % slides.length, "next"), [current, goTo]);
@@ -281,65 +301,36 @@ export default function Hero() {
           <div className="flex-1 h-px bg-border" />
         </div>
 
-        {/* carousel — スライドトラック */}
-        <div className="flex items-center gap-2 mb-8 w-full overflow-hidden justify-center sm:gap-4">
-
-          {/* 前の作品サムネ — 外側フェード */}
-          <button
-            onClick={prev}
-            aria-label="前の作品"
-            className="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 opacity-55 hover:opacity-80 transition-opacity [mask-image:linear-gradient(to_right,transparent_0%,black_55%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_55%)]"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={slides[prevIdx].img}
-              alt="前の作品"
-              className="object-cover block w-[clamp(60px,13vw,120px)] h-[clamp(60px,13vw,120px)] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
-            />
-          </button>
-
-          {/* メインジャケット — スライドトラック本体 */}
-          <div className="flex-shrink-0 overflow-hidden shadow-[0_28px_72px_rgba(0,0,0,0.65)] w-[clamp(180px,46vw,300px)] h-[clamp(180px,46vw,300px)] sm:w-[clamp(220px,30vw,300px)] sm:h-[clamp(220px,30vw,300px)]">
-            {/* 3スロット横並び（各スロット = コンテナ幅）、初期位置は中央スロットを表示 */}
-            <div
-              ref={trackRef}
-              className="flex h-full"
-              style={{ width: "300%", transform: "translateX(-33.3333%)" }}
-            >
-              {/* slot 0: 前の作品 */}
-              <div className="h-full" style={{ width: "33.3333%" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={slides[prevIdx].img} alt="前の作品" className="w-full h-full object-cover block" />
-              </div>
-              {/* slot 1: 現在（BOOTHリンク付き） */}
-              <div className="h-full" style={{ width: "33.3333%" }}>
-                <a href={slides[current].href} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={slides[current].img} alt={slides[current].title} className="w-full h-full object-cover block" />
-                </a>
-              </div>
-              {/* slot 2: 次の作品 */}
-              <div className="h-full" style={{ width: "33.3333%" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={slides[nextIdx].img} alt="次の作品" className="w-full h-full object-cover block" />
-              </div>
-            </div>
+        {/* carousel — 5スロット統合トラック（左右含めて一体でスライド） */}
+        <div
+          ref={containerRef}
+          className="w-full overflow-hidden mb-8 [mask-image:linear-gradient(to_right,transparent_0%,black_16%,black_84%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_16%,black_84%,transparent_100%)]"
+        >
+          <div ref={trackRef} className="flex gap-3 sm:gap-5">
+            {([-2, -1, 0, 1, 2] as const).map((offset) => {
+              const idx = ((current + offset) % slides.length + slides.length) % slides.length;
+              const isCenter = offset === 0;
+              return (
+                <div
+                  key={offset}
+                  className={`flex-shrink-0 w-[clamp(150px,42vw,240px)] h-[clamp(150px,42vw,240px)] sm:w-[clamp(200px,26vw,280px)] sm:h-[clamp(200px,26vw,280px)] transition-opacity duration-300 ${isCenter ? "opacity-100" : "opacity-40 cursor-pointer"}`}
+                  onClick={!isCenter ? (offset < 0 ? prev : next) : undefined}
+                  role={!isCenter ? "button" : undefined}
+                  aria-label={!isCenter ? (offset < 0 ? "前の作品" : "次の作品") : undefined}
+                >
+                  {isCenter ? (
+                    <a href={slides[idx].href} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={slides[idx].img} alt={slides[idx].title} className="w-full h-full object-cover block shadow-[0_20px_56px_rgba(0,0,0,0.65)]" />
+                    </a>
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={slides[idx].img} alt={slides[idx].title} className="w-full h-full object-cover block" />
+                  )}
+                </div>
+              );
+            })}
           </div>
-
-          {/* 次の作品サムネ — 外側フェード */}
-          <button
-            onClick={next}
-            aria-label="次の作品"
-            className="flex-shrink-0 cursor-pointer bg-transparent border-none p-0 opacity-55 hover:opacity-80 transition-opacity [mask-image:linear-gradient(to_left,transparent_0%,black_55%)] [-webkit-mask-image:linear-gradient(to_left,transparent_0%,black_55%)]"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={slides[nextIdx].img}
-              alt="次の作品"
-              className="object-cover block w-[clamp(60px,13vw,120px)] h-[clamp(60px,13vw,120px)] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
-            />
-          </button>
-
         </div>
 
         {/* track info */}
