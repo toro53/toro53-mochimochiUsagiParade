@@ -414,7 +414,31 @@ function AlbumCard({ w }: { w: Work }) {
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function Discography() {
+  const { play } = usePlayer();
+
+  const handleShuffle = () => {
+    const allTracks: Track[] = works.flatMap((w) =>
+      w.tracks.map((t) => ({
+        title: t.title,
+        albumTitle: w.title,
+        file: t.file,
+        jacket: w.img.startsWith("/") ? w.img : undefined,
+      }))
+    );
+    const shuffled = shuffleArray(allTracks);
+    if (shuffled.length > 0) play(shuffled[0], shuffled);
+  };
+
   return (
     <section
       id="discography"
@@ -710,7 +734,43 @@ export default function Discography() {
       `}</style>
 
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
-        <span className="section-label">Discography</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2.5rem" }}>
+          <span className="section-label" style={{ marginBottom: 0 }}>Discography</span>
+          <button
+            onClick={handleShuffle}
+            title="シャッフル再生"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.45rem",
+              background: "none",
+              border: "1px solid var(--border)",
+              color: "var(--fg-muted)",
+              fontSize: "0.55rem",
+              letterSpacing: "0.18em",
+              padding: "0.4rem 0.9rem",
+              cursor: "pointer",
+              transition: "border-color 0.2s, color 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--accent)";
+              (e.currentTarget as HTMLElement).style.color = "var(--accent)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+              (e.currentTarget as HTMLElement).style.color = "var(--fg-muted)";
+            }}
+          >
+            {/* shuffle icon */}
+            <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="16,3 20,3 20,7" />
+              <polyline points="16,17 20,17 20,13" />
+              <path d="M0,17 Q7,17 10,10 Q13,3 20,3" />
+              <path d="M0,3 Q7,3 10,10 Q13,17 20,17" />
+            </svg>
+            SHUFFLE
+          </button>
+        </div>
 
         <div className="disc-grid" style={{ display: "grid", gap: "1rem" }}>
           {works.map((w, i) => (
