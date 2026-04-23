@@ -2,28 +2,24 @@
 
 import { useAuth } from '@/context/AuthContext';
 import { useSchedule } from '@/context/ScheduleContext';
+import { BandMember } from '@/data/bandSchedule';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import MemberAvailabilityForm from '@/components/band/MemberAvailabilityForm';
-import AvailabilitySummary from '@/components/band/AvailabilitySummary';
+import PeriodPicker from '@/components/band/PeriodPicker';
+import AvailabilityCalendar from '@/components/band/AvailabilityCalendar';
 
 export default function AdjustPage() {
   const { isAuthenticated } = useAuth();
-  const { events, availabilities, loading, addAvailability } = useSchedule();
+  const { dateAvailabilities, loading, addDateAvailability } = useSchedule();
   const router = useRouter();
-  const [selectedEventId, setSelectedEventId] = useState<string>('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/band');
     }
   }, [isAuthenticated, router]);
-
-  useEffect(() => {
-    if (events.length > 0 && !selectedEventId) {
-      setSelectedEventId(events[0].id);
-    }
-  }, [events, selectedEventId]);
 
   if (loading) {
     return (
@@ -33,18 +29,26 @@ export default function AdjustPage() {
     );
   }
 
-  const selectedEvent = events.find((e) => e.id === selectedEventId);
-  const sortedEvents = [...events].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
+  const handlePeriodChange = (newStart: string, newEnd: string) => {
+    setStartDate(newStart);
+    setEndDate(newEnd);
+  };
+
+  const handleStatusChange = async (
+    date: string,
+    memberId: BandMember,
+    status: 'available' | 'unavailable' | 'maybe'
+  ) => {
+    await addDateAvailability(date, memberId, status);
+  };
 
   return (
-    <div className="max-w-[960px] mx-auto px-4 py-8">
+    <div className="max-w-[1200px] mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-[2rem] font-serif text-fg mb-2">予定調節君</h1>
         <p className="text-fg-muted text-[0.95rem]">
-          各イベントの参加可否を入力してください
+          期間を選択して、各日付のメンバーの参加可否を入力してください
         </p>
       </div>
 
@@ -67,72 +71,38 @@ export default function AdjustPage() {
         </button>
       </div>
 
-      {events.length === 0 ? (
-        <div className="vintage-card p-8 text-center text-fg-muted">
-          <p>スケジュールがまだ登録されていません</p>
+      {/* Period Picker */}
+      <div className="vintage-card p-6 mb-8">
+        <h2 className="text-[1.1rem] font-serif text-fg mb-4">期間選択</h2>
+        <PeriodPicker
+          onPeriodChange={handlePeriodChange}
+          defaultStartDate={startDate}
+          defaultEndDate={endDate}
+        />
+      </div>
+
+      {/* Calendar */}
+      {startDate && endDate ? (
+        <div className="vintage-card p-6 overflow-auto">
+          <h2 className="text-[1.1rem] font-serif text-fg mb-4">
+            参加可否入力
+          </h2>
+          <div className="text-[0.85rem] text-fg-muted mb-4">
+            セルをクリックして状態を切り替えます：
+            <span className="ml-4">○ = 参加可能</span>
+            <span className="ml-4">△ = 未定</span>
+            <span className="ml-4">✕ = 参加不可</span>
+          </div>
+          <AvailabilityCalendar
+            startDate={startDate}
+            endDate={endDate}
+            dateAvailabilities={dateAvailabilities}
+            onStatusChange={handleStatusChange}
+          />
         </div>
       ) : (
-        <div className="grid gap-8">
-          {/* Event Selector */}
-          <div>
-            <label className="block text-[0.8rem] text-fg-muted uppercase tracking-wider mb-3">
-              イベント選択
-            </label>
-            <select
-              value={selectedEventId}
-              onChange={(e) => setSelectedEventId(e.target.value)}
-              className="w-full px-4 py-3 bg-card-bg border border-border text-fg rounded-sm focus:outline-none focus:border-accent"
-            >
-              {sortedEvents.map((event) => (
-                <option key={event.id} value={event.id}>
-                  {event.title} ({event.date})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {selectedEvent && (
-            <>
-              {/* Event Details */}
-              <div className="vintage-card p-6">
-                <h2 className="text-[1.3rem] font-serif text-fg mb-3">
-                  {selectedEvent.title}
-                </h2>
-                <div className="grid gap-2 text-[0.9rem]">
-                  <p className="text-fg-muted">
-                    📅 {selectedEvent.date}
-                    {selectedEvent.time && ` - ${selectedEvent.time}`}
-                  </p>
-                  {selectedEvent.location && (
-                    <p className="text-fg-muted">📍 {selectedEvent.location}</p>
-                  )}
-                  {selectedEvent.notes && (
-                    <p className="text-fg-muted italic">{selectedEvent.notes}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Availability Summary */}
-              <AvailabilitySummary
-                eventId={selectedEventId}
-                availabilities={availabilities}
-              />
-
-              {/* Member Form */}
-              <div>
-                <h3 className="text-[1rem] text-fg mb-4 font-serif">
-                  参加メンバーを入力
-                </h3>
-                <MemberAvailabilityForm
-                  eventId={selectedEventId}
-                  availabilities={availabilities}
-                  onSubmit={(memberId, status, comment) =>
-                    addAvailability(selectedEventId, memberId, status, comment)
-                  }
-                />
-              </div>
-            </>
-          )}
+        <div className="vintage-card p-8 text-center text-fg-muted">
+          <p>開始日と終了日を選択して、カレンダーを表示します</p>
         </div>
       )}
     </div>

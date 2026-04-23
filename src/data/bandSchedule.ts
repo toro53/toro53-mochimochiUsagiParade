@@ -64,6 +64,12 @@ export interface MemberAvailability {
   comment?: string;
 }
 
+export interface DateAvailability {
+  date: string; // YYYY-MM-DD
+  memberId: BandMember;
+  status: 'available' | 'unavailable' | 'maybe';
+}
+
 export const getEventTypeLabel = (type: ScheduleEventType): string => {
   const labels: Record<ScheduleEventType, string> = {
     rehearsal: 'リハーサル',

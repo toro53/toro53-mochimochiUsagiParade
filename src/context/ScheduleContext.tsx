@@ -3,6 +3,7 @@
 import {
   BandScheduleEvent,
   MemberAvailability,
+  DateAvailability,
   initialScheduleEvents,
   BAND_MEMBERS,
 } from '@/data/bandSchedule';
@@ -11,6 +12,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 interface ScheduleContextType {
   events: BandScheduleEvent[];
   availabilities: MemberAvailability[];
+  dateAvailabilities: DateAvailability[];
   loading: boolean;
   addAvailability: (
     eventId: string,
@@ -19,6 +21,12 @@ interface ScheduleContextType {
     comment?: string
   ) => Promise<void>;
   getEventAvailabilities: (eventId: string) => MemberAvailability[];
+  addDateAvailability: (
+    date: string,
+    memberId: string,
+    status: 'available' | 'unavailable' | 'maybe'
+  ) => Promise<void>;
+  getAvailabilityForDate: (date: string) => DateAvailability[];
   addEvent: (event: BandScheduleEvent) => Promise<void>;
   updateEvent: (event: BandScheduleEvent) => Promise<void>;
   deleteEvent: (eventId: string) => Promise<void>;
@@ -31,6 +39,9 @@ const ScheduleContext = createContext<ScheduleContextType | undefined>(
 export function ScheduleProvider({ children }: { children: ReactNode }) {
   const [events, setEvents] = useState<BandScheduleEvent[]>([]);
   const [availabilities, setAvailabilities] = useState<MemberAvailability[]>(
+    []
+  );
+  const [dateAvailabilities, setDateAvailabilities] = useState<DateAvailability[]>(
     []
   );
   const [loading, setLoading] = useState(true);
@@ -55,6 +66,15 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
           setAvailabilities(data.availabilities || []);
         } else {
           setAvailabilities([]);
+        }
+
+        // Fetch date availabilities
+        const dateAvailRes = await fetch('/api/band/availability-dates');
+        if (dateAvailRes.ok) {
+          const data = await dateAvailRes.json();
+          setDateAvailabilities(data.availabilities || []);
+        } else {
+          setDateAvailabilities([]);
         }
       } catch (error) {
         console.error('Failed to load schedule data:', error);
@@ -92,6 +112,31 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
 
   const getEventAvailabilities = (eventId: string): MemberAvailability[] => {
     return availabilities.filter((a) => a.eventId === eventId);
+  };
+
+  const addDateAvailability = async (
+    date: string,
+    memberId: string,
+    status: 'available' | 'unavailable' | 'maybe'
+  ) => {
+    try {
+      const response = await fetch('/api/band/availability-dates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date, memberId, status }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setDateAvailabilities(data.availabilities);
+      }
+    } catch (error) {
+      console.error('Failed to add date availability:', error);
+    }
+  };
+
+  const getAvailabilityForDate = (date: string): DateAvailability[] => {
+    return dateAvailabilities.filter((a) => a.date === date);
   };
 
   const addEvent = async (event: BandScheduleEvent) => {
@@ -148,9 +193,12 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       value={{
         events,
         availabilities,
+        dateAvailabilities,
         loading,
         addAvailability,
         getEventAvailabilities,
+        addDateAvailability,
+        getAvailabilityForDate,
         addEvent,
         updateEvent,
         deleteEvent,
