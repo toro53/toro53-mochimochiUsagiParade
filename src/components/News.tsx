@@ -6,8 +6,9 @@ const newsItems = [
   {
     date: "2026.05.17",
     tag: "ライブ",
-    title: "柏駅付近のライブハウスにてライブ",
-    description: "詳細は後日発表します",
+    title: "ATOMS主催 Good Luck / builder release party",
+    description: "柏DOMeにて開催",
+    link: "https://x.com/mochiusaparade/status/2046433599264903264?s=20",
   },
   {
     date: "2026.04.26",
@@ -65,11 +66,23 @@ export default function News() {
               <p className="text-[0.85rem] font-bold text-fg m-0 leading-relaxed">
                 {item.title}
               </p>
-              {item.description && (
-                <p className="text-[0.75rem] text-fg-muted m-0 leading-relaxed mt-1">
-                  {item.description}
-                </p>
-              )}
+              <div className="flex justify-between items-end gap-3 mt-1">
+                {item.description && (
+                  <p className="text-[0.75rem] text-fg-muted m-0 leading-relaxed flex-1">
+                    {item.description}
+                  </p>
+                )}
+                {item.link && (
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[0.6rem] border border-border text-fg-muted px-2 py-1 text-center hover:border-fg hover:text-fg transition-colors whitespace-nowrap"
+                  >
+                    詳細
+                  </a>
+                )}
+              </div>
             </article>
           ))}
         </div>
