@@ -1,11 +1,14 @@
+import { kv } from '@vercel/kv';
 import { MemberAvailability } from '@/data/bandSchedule';
 import { NextRequest, NextResponse } from 'next/server';
 
-let inMemoryAvailabilities: MemberAvailability[] = [];
+const KV_KEY = 'band:schedule:availabilities';
 
 export async function GET() {
   try {
-    return NextResponse.json({ availabilities: inMemoryAvailabilities });
+    const storedAvailabilities = await kv.get<MemberAvailability[]>(KV_KEY);
+    const availabilities = storedAvailabilities || [];
+    return NextResponse.json({ availabilities });
   } catch (error) {
     console.error('Failed to fetch availabilities:', error);
     return NextResponse.json({ availabilities: [] }, { status: 200 });
@@ -15,8 +18,10 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const { eventId, memberId, status, comment } = await req.json();
+    const storedAvailabilities = await kv.get<MemberAvailability[]>(KV_KEY);
+    const availabilities = storedAvailabilities || [];
 
-    const index = inMemoryAvailabilities.findIndex(
+    const index = availabilities.findIndex(
       (a) => a.eventId === eventId && a.memberId === memberId
     );
 
@@ -28,12 +33,13 @@ export async function POST(req: NextRequest) {
     };
 
     if (index !== -1) {
-      inMemoryAvailabilities[index] = newAvailability;
+      availabilities[index] = newAvailability;
     } else {
-      inMemoryAvailabilities.push(newAvailability);
+      availabilities.push(newAvailability);
     }
 
-    return NextResponse.json({ availabilities: inMemoryAvailabilities });
+    await kv.set(KV_KEY, availabilities);
+    return NextResponse.json({ availabilities });
   } catch (error) {
     console.error('Failed to add availability:', error);
     return NextResponse.json(

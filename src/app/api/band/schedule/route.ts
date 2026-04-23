@@ -1,11 +1,14 @@
+import { kv } from '@vercel/kv';
 import { BandScheduleEvent, initialScheduleEvents } from '@/data/bandSchedule';
 import { NextRequest, NextResponse } from 'next/server';
 
-let inMemoryEvents = [...initialScheduleEvents];
+const KV_KEY = 'band:schedule:events';
 
 export async function GET() {
   try {
-    return NextResponse.json({ events: inMemoryEvents });
+    const storedEvents = await kv.get<BandScheduleEvent[]>(KV_KEY);
+    const events = storedEvents || initialScheduleEvents;
+    return NextResponse.json({ events });
   } catch (error) {
     console.error('Failed to fetch events:', error);
     return NextResponse.json(
@@ -18,8 +21,11 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const event: BandScheduleEvent = await req.json();
-    inMemoryEvents.push(event);
-    return NextResponse.json({ events: inMemoryEvents });
+    const storedEvents = await kv.get<BandScheduleEvent[]>(KV_KEY);
+    const events = storedEvents || [...initialScheduleEvents];
+    events.push(event);
+    await kv.set(KV_KEY, events);
+    return NextResponse.json({ events });
   } catch (error) {
     console.error('Failed to add event:', error);
     return NextResponse.json(
@@ -32,11 +38,14 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const event: BandScheduleEvent = await req.json();
-    const index = inMemoryEvents.findIndex((e) => e.id === event.id);
+    const storedEvents = await kv.get<BandScheduleEvent[]>(KV_KEY);
+    const events = storedEvents || [...initialScheduleEvents];
+    const index = events.findIndex((e) => e.id === event.id);
     if (index !== -1) {
-      inMemoryEvents[index] = event;
+      events[index] = event;
     }
-    return NextResponse.json({ events: inMemoryEvents });
+    await kv.set(KV_KEY, events);
+    return NextResponse.json({ events });
   } catch (error) {
     console.error('Failed to update event:', error);
     return NextResponse.json(
@@ -58,8 +67,11 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    inMemoryEvents = inMemoryEvents.filter((e) => e.id !== eventId);
-    return NextResponse.json({ events: inMemoryEvents });
+    const storedEvents = await kv.get<BandScheduleEvent[]>(KV_KEY);
+    const events = storedEvents || [...initialScheduleEvents];
+    const filtered = events.filter((e) => e.id !== eventId);
+    await kv.set(KV_KEY, filtered);
+    return NextResponse.json({ events: filtered });
   } catch (error) {
     console.error('Failed to delete event:', error);
     return NextResponse.json(
