@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Serif_JP, IM_Fell_English_SC } from "next/font/google";
+import { Noto_Serif_JP, IM_Fell_English_SC, Klee_One } from "next/font/google";
 import "./globals.css";
 import { PlayerProvider } from "@/context/PlayerContext";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -15,6 +15,13 @@ const imFell = IM_Fell_English_SC({
   variable: "--font-fell",
   subsets: ["latin"],
   weight: "400",
+  display: "swap",
+});
+
+const kleeOne = Klee_One({
+  variable: "--font-klee",
+  subsets: ["latin"],
+  weight: "600",
   display: "swap",
 });
 
@@ -59,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${notoSerifJP.variable} ${imFell.variable}`}>
+    <html lang="ja" className={`${notoSerifJP.variable} ${imFell.variable} ${kleeOne.variable}`}>
       <body className="min-h-screen flex flex-col">
         <PlayerProvider>
           {children}
