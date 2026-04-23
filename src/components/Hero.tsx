@@ -7,8 +7,16 @@ import { usePlayer } from "@/context/PlayerContext";
 // bgColor: ジャケットの雰囲気に合わせた暗い背景色
 const slides = [
   {
-    title: "夏、嘘をついたぜ",
+    title: "死灰、復燃えて",
     event: "最新作",
+    img: "/Music/shikaimata/jacket.png",
+    audio: "/Music/shikaimata/死灰、復燃えて.mp3",
+    href: "https://torosanshin.booth.pm/items/8255437",
+    bgColor: "#1a2624",
+  },
+  {
+    title: "夏、嘘をついたぜ",
+    event: "M3-2025秋",
     img: "/Music/summer-lies/jacket.jpg",
     audio: "/Music/summer-lies/summer-lies.m4a",
     href: "https://torosanshin.booth.pm/items/7558547",
@@ -58,7 +66,7 @@ const slides = [
     title: "憑き身に憂",
     event: "M3-2022秋",
     img: "/Music/possessed-melancholy/jacket.jpg",
-    audio: "/Music/possessed-melancholy.m4a",
+    audio: "/Music/possessed-melancholy/possessed-melancholy.m4a",
     href: "https://torosanshin.booth.pm/items/3826662",
     bgColor: "#201010",
   },
