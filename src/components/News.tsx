@@ -52,26 +52,24 @@ export default function News() {
           {visible.map((item, i) => (
             <article
               key={i}
-              className="flex gap-[0.9rem] py-3 border-b border-border flex-wrap items-start"
+              className="py-4 border-b border-border last:border-b-0"
             >
-              <div className="flex gap-[0.9rem] flex-wrap items-start flex-1 min-w-0">
-                <time className="text-[0.65rem] tracking-[0.06em] text-fg-muted flex-shrink-0">
+              <div className="flex items-center gap-3 mb-2">
+                <time className="text-[0.65rem] tracking-[0.06em] text-fg-muted">
                   {item.date}
                 </time>
-                <span className="text-[0.55rem] tracking-[0.1em] border border-border text-fg-muted py-[0.1rem] flex-shrink-0 w-[4.5rem] text-center">
+                <span className="text-[0.55rem] tracking-[0.1em] border border-border text-fg-muted px-2 py-[0.15rem] text-center">
                   {item.tag}
                 </span>
               </div>
-              <div className="w-full flex-1 min-w-0">
-                <p className="text-[0.85rem] font-bold text-fg m-0 leading-relaxed mb-[0.4rem]">
-                  {item.title}
+              <p className="text-[0.85rem] font-bold text-fg m-0 leading-relaxed">
+                {item.title}
+              </p>
+              {item.description && (
+                <p className="text-[0.75rem] text-fg-muted m-0 leading-relaxed mt-1">
+                  {item.description}
                 </p>
-                {item.description && (
-                  <p className="text-[0.75rem] text-fg-muted m-0 leading-relaxed">
-                    {item.description}
-                  </p>
-                )}
-              </div>
+              )}
             </article>
           ))}
         </div>
