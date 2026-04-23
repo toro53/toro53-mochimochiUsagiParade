@@ -126,7 +126,9 @@ export default function AdjustPage() {
                 <MemberAvailabilityForm
                   eventId={selectedEventId}
                   availabilities={availabilities}
-                  onSubmit={addAvailability}
+                  onSubmit={(memberId, status, comment) =>
+                    addAvailability(selectedEventId, memberId, status, comment)
+                  }
                 />
               </div>
             </>
