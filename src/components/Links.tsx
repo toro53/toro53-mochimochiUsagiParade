@@ -9,6 +9,13 @@ const linkItems = [
     icon: "𝕏",
   },
   {
+    label: "Instagram",
+    handle: "mochimochi_usagi_parade",
+    desc: "日常・活動の写真",
+    href: "https://www.instagram.com/mochimochi_usagi_parade/",
+    icon: "◎",
+  },
+  {
     label: "BOOTH",
     handle: "torosanshin.booth.pm",
     desc: "CD・無料DL音源の頒布",
