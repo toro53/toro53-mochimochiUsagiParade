@@ -11,7 +11,7 @@ const linkItems = [
     label: "Instagram",
     handle: "mochimochi_usagi_parade",
     href: "https://www.instagram.com/mochimochi_usagi_parade/",
-    icon: "📷",
+    icon: "◎",
   },
   {
     label: "BOOTH",
