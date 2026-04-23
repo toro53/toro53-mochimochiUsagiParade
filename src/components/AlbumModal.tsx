@@ -75,7 +75,6 @@ export default function AlbumModal({ w, onClose }: Props) {
           <div className="disc-modal-meta">
             <span className="disc-modal-event">{w.event}</span>
             <h2 className="disc-modal-title">{w.title}</h2>
-            <p className="disc-modal-price">{w.price}</p>
           </div>
 
           {/* トラックリスト */}
@@ -127,14 +126,16 @@ export default function AlbumModal({ w, onClose }: Props) {
                 {isThisAlbum && isPlaying ? "Pause" : "Play All"}
               </button>
             )}
-            <a
-              className="disc-modal-booth-link"
-              href={w.href}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              BOOTH →
-            </a>
+            {w.href && (
+              <a
+                className="disc-modal-booth-link"
+                href={w.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                BOOTH →
+              </a>
+            )}
           </div>
 
         </div>

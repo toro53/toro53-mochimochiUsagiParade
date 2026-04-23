@@ -1,9 +1,8 @@
 export type Work = {
   title: string;
   event: string;
-  price: string;
   img: string;
-  href: string;
+  href?: string;
   tracks: { title: string; file: string }[];
 };
 
@@ -11,9 +10,19 @@ const m = (album: string, file: string) => `/Music/${album}/${file}`;
 
 export const works: Work[] = [
   {
-    title: "夏、嘘をついたぜ",
+    title: "死灰、復燃えて",
     event: "最新作",
-    price: "—",
+    img: "/Music/shikaimata/jacket.png",
+    href: "https://torosanshin.booth.pm/items/8255437",
+    tracks: [
+      { title: "死灰、復燃えて",   file: m("shikaimata", "死灰、復燃えて.mp3") },
+      { title: "さよなら妖精",     file: m("shikaimata", "さよなら妖精.mp3") },
+      { title: "朝雨に傘いらず",   file: m("shikaimata", "雨とベース.m4a") },
+    ],
+  },
+  {
+    title: "夏、嘘をついたぜ",
+    event: "M3-2025秋",
     img: "/Music/summer-lies/jacket.jpg",
     href: "https://torosanshin.booth.pm/items/7558547",
     tracks: [
@@ -24,7 +33,6 @@ export const works: Work[] = [
   {
     title: "晴天に一羽",
     event: "M3-2025春",
-    price: "¥200",
     img: m("clear-sky-one-bird", "jacket.png"),
     href: "https://torosanshin.booth.pm/items/6822016",
     tracks: [
@@ -36,7 +44,6 @@ export const works: Work[] = [
   {
     title: "シュレーディンガーの星",
     event: "M3-2024秋",
-    price: "¥200",
     img: m("schrodingers-star", "jacket.png"),
     href: "https://torosanshin.booth.pm/items/6208804",
     tracks: [
@@ -48,7 +55,6 @@ export const works: Work[] = [
   {
     title: "花明かり",
     event: "M3-2024春",
-    price: "¥200",
     img: m("flower-light", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/5660837",
     tracks: [
@@ -61,7 +67,6 @@ export const works: Work[] = [
   {
     title: "月面鈍行",
     event: "M3-2023春",
-    price: "¥500",
     img: m("lunar-local-train", "jacket.png"),
     href: "https://torosanshin.booth.pm/items/4724535",
     tracks: [
@@ -74,7 +79,6 @@ export const works: Work[] = [
   {
     title: "忘憂のもの",
     event: "M3-2022秋",
-    price: "¥500",
     img: m("forget-melancholy", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/4267952",
     tracks: [
@@ -87,17 +91,15 @@ export const works: Work[] = [
   {
     title: "憑き身に憂",
     event: "M3-2022秋",
-    price: "無料",
     img: "/Music/possessed-melancholy/jacket.jpg",
     href: "https://torosanshin.booth.pm/items/3826662",
     tracks: [
-      { title: "憑き身に憂", file: "/Music/possessed-melancholy.m4a" },
+      { title: "憑き身に憂", file: "/Music/possessed-melancholy/possessed-melancholy.m4a" },
     ],
   },
   {
     title: "空中分解する春",
     event: "M3-2022春",
-    price: "¥500 / 無料DL版あり",
     img: m("midair-disintegration", "jacket.png"),
     href: "https://torosanshin.booth.pm/items/3809571",
     tracks: [
@@ -110,7 +112,6 @@ export const works: Work[] = [
   {
     title: "月見に卯",
     event: "M3-2021秋",
-    price: "無料",
     img: m("moon-viewing", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/3318343",
     tracks: [
@@ -122,7 +123,6 @@ export const works: Work[] = [
   {
     title: "嘘憑き EP",
     event: "M3-2021春",
-    price: "¥100 / 無料DL版あり",
     img: m("usotsuki-ep", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/2898014",
     tracks: [
