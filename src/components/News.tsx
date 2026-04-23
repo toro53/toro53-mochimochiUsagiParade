@@ -6,12 +6,14 @@ const newsItems = [
   {
     date: "2026.05.17",
     tag: "ライブ",
-    title: "柏駅付近のライブハウスにてライブ　詳細は後日発表します",
+    title: "柏駅付近のライブハウスにてライブ",
+    description: "詳細は後日発表します",
   },
   {
     date: "2026.04.26",
     tag: "イベント",
     title: "新譜「死灰、復燃えて」頒布しました",
+    description: "M3・ボーマス両イベントにて頒布開始。BOOTH でも購入可能です。",
   },
   {
     date: "2026.04.26",
@@ -50,17 +52,26 @@ export default function News() {
           {visible.map((item, i) => (
             <article
               key={i}
-              className="flex items-baseline gap-[0.9rem] py-3 border-b border-border flex-wrap"
+              className="flex gap-[0.9rem] py-3 border-b border-border flex-wrap items-start"
             >
-              <time className="text-[0.65rem] tracking-[0.06em] text-fg-muted flex-shrink-0">
-                {item.date}
-              </time>
-              <span className="text-[0.55rem] tracking-[0.1em] border border-border text-fg-muted py-[0.1rem] flex-shrink-0 w-[4.5rem] text-center inline-block">
-                {item.tag}
-              </span>
-              <p className="text-[0.85rem] font-bold text-fg m-0 leading-relaxed">
-                {item.title}
-              </p>
+              <div className="flex gap-[0.9rem] flex-wrap items-start flex-1 min-w-0">
+                <time className="text-[0.65rem] tracking-[0.06em] text-fg-muted flex-shrink-0">
+                  {item.date}
+                </time>
+                <span className="text-[0.55rem] tracking-[0.1em] border border-border text-fg-muted py-[0.1rem] flex-shrink-0 w-[4.5rem] text-center">
+                  {item.tag}
+                </span>
+              </div>
+              <div className="w-full flex-1 min-w-0">
+                <p className="text-[0.85rem] font-bold text-fg m-0 leading-relaxed mb-[0.4rem]">
+                  {item.title}
+                </p>
+                {item.description && (
+                  <p className="text-[0.75rem] text-fg-muted m-0 leading-relaxed">
+                    {item.description}
+                  </p>
+                )}
+              </div>
             </article>
           ))}
         </div>
