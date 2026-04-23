@@ -29,7 +29,7 @@ export default function Nav() {
       <div className="max-w-[960px] mx-auto flex items-center justify-between max-sm:flex-col max-sm:items-center max-sm:gap-[0.45rem]">
         <a
           href="#hero"
-          className="font-[family-name:var(--font-fell)] text-[clamp(0.8rem,2.5vw,1rem)] tracking-[0.05em] text-fg no-underline opacity-85 whitespace-nowrap"
+          className="font-[family-name:var(--font-serif-jp)] text-[clamp(0.8rem,2.5vw,1rem)] tracking-[0.05em] text-fg no-underline opacity-85 whitespace-nowrap"
         >
           もちもちうさぎパレード
         </a>

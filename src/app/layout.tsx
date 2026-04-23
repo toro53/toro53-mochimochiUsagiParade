@@ -18,6 +18,7 @@ const imFell = IM_Fell_English_SC({
   display: "swap",
 });
 
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://mochimochi-usagi-parade.vercel.app"),
   title: "もちもちうさぎパレード",
