@@ -8,6 +8,12 @@ const linkItems = [
     icon: "𝕏",
   },
   {
+    label: "Instagram",
+    handle: "mochimochi_usagi_parade",
+    href: "https://www.instagram.com/mochimochi_usagi_parade/",
+    icon: "📷",
+  },
+  {
     label: "BOOTH",
     handle: "torosanshin.booth.pm",
     href: "https://torosanshin.booth.pm/",
