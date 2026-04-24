@@ -17,7 +17,7 @@ export const works: Work[] = [
     tracks: [
       { title: "死灰、復燃えて",   file: m("shikaimata", "死灰、復燃えて.mp3") },
       { title: "さよなら妖精",     file: m("shikaimata", "さよなら妖精.mp3") },
-      { title: "朝雨に傘いらず",   file: m("shikaimata", "雨とベース.m4a") },
+      { title: "朝雨に傘いらず",   file: m("shikaimata", "朝雨に傘いらず.mp3") },
     ],
   },
   {
