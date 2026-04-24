@@ -89,3 +89,16 @@ export async function PUT(request: Request) {
     );
   }
 }
+
+export async function DELETE() {
+  try {
+    await kv.del(KV_KEY);
+    return NextResponse.json({ settings: [] });
+  } catch (error) {
+    console.error('Failed to reset adjust settings:', error);
+    return NextResponse.json(
+      { error: 'Failed to reset adjust settings' },
+      { status: 500 }
+    );
+  }
+}

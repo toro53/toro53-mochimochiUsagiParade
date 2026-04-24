@@ -38,6 +38,7 @@ interface ScheduleContextType {
   ) => Promise<void>;
   updateAdjustSettings: (id: string, settings: Partial<AdjustSettings>) => Promise<void>;
   getActiveAdjustSettings: () => AdjustSettings[];
+  resetDateAvailabilities: () => Promise<void>;
   addEvent: (event: BandScheduleEvent) => Promise<void>;
   updateEvent: (event: BandScheduleEvent) => Promise<void>;
   deleteEvent: (eventId: string) => Promise<void>;
@@ -149,10 +150,17 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       const existing = prev.findIndex(a => a.date === date && a.memberId === memberId);
       if (existing !== -1) {
         const updated = [...prev];
-        if (status === null) {
+        if (status === null && hidden === undefined) {
           updated.splice(existing, 1);
         } else {
-          updated[existing] = { ...updated[existing], status };
+          const entry = { ...updated[existing] };
+          if (status !== null) {
+            entry.status = status;
+          }
+          if (hidden !== undefined) {
+            entry.hidden = hidden;
+          }
+          updated[existing] = entry;
         }
         return updated;
       } else if (status !== null) {
@@ -276,6 +284,27 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     return adjustSettings.filter((s) => s.enabled);
   };
 
+  const resetDateAvailabilities = async () => {
+    try {
+      // Delete all date availabilities
+      const dateAvailRes = await fetch('/api/band/availability-dates', {
+        method: 'DELETE',
+      });
+
+      // Delete all adjust settings
+      const adjustRes = await fetch('/api/band/adjust-settings', {
+        method: 'DELETE',
+      });
+
+      if (dateAvailRes.ok && adjustRes.ok) {
+        setDateAvailabilities([]);
+        setAdjustSettings([]);
+      }
+    } catch (error) {
+      console.error('Failed to reset:', error);
+    }
+  };
+
   return (
     <ScheduleContext.Provider
       value={{
@@ -291,6 +320,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
         addAdjustSettings,
         updateAdjustSettings,
         getActiveAdjustSettings,
+        resetDateAvailabilities,
         addEvent,
         updateEvent,
         deleteEvent,

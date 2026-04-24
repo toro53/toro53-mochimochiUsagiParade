@@ -4,8 +4,7 @@ import { BAND_MEMBERS, BandMember, DateAvailability } from '@/data/bandSchedule'
 import DayCell from './DayCell';
 
 interface AvailabilityCalendarProps {
-  startDate: string;
-  endDate: string;
+  targetDates: string[];
   dateAvailabilities: DateAvailability[];
   onStatusChange: (date: string, memberId: BandMember, status: 'available' | 'unavailable' | 'maybe' | null) => Promise<void>;
   onHideDate?: (date: string) => Promise<void>;
@@ -30,14 +29,13 @@ function getDatesInRange(startStr: string, endStr: string): string[] {
 }
 
 export default function AvailabilityCalendar({
-  startDate,
-  endDate,
+  targetDates,
   dateAvailabilities,
   onStatusChange,
   onHideDate,
   showHidden = false,
 }: AvailabilityCalendarProps) {
-  const dates = getDatesInRange(startDate, endDate);
+  const dates = targetDates.sort();
 
   const getStatusForCell = (
     date: string,

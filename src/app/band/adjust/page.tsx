@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/context/AuthContext';
 import { useSchedule } from '@/context/ScheduleContext';
-import { BandMember } from '@/data/bandSchedule';
+import { BandMember, BAND_MEMBERS } from '@/data/bandSchedule';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import AdjustCalendar from '@/components/band/AdjustCalendar';
@@ -10,7 +10,7 @@ import AvailabilityCalendar from '@/components/band/AvailabilityCalendar';
 
 export default function AdjustPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { dateAvailabilities, adjustSettings, loading, addDateAvailability, addAdjustSettings } = useSchedule();
+  const { dateAvailabilities, adjustSettings, loading, addDateAvailability, addAdjustSettings, resetDateAvailabilities } = useSchedule();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [showHidden, setShowHidden] = useState(false);
@@ -33,7 +33,10 @@ export default function AdjustPage() {
     );
   }
 
-  const handleRegisterDates = async (startDate: string, endDate: string, targetDates: string[]) => {
+  const handleRegisterDates = async (targetDates: string[]) => {
+    if (targetDates.length === 0) return;
+    const startDate = targetDates[0];
+    const endDate = targetDates[targetDates.length - 1];
     await addAdjustSettings(startDate, endDate, targetDates);
   };
 
@@ -51,9 +54,16 @@ export default function AdjustPage() {
     const isCurrentlyHidden = dateEntries.some(a => a.hidden === true);
     const newHiddenState = !isCurrentlyHidden;
 
-    for (const entry of dateEntries) {
-      await addDateAvailability(date, entry.memberId, entry.status, newHiddenState);
+    // Update all members for this date
+    for (const member of BAND_MEMBERS) {
+      const entry = dateEntries.find(a => a.memberId === member);
+      const status = entry?.status || null;
+      await addDateAvailability(date, member, status, newHiddenState);
     }
+  };
+
+  const handleResetAll = async () => {
+    await resetDateAvailabilities();
   };
 
   return (
@@ -118,13 +128,20 @@ export default function AdjustPage() {
               <span className="ml-4">✕ = 参加不可</span>
             </div>
             <AvailabilityCalendar
-              startDate={adjustSettings.reduce((min, s) => (s.startDate < min ? s.startDate : min), adjustSettings[0].startDate)}
-              endDate={adjustSettings.reduce((max, s) => (s.endDate > max ? s.endDate : max), adjustSettings[0].endDate)}
+              targetDates={adjustSettings.flatMap(s => s.targetDates || [])}
               dateAvailabilities={dateAvailabilities}
               onStatusChange={handleStatusChange}
               onHideDate={handleHideDate}
               showHidden={showHidden}
             />
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={handleResetAll}
+                className="px-6 py-3 border border-border text-fg-muted hover:border-accent hover:text-accent transition-colors uppercase text-[0.75rem] tracking-[0.15em] font-medium"
+              >
+                全部リセット
+              </button>
+            </div>
           </div>
         </div>
       ) : (

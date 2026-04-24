@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 
 interface AdjustCalendarProps {
-  onRegister: (startDate: string, endDate: string, targetDates: string[]) => void;
+  onRegister: (targetDates: string[]) => void;
 }
 
 export default function AdjustCalendar({ onRegister }: AdjustCalendarProps) {
@@ -48,12 +48,8 @@ export default function AdjustCalendar({ onRegister }: AdjustCalendarProps) {
       return;
     }
 
-    const sortedDates = Array.from(selectedDates).sort();
-    const startDate = sortedDates[0];
-    const endDate = sortedDates[sortedDates.length - 1];
-    const targetDates = sortedDates;
-
-    onRegister(startDate, endDate, targetDates);
+    const targetDates = Array.from(selectedDates).sort();
+    onRegister(targetDates);
   };
 
   return (
@@ -127,24 +123,14 @@ export default function AdjustCalendar({ onRegister }: AdjustCalendarProps) {
       </div>
 
       <div className="bg-card-bg border border-border rounded-sm p-4 space-y-3">
-        <div>
-          <p className="text-sm text-fg-muted mb-2">選択済み日付: {selectedDates.size}日</p>
-          {selectedDates.size > 0 && (
-            <div className="text-xs text-fg-muted space-y-1">
-              <p>
-                期間: {Array.from(selectedDates).sort()[0]} 〜{' '}
-                {Array.from(selectedDates).sort()[Array.from(selectedDates).sort().length - 1]}
-              </p>
-            </div>
-          )}
-        </div>
+        <p className="text-sm text-fg-muted">選択済み日付: {selectedDates.size}日</p>
 
         <button
           onClick={handleRegister}
           disabled={selectedDates.size === 0}
           className="w-full px-6 py-3 bg-accent text-card-bg font-medium rounded-sm hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          この期間で対象日を登録
+          対象日を登録
         </button>
       </div>
     </div>

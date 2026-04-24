@@ -48,3 +48,16 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function DELETE() {
+  try {
+    await kv.del(KV_KEY);
+    return NextResponse.json({ availabilities: [] });
+  } catch (error) {
+    console.error('Failed to reset date availabilities:', error);
+    return NextResponse.json(
+      { error: 'Failed to reset date availabilities' },
+      { status: 500 }
+    );
+  }
+}
