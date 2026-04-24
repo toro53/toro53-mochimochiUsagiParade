@@ -95,8 +95,8 @@ export default function AvailabilityCalendar({
             const hidden = isDateHidden(date);
 
             return (
-              <tr key={date} className={`h-16 ${hidden ? 'opacity-50' : ''}`}>
-                <td className="sticky left-0 bg-card-bg border border-border px-4 py-3 text-sm font-medium text-fg-muted whitespace-nowrap flex items-center justify-between">
+              <tr key={date} style={{ height: '4rem' }} className={hidden ? 'opacity-50' : ''}>
+                <td className="sticky left-0 bg-card-bg border border-border px-4 text-sm font-medium text-fg-muted whitespace-nowrap flex items-center justify-between" style={{ height: '4rem' }}>
                   <span>{displayDate}</span>
                   {onHideDate && (
                     <button
@@ -110,7 +110,8 @@ export default function AvailabilityCalendar({
                 {BAND_MEMBERS.map((member) => (
                   <td
                     key={`${date}-${member}`}
-                    className="border border-border p-2"
+                    className="border border-border p-2 flex items-center justify-center"
+                    style={{ height: '4rem' }}
                   >
                     <DayCell
                       date={date}
