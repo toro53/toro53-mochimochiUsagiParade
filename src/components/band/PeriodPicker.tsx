@@ -1,37 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-
 interface PeriodPickerProps {
-  onPeriodChange: (startDate: string, endDate: string) => void;
-  defaultStartDate?: string;
-  defaultEndDate?: string;
+  startDate: string;
+  endDate: string;
+  onStartDateChange: (date: string) => void;
+  onEndDateChange: (date: string) => void;
 }
 
 export default function PeriodPicker({
-  onPeriodChange,
-  defaultStartDate,
-  defaultEndDate,
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
 }: PeriodPickerProps) {
-  const [startDate, setStartDate] = useState(defaultStartDate || '');
-  const [endDate, setEndDate] = useState(defaultEndDate || '');
-
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newStart = e.target.value;
-    setStartDate(newStart);
-    if (newStart && endDate) {
-      onPeriodChange(newStart, endDate);
-    }
-  };
-
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newEnd = e.target.value;
-    setEndDate(newEnd);
-    if (startDate && newEnd) {
-      onPeriodChange(startDate, newEnd);
-    }
-  };
-
   return (
     <div className="flex gap-4 items-end max-sm:flex-col">
       <div className="flex-1">
@@ -41,7 +22,7 @@ export default function PeriodPicker({
         <input
           type="date"
           value={startDate}
-          onChange={handleStartDateChange}
+          onChange={(e) => onStartDateChange(e.target.value)}
           className="w-full px-4 py-3 bg-card-bg border border-border text-fg rounded-sm focus:outline-none focus:border-accent"
         />
       </div>
@@ -52,7 +33,7 @@ export default function PeriodPicker({
         <input
           type="date"
           value={endDate}
-          onChange={handleEndDateChange}
+          onChange={(e) => onEndDateChange(e.target.value)}
           className="w-full px-4 py-3 bg-card-bg border border-border text-fg rounded-sm focus:outline-none focus:border-accent"
         />
       </div>

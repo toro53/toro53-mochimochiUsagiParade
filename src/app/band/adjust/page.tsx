@@ -34,9 +34,12 @@ export default function AdjustPage() {
     );
   }
 
-  const handlePeriodChange = (newStart: string, newEnd: string) => {
-    setStartDate(newStart);
-    setEndDate(newEnd);
+  const handleStartDateChange = (date: string) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date: string) => {
+    setEndDate(date);
   };
 
   const handleStatusChange = async (
@@ -80,9 +83,10 @@ export default function AdjustPage() {
       <div className="vintage-card p-6 mb-8">
         <h2 className="text-[1.1rem] font-serif text-fg mb-4">期間選択</h2>
         <PeriodPicker
-          onPeriodChange={handlePeriodChange}
-          defaultStartDate={startDate}
-          defaultEndDate={endDate}
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
         />
       </div>
 
