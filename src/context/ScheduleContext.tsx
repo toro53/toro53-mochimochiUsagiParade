@@ -4,6 +4,7 @@ import {
   BandScheduleEvent,
   MemberAvailability,
   DateAvailability,
+  AdjustSettings,
   initialScheduleEvents,
   BAND_MEMBERS,
 } from '@/data/bandSchedule';
@@ -13,6 +14,7 @@ interface ScheduleContextType {
   events: BandScheduleEvent[];
   availabilities: MemberAvailability[];
   dateAvailabilities: DateAvailability[];
+  adjustSettings: AdjustSettings[];
   loading: boolean;
   addAvailability: (
     eventId: string,
@@ -27,6 +29,13 @@ interface ScheduleContextType {
     status: 'available' | 'unavailable' | 'maybe'
   ) => Promise<void>;
   getAvailabilityForDate: (date: string) => DateAvailability[];
+  addAdjustSettings: (
+    startDate: string,
+    endDate: string,
+    targetDates?: string[]
+  ) => Promise<void>;
+  updateAdjustSettings: (id: string, settings: Partial<AdjustSettings>) => Promise<void>;
+  getActiveAdjustSettings: () => AdjustSettings[];
   addEvent: (event: BandScheduleEvent) => Promise<void>;
   updateEvent: (event: BandScheduleEvent) => Promise<void>;
   deleteEvent: (eventId: string) => Promise<void>;
@@ -44,6 +53,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const [dateAvailabilities, setDateAvailabilities] = useState<DateAvailability[]>(
     []
   );
+  const [adjustSettings, setAdjustSettings] = useState<AdjustSettings[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Load data from KV on mount
@@ -76,10 +86,20 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
         } else {
           setDateAvailabilities([]);
         }
+
+        // Fetch adjust settings
+        const adjustRes = await fetch('/api/band/adjust-settings');
+        if (adjustRes.ok) {
+          const data = await adjustRes.json();
+          setAdjustSettings(data.settings || []);
+        } else {
+          setAdjustSettings([]);
+        }
       } catch (error) {
         console.error('Failed to load schedule data:', error);
         setEvents(initialScheduleEvents);
         setAvailabilities([]);
+        setAdjustSettings([]);
       } finally {
         setLoading(false);
       }
@@ -188,17 +208,66 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const addAdjustSettings = async (
+    startDate: string,
+    endDate: string,
+    targetDates?: string[]
+  ) => {
+    try {
+      const response = await fetch('/api/band/adjust-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startDate, endDate, targetDates }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAdjustSettings(data.settings);
+      }
+    } catch (error) {
+      console.error('Failed to add adjust settings:', error);
+    }
+  };
+
+  const updateAdjustSettings = async (
+    id: string,
+    settings: Partial<AdjustSettings>
+  ) => {
+    try {
+      const response = await fetch(`/api/band/adjust-settings?id=${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAdjustSettings(data.settings);
+      }
+    } catch (error) {
+      console.error('Failed to update adjust settings:', error);
+    }
+  };
+
+  const getActiveAdjustSettings = (): AdjustSettings[] => {
+    return adjustSettings.filter((s) => s.enabled);
+  };
+
   return (
     <ScheduleContext.Provider
       value={{
         events,
         availabilities,
         dateAvailabilities,
+        adjustSettings,
         loading,
         addAvailability,
         getEventAvailabilities,
         addDateAvailability,
         getAvailabilityForDate,
+        addAdjustSettings,
+        updateAdjustSettings,
+        getActiveAdjustSettings,
         addEvent,
         updateEvent,
         deleteEvent,

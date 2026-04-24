@@ -5,15 +5,13 @@ import { useSchedule } from '@/context/ScheduleContext';
 import { BandMember } from '@/data/bandSchedule';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import PeriodPicker from '@/components/band/PeriodPicker';
+import AdjustCalendar from '@/components/band/AdjustCalendar';
 import AvailabilityCalendar from '@/components/band/AvailabilityCalendar';
 
 export default function AdjustPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { dateAvailabilities, loading, addDateAvailability } = useSchedule();
+  const { dateAvailabilities, adjustSettings, loading, addDateAvailability, addAdjustSettings } = useSchedule();
   const router = useRouter();
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -34,12 +32,8 @@ export default function AdjustPage() {
     );
   }
 
-  const handleStartDateChange = (date: string) => {
-    setStartDate(date);
-  };
-
-  const handleEndDateChange = (date: string) => {
-    setEndDate(date);
+  const handleRegisterDates = async (startDate: string, endDate: string, targetDates: string[]) => {
+    await addAdjustSettings(startDate, endDate, targetDates);
   };
 
   const handleStatusChange = async (
@@ -56,7 +50,7 @@ export default function AdjustPage() {
       <div className="mb-8">
         <h1 className="text-[2rem] font-serif text-fg mb-2">予定調節君</h1>
         <p className="text-fg-muted text-[0.95rem]">
-          期間を選択して、各日付のメンバーの参加可否を入力してください
+          対象日を登録して、各メンバーの参加可否を入力してください
         </p>
       </div>
 
@@ -79,39 +73,48 @@ export default function AdjustPage() {
         </button>
       </div>
 
-      {/* Period Picker */}
-      <div className="vintage-card p-6 mb-8">
-        <h2 className="text-[1.1rem] font-serif text-fg mb-4">期間選択</h2>
-        <PeriodPicker
-          startDate={startDate}
-          endDate={endDate}
-          onStartDateChange={handleStartDateChange}
-          onEndDateChange={handleEndDateChange}
-        />
+      {/* Step 1: Target Date Registration */}
+      <div className="mb-8">
+        <h2 className="text-[1.1rem] font-serif text-fg mb-4">ステップ 1: 対象日を登録</h2>
+        <div className="vintage-card p-6">
+          <AdjustCalendar onRegister={handleRegisterDates} />
+        </div>
       </div>
 
-      {/* Calendar */}
-      {startDate && endDate ? (
-        <div className="vintage-card p-6 overflow-auto">
-          <h2 className="text-[1.1rem] font-serif text-fg mb-4">
-            参加可否入力
-          </h2>
-          <div className="text-[0.85rem] text-fg-muted mb-4">
-            セルをクリックして状態を切り替えます：
-            <span className="ml-4">○ = 参加可能</span>
-            <span className="ml-4">△ = 未定</span>
-            <span className="ml-4">✕ = 参加不可</span>
+      {/* Step 2: Registered Settings and Availability Input */}
+      {adjustSettings.length > 0 ? (
+        <div className="mb-8">
+          <h2 className="text-[1.1rem] font-serif text-fg mb-4">ステップ 2: 参加可否を入力</h2>
+          <div className="space-y-8">
+            {adjustSettings.map((setting) => (
+              <div key={setting.id} className="vintage-card p-6 overflow-auto">
+                <div className="mb-4">
+                  <h3 className="font-serif text-fg mb-2">
+                    {setting.startDate} 〜 {setting.endDate}
+                  </h3>
+                  {setting.description && (
+                    <p className="text-sm text-fg-muted">{setting.description}</p>
+                  )}
+                </div>
+                <div className="text-[0.85rem] text-fg-muted mb-4">
+                  セルをクリックして状態を切り替えます：
+                  <span className="ml-4">○ = 参加可能</span>
+                  <span className="ml-4">△ = 未定</span>
+                  <span className="ml-4">✕ = 参加不可</span>
+                </div>
+                <AvailabilityCalendar
+                  startDate={setting.startDate}
+                  endDate={setting.endDate}
+                  dateAvailabilities={dateAvailabilities}
+                  onStatusChange={handleStatusChange}
+                />
+              </div>
+            ))}
           </div>
-          <AvailabilityCalendar
-            startDate={startDate}
-            endDate={endDate}
-            dateAvailabilities={dateAvailabilities}
-            onStatusChange={handleStatusChange}
-          />
         </div>
       ) : (
         <div className="vintage-card p-8 text-center text-fg-muted">
-          <p>開始日と終了日を選択して、カレンダーを表示します</p>
+          <p>対象日を登録してください</p>
         </div>
       )}
     </div>

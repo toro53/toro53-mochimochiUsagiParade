@@ -70,6 +70,16 @@ export interface DateAvailability {
   status: 'available' | 'unavailable' | 'maybe';
 }
 
+export interface AdjustSettings {
+  id: string;
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
+  targetDates?: string[]; // 明示的に選択した日付
+  createdAt: string; // ISO 8601
+  enabled: boolean;
+  description?: string;
+}
+
 export const getEventTypeLabel = (type: ScheduleEventType): string => {
   const labels: Record<ScheduleEventType, string> = {
     rehearsal: 'リハーサル',
