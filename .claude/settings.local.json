@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "mcp__Claude_Preview__preview_start",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git restore *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'fix\\(band\\): 認証チェック完了まで待機してリダイレクト *)"
     ]
   }
 }

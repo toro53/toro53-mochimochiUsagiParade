@@ -9,20 +9,25 @@ import ScheduleDetailModal from '@/components/band/ScheduleDetailModal';
 import { BandScheduleEvent } from '@/data/bandSchedule';
 
 export default function SchedulePage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const { events, loading } = useSchedule();
   const router = useRouter();
   const [selectedEvent, setSelectedEvent] = useState<BandScheduleEvent | null>(
     null
   );
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && !authLoading && !isAuthenticated) {
       router.push('/band');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, authLoading, router, mounted]);
 
-  if (loading) {
+  if (!mounted || authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-fg-muted">読み込み中...</p>
