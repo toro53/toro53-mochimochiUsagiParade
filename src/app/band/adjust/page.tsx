@@ -40,9 +40,11 @@ export default function AdjustPage() {
   const handleStatusChange = async (
     date: string,
     memberId: BandMember,
-    status: 'available' | 'unavailable' | 'maybe'
+    status: 'available' | 'unavailable' | 'maybe' | null
   ) => {
-    await addDateAvailability(date, memberId, status);
+    if (status !== null) {
+      await addDateAvailability(date, memberId, status);
+    }
   };
 
   const handleHideDate = async (date: string) => {

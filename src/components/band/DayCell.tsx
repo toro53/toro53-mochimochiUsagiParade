@@ -6,7 +6,7 @@ interface DayCellProps {
   date: string;
   memberId: BandMember;
   status: 'available' | 'unavailable' | 'maybe' | null;
-  onStatusChange: (date: string, memberId: BandMember, newStatus: 'available' | 'unavailable' | 'maybe') => void;
+  onStatusChange: (date: string, memberId: BandMember, newStatus: 'available' | 'unavailable' | 'maybe' | null) => Promise<void>;
 }
 
 const getNextStatus = (

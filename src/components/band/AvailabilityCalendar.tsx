@@ -7,7 +7,7 @@ interface AvailabilityCalendarProps {
   startDate: string;
   endDate: string;
   dateAvailabilities: DateAvailability[];
-  onStatusChange: (date: string, memberId: BandMember, status: 'available' | 'unavailable' | 'maybe') => Promise<void>;
+  onStatusChange: (date: string, memberId: BandMember, status: 'available' | 'unavailable' | 'maybe' | null) => Promise<void>;
   onHideDate?: (date: string) => Promise<void>;
   showHidden?: boolean;
 }
