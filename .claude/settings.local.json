@@ -6,7 +6,8 @@
       "Bash(git commit -m ' *)",
       "Bash(git restore *)",
       "Bash(git push *)",
-      "Bash(git commit -m 'fix\\(band\\): 認証チェック完了まで待機してリダイレクト *)"
+      "Bash(git commit -m 'fix\\(band\\): 認証チェック完了まで待機してリダイレクト *)",
+      "Bash(git commit -m 'fix\\(band\\): セルクリックで最後の状態からループするよう修正 *)"
     ]
   }
 }

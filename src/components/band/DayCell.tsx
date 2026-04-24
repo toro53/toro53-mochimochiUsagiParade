@@ -58,7 +58,10 @@ export default function DayCell({
 }: DayCellProps) {
   const handleClick = () => {
     const nextStatus = getNextStatus(status);
-    if (nextStatus !== null) {
+    // Cycle through: null → available → maybe → unavailable → available (loop back)
+    if (nextStatus === null) {
+      onStatusChange(date, memberId, 'available');
+    } else {
       onStatusChange(date, memberId, nextStatus);
     }
   };
