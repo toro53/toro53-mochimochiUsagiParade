@@ -95,9 +95,9 @@ export default function AvailabilityCalendar({
             const hidden = isDateHidden(date);
 
             return (
-              <tr key={date} style={{ height: '4rem' }} className={hidden ? 'opacity-50' : ''}>
+              <tr key={date} style={{ height: '1.5rem' }} className={hidden ? 'opacity-50' : ''}>
                 <td className="sticky left-0 border border-border p-0 text-sm font-medium text-fg-muted whitespace-nowrap">
-                  <div className="bg-card-bg h-full flex items-center justify-between px-4 py-3">
+                  <div className="bg-card-bg h-full flex items-center justify-between px-4 py-0">
                     <span>{displayDate}</span>
                     {onHideDate && (
                       <button
@@ -113,7 +113,7 @@ export default function AvailabilityCalendar({
                   <td
                     key={`${date}-${member}`}
                     className="border border-border p-0"
-                    style={{ verticalAlign: 'middle', height: '4rem' }}
+                    style={{ verticalAlign: 'middle', height: '1.5rem' }}
                   >
                     <DayCell
                       date={date}
