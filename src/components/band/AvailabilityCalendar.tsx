@@ -7,7 +7,9 @@ interface AvailabilityCalendarProps {
   startDate: string;
   endDate: string;
   dateAvailabilities: DateAvailability[];
-  onStatusChange: (date: string, memberId: BandMember, status: 'available' | 'unavailable' | 'maybe') => void;
+  onStatusChange: (date: string, memberId: BandMember, status: 'available' | 'unavailable' | 'maybe') => Promise<void>;
+  onHideDate?: (date: string) => Promise<void>;
+  showHidden?: boolean;
 }
 
 function getDatesInRange(startStr: string, endStr: string): string[] {
@@ -32,6 +34,8 @@ export default function AvailabilityCalendar({
   endDate,
   dateAvailabilities,
   onStatusChange,
+  onHideDate,
+  showHidden = false,
 }: AvailabilityCalendarProps) {
   const dates = getDatesInRange(startDate, endDate);
 
@@ -44,6 +48,16 @@ export default function AvailabilityCalendar({
     );
     return availability ? availability.status : null;
   };
+
+  const isDateHidden = (date: string): boolean => {
+    return dateAvailabilities.some(
+      (a) => a.date === date && a.hidden === true
+    );
+  };
+
+  const visibleDates = showHidden
+    ? dates
+    : dates.filter((date) => !isDateHidden(date));
 
   if (dates.length === 0) {
     return (
@@ -72,17 +86,26 @@ export default function AvailabilityCalendar({
           </tr>
         </thead>
         <tbody>
-          {dates.map((date) => {
+          {visibleDates.map((date) => {
             const dateObj = new Date(date + 'T00:00:00');
             const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][
               dateObj.getDay()
             ];
             const displayDate = `${date.split('-')[1]}/${date.split('-')[2]} (${dayOfWeek})`;
+            const hidden = isDateHidden(date);
 
             return (
-              <tr key={date}>
-                <td className="sticky left-0 bg-card-bg border border-border px-4 py-3 text-sm font-medium text-fg-muted whitespace-nowrap">
-                  {displayDate}
+              <tr key={date} className={hidden ? 'opacity-50' : ''}>
+                <td className="sticky left-0 bg-card-bg border border-border px-4 py-3 text-sm font-medium text-fg-muted whitespace-nowrap flex items-center justify-between">
+                  <span>{displayDate}</span>
+                  {onHideDate && (
+                    <button
+                      onClick={() => onHideDate(date)}
+                      className="ml-2 px-2 py-1 text-xs border border-border text-fg-muted hover:border-accent hover:text-accent transition-colors"
+                    >
+                      {hidden ? '表示' : '非表示'}
+                    </button>
+                  )}
                 </td>
                 {BAND_MEMBERS.map((member) => (
                   <td
