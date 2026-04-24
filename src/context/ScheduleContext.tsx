@@ -26,7 +26,7 @@ interface ScheduleContextType {
   addDateAvailability: (
     date: string,
     memberId: string,
-    status: 'available' | 'unavailable' | 'maybe',
+    status: 'available' | 'unavailable' | 'maybe' | null,
     hidden?: boolean
   ) => Promise<void>;
   getAvailabilityForDate: (date: string) => DateAvailability[];
@@ -138,9 +138,27 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const addDateAvailability = async (
     date: string,
     memberId: string,
-    status: 'available' | 'unavailable' | 'maybe',
+    status: 'available' | 'unavailable' | 'maybe' | null,
     hidden?: boolean
   ) => {
+    // 楽観的更新：即座にローカル状態を更新
+    setDateAvailabilities(prev => {
+      const existing = prev.findIndex(a => a.date === date && a.memberId === memberId);
+      if (existing !== -1) {
+        const updated = [...prev];
+        if (status === null) {
+          updated.splice(existing, 1);
+        } else {
+          updated[existing] = { ...updated[existing], status };
+        }
+        return updated;
+      } else if (status !== null) {
+        return [...prev, { date, memberId, status, hidden: hidden ?? false }];
+      }
+      return prev;
+    });
+
+    // API呼び出し（非同期）
     try {
       const response = await fetch('/api/band/availability-dates', {
         method: 'POST',
