@@ -11,16 +11,15 @@ interface DayCellProps {
 
 const getNextStatus = (
   current: 'available' | 'unavailable' | 'maybe' | null
-): 'available' | 'unavailable' | 'maybe' | null => {
+): 'available' | 'unavailable' | 'maybe' => {
   switch (current) {
     case null:
-      return 'available';
     case 'available':
       return 'maybe';
     case 'maybe':
       return 'unavailable';
     case 'unavailable':
-      return null;
+      return 'available';
   }
 };
 
@@ -58,12 +57,7 @@ export default function DayCell({
 }: DayCellProps) {
   const handleClick = () => {
     const nextStatus = getNextStatus(status);
-    // Cycle through: null → available → maybe → unavailable → available (loop back)
-    if (nextStatus === null) {
-      onStatusChange(date, memberId, 'available');
-    } else {
-      onStatusChange(date, memberId, nextStatus);
-    }
+    onStatusChange(date, memberId, nextStatus);
   };
 
   return (
