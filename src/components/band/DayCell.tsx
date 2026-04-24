@@ -63,7 +63,7 @@ export default function DayCell({
   return (
     <button
       onClick={handleClick}
-      className={`h-12 flex items-center justify-center rounded-sm text-sm font-medium transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-accent ${
+      className={`h-16 flex items-center justify-center rounded-sm text-2xl font-medium transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-accent ${
         statusColor(status)
       }`}
       title={`${memberId} - ${date}`}
