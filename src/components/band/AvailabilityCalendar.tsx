@@ -113,6 +113,7 @@ export default function AvailabilityCalendar({
                   <td
                     key={`${date}-${member}`}
                     className="border border-border p-0"
+                    style={{ verticalAlign: 'middle', height: '4rem' }}
                   >
                     <DayCell
                       date={date}
