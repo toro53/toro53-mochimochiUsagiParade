@@ -72,13 +72,13 @@ export default function AvailabilityCalendar({
       <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className="sticky left-0 bg-card-bg border border-border px-4 py-3 text-left text-[0.85rem] font-medium text-fg-muted uppercase tracking-wider">
+            <th className="sticky left-0 bg-card-bg border border-border px-2 py-3 text-left text-[0.75rem] font-medium text-fg-muted uppercase tracking-wider">
               日付
             </th>
             {BAND_MEMBERS.map((member) => (
               <th
                 key={member}
-                className="border border-border px-4 py-3 text-center text-[0.75rem] font-medium text-fg-muted uppercase tracking-wider min-w-[80px]"
+                className="border border-border px-1 py-3 text-center text-[0.65rem] font-medium text-fg-muted uppercase tracking-wider min-w-[60px]"
               >
                 {member}
               </th>
@@ -91,20 +91,20 @@ export default function AvailabilityCalendar({
             const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][
               dateObj.getDay()
             ];
-            const displayDate = `${date.split('-')[1]}/${date.split('-')[2]} (${dayOfWeek})`;
+            const displayDate = `${parseInt(date.split('-')[1])}/${parseInt(date.split('-')[2])}`;
             const hidden = isDateHidden(date);
 
             return (
               <tr key={date} style={{ height: '1.5rem' }} className={hidden ? 'opacity-50' : ''}>
                 <td className="sticky left-0 border border-border p-0 text-sm font-medium text-fg-muted whitespace-nowrap">
-                  <div className="bg-card-bg h-full flex items-center justify-between px-4 py-0">
+                  <div className="bg-card-bg h-full flex items-center justify-between px-2 py-0">
                     <span>{displayDate}</span>
                     {onHideDate && (
                       <button
                         onClick={() => onHideDate(date)}
-                        className="ml-2 px-2 py-1 text-xs border border-border text-fg-muted hover:border-accent hover:text-accent transition-colors"
+                        className="ml-1 px-1 py-0 text-[0.6rem] border border-border text-fg-muted hover:border-accent hover:text-accent transition-colors"
                       >
-                        {hidden ? '表示' : '非表示'}
+                        {hidden ? '表' : '非'}
                       </button>
                     )}
                   </div>
