@@ -33,7 +33,7 @@ const statusSymbol = (status: 'available' | 'unavailable' | 'maybe' | null) => {
     case 'maybe':
       return '△';
     default:
-      return '確認中';
+      return '／';
   }
 };
 
