@@ -7,6 +7,7 @@ import {
   AdjustSettings,
   initialScheduleEvents,
   BAND_MEMBERS,
+  BandMember,
 } from '@/data/bandSchedule';
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
@@ -153,7 +154,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
         }
         return updated;
       } else if (status !== null) {
-        return [...prev, { date, memberId, status, hidden: hidden ?? false }];
+        return [...prev, { date, memberId: memberId as BandMember, status, hidden: hidden ?? false }];
       }
       return prev;
     });
