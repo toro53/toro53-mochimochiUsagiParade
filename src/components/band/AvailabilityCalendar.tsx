@@ -78,9 +78,9 @@ export default function AvailabilityCalendar({
             {BAND_MEMBERS.map((member) => (
               <th
                 key={member}
-                className="border border-border px-1 py-3 text-center text-[0.65rem] font-medium text-fg-muted uppercase tracking-wider min-w-[60px]"
+                className="border border-border px-1 py-3 text-center text-[0.65rem] font-medium text-fg-muted uppercase tracking-wider min-w-[50px]"
               >
-                {member}
+                {member.substring(0, 3)}
               </th>
             ))}
           </tr>
