@@ -118,7 +118,7 @@ export default function AvailabilityCalendar({
                 {onHideDate && (
                   <td
                     className="border border-border p-0"
-                    style={{ verticalAlign: 'middle', height: '1.5rem', width: '40px' }}
+                    style={{ verticalAlign: 'middle', height: '1.5rem', width: '60px' }}
                   >
                     <button
                       onClick={() => onHideDate(date)}
