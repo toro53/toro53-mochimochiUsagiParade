@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { date, memberId, status } = await req.json();
+    const { date, memberId, status, hidden } = await req.json();
     const storedAvailabilities = await kv.get<DateAvailability[]>(KV_KEY);
     const availabilities = storedAvailabilities || [];
 
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
       date,
       memberId,
       status,
+      ...(hidden !== undefined && { hidden }),
     };
 
     if (index !== -1) {

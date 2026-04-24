@@ -68,6 +68,7 @@ export interface DateAvailability {
   date: string; // YYYY-MM-DD
   memberId: BandMember;
   status: 'available' | 'unavailable' | 'maybe';
+  hidden?: boolean;
 }
 
 export interface AdjustSettings {

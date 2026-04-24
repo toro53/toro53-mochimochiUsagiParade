@@ -26,7 +26,8 @@ interface ScheduleContextType {
   addDateAvailability: (
     date: string,
     memberId: string,
-    status: 'available' | 'unavailable' | 'maybe'
+    status: 'available' | 'unavailable' | 'maybe',
+    hidden?: boolean
   ) => Promise<void>;
   getAvailabilityForDate: (date: string) => DateAvailability[];
   addAdjustSettings: (
@@ -137,13 +138,14 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
   const addDateAvailability = async (
     date: string,
     memberId: string,
-    status: 'available' | 'unavailable' | 'maybe'
+    status: 'available' | 'unavailable' | 'maybe',
+    hidden?: boolean
   ) => {
     try {
       const response = await fetch('/api/band/availability-dates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date, memberId, status }),
+        body: JSON.stringify({ date, memberId, status, ...(hidden !== undefined && { hidden }) }),
       });
 
       if (response.ok) {

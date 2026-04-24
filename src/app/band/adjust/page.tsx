@@ -10,7 +10,7 @@ import AvailabilityCalendar from '@/components/band/AvailabilityCalendar';
 
 export default function AdjustPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { dateAvailabilities, adjustSettings, loading, addDateAvailability, addAdjustSettings, updateAdjustSettings } = useSchedule();
+  const { dateAvailabilities, adjustSettings, loading, addDateAvailability, addAdjustSettings } = useSchedule();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [showHidden, setShowHidden] = useState(false);
@@ -45,11 +45,16 @@ export default function AdjustPage() {
     await addDateAvailability(date, memberId, status);
   };
 
-  const handleHideSetting = async (id: string) => {
-    await updateAdjustSettings(id, { enabled: false });
-  };
+  const handleHideDate = async (date: string) => {
+    // Toggle hidden status for all members on this date
+    const dateEntries = dateAvailabilities.filter(a => a.date === date);
+    const isCurrentlyHidden = dateEntries.some(a => a.hidden === true);
+    const newHiddenState = !isCurrentlyHidden;
 
-  const visibleSettings = showHidden ? adjustSettings : adjustSettings.filter(s => s.enabled);
+    for (const entry of dateEntries) {
+      await addDateAvailability(date, entry.memberId, entry.status, newHiddenState);
+    }
+  };
 
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8">
@@ -93,7 +98,7 @@ export default function AdjustPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-[1.1rem] font-serif text-fg">ステップ 2: 参加可否を入力</h2>
-            {adjustSettings.some(s => !s.enabled) && (
+            {dateAvailabilities.some(a => a.hidden) && (
               <label className="flex items-center gap-2 text-sm text-fg-muted cursor-pointer">
                 <input
                   type="checkbox"
@@ -106,42 +111,28 @@ export default function AdjustPage() {
             )}
           </div>
           <div className="space-y-8">
-            {visibleSettings.map((setting) => (
-              <div key={setting.id} className={`vintage-card p-6 overflow-auto ${!setting.enabled ? 'opacity-50' : ''}`}>
-                <div className="mb-4 flex justify-between items-start">
-                  <div>
-                    <h3 className="font-serif text-fg mb-2">
-                      {setting.startDate} 〜 {setting.endDate}
-                    </h3>
-                    {setting.description && (
-                      <p className="text-sm text-fg-muted">{setting.description}</p>
-                    )}
-                  </div>
-                  {setting.enabled && (
-                    <button
-                      onClick={() => handleHideSetting(setting.id)}
-                      className="px-3 py-1 text-xs border border-border text-fg-muted hover:border-accent hover:text-accent transition-colors whitespace-nowrap"
-                    >
-                      非表示
-                    </button>
-                  )}
-                </div>
-                {setting.enabled && (
-                  <>
-                    <div className="text-[0.85rem] text-fg-muted mb-4">
-                      セルをクリックして状態を切り替えます：
-                      <span className="ml-4">○ = 参加可能</span>
-                      <span className="ml-4">△ = 未定</span>
-                      <span className="ml-4">✕ = 参加不可</span>
-                    </div>
-                    <AvailabilityCalendar
-                      startDate={setting.startDate}
-                      endDate={setting.endDate}
-                      dateAvailabilities={dateAvailabilities}
-                      onStatusChange={handleStatusChange}
-                    />
-                  </>
+            {adjustSettings.map((setting) => (
+              <div key={setting.id} className="vintage-card p-6 overflow-auto">
+                <h3 className="font-serif text-fg mb-4">
+                  {setting.startDate} 〜 {setting.endDate}
+                </h3>
+                {setting.description && (
+                  <p className="text-sm text-fg-muted mb-4">{setting.description}</p>
                 )}
+                <div className="text-[0.85rem] text-fg-muted mb-4">
+                  セルをクリックして状態を切り替えます、日付行の「非表示」ボタンで日ごと非表示：
+                  <span className="ml-4">○ = 参加可能</span>
+                  <span className="ml-4">△ = 未定</span>
+                  <span className="ml-4">✕ = 参加不可</span>
+                </div>
+                <AvailabilityCalendar
+                  startDate={setting.startDate}
+                  endDate={setting.endDate}
+                  dateAvailabilities={dateAvailabilities}
+                  onStatusChange={handleStatusChange}
+                  onHideDate={handleHideDate}
+                  showHidden={showHidden}
+                />
               </div>
             ))}
           </div>
