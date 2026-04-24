@@ -112,7 +112,7 @@ export default function AvailabilityCalendar({
                 {BAND_MEMBERS.map((member) => (
                   <td
                     key={`${date}-${member}`}
-                    className="border border-border p-2 flex items-center justify-center"
+                    className="border border-border p-0"
                   >
                     <DayCell
                       date={date}
