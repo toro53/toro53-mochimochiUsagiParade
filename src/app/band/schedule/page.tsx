@@ -8,13 +8,14 @@ import ScheduleCard from '@/components/band/ScheduleCard';
 import ScheduleDetailModal from '@/components/band/ScheduleDetailModal';
 import { BandScheduleEvent } from '@/data/bandSchedule';
 
+type ModalMode = 'view' | 'edit' | 'create';
+
 export default function SchedulePage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { events, loading } = useSchedule();
+  const { events, loading, addEvent, updateEvent, deleteEvent } = useSchedule();
   const router = useRouter();
-  const [selectedEvent, setSelectedEvent] = useState<BandScheduleEvent | null>(
-    null
-  );
+  const [selectedEvent, setSelectedEvent] = useState<BandScheduleEvent | null>(null);
+  const [modalMode, setModalMode] = useState<ModalMode>('view');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -35,6 +36,39 @@ export default function SchedulePage() {
     );
   }
 
+  const handleEventClick = (event: BandScheduleEvent) => {
+    setSelectedEvent(event);
+    setModalMode('view');
+  };
+
+  const handleCreateNew = () => {
+    setSelectedEvent(null);
+    setModalMode('create');
+  };
+
+  const handleSave = async (event: BandScheduleEvent) => {
+    if (modalMode === 'create') {
+      await addEvent(event);
+    } else if (modalMode === 'edit') {
+      await updateEvent(event);
+    }
+  };
+
+  const handleDelete = async (eventId: string) => {
+    await deleteEvent(eventId);
+  };
+
+  const handleEditClick = () => {
+    if (selectedEvent) {
+      setModalMode('edit');
+    }
+  };
+
+  const handleModalClose = () => {
+    setSelectedEvent(null);
+    setModalMode('view');
+  };
+
   const sortedEvents = [...events].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
@@ -53,6 +87,12 @@ export default function SchedulePage() {
 
       {/* Navigation */}
       <div className="flex gap-4 mb-8">
+        <button
+          onClick={handleCreateNew}
+          className="px-6 py-3 bg-accent text-card-bg hover:opacity-90 transition-all uppercase text-[0.75rem] tracking-[0.15em] font-medium"
+        >
+          新規追加
+        </button>
         <a
           href="/band/adjust"
           className="px-6 py-3 border border-accent text-accent hover:bg-accent hover:text-card-bg transition-colors uppercase text-[0.75rem] tracking-[0.15em] font-medium"
@@ -81,17 +121,20 @@ export default function SchedulePage() {
             <ScheduleCard
               key={event.id}
               event={event}
-              onClick={() => setSelectedEvent(event)}
+              onClick={() => handleEventClick(event)}
             />
           ))}
         </div>
       )}
 
       {/* Detail Modal */}
-      {selectedEvent && (
+      {(selectedEvent || modalMode === 'create') && (
         <ScheduleDetailModal
-          event={selectedEvent}
-          onClose={() => setSelectedEvent(null)}
+          event={selectedEvent || undefined}
+          mode={modalMode === 'view' && selectedEvent ? 'view' : modalMode}
+          onClose={handleModalClose}
+          onSave={handleSave}
+          onDelete={handleDelete}
         />
       )}
     </div>
