@@ -11,15 +11,16 @@ interface DayCellProps {
 
 const getNextStatus = (
   current: 'available' | 'unavailable' | 'maybe' | null
-): 'available' | 'unavailable' | 'maybe' => {
+): 'available' | 'unavailable' | 'maybe' | null => {
   switch (current) {
     case null:
+      return 'available';
     case 'available':
       return 'maybe';
     case 'maybe':
       return 'unavailable';
     case 'unavailable':
-      return 'available';
+      return null;
   }
 };
 
@@ -32,7 +33,7 @@ const statusSymbol = (status: 'available' | 'unavailable' | 'maybe' | null) => {
     case 'maybe':
       return '△';
     default:
-      return '';
+      return '-';
   }
 };
 
