@@ -97,16 +97,8 @@ export default function AvailabilityCalendar({
             return (
               <tr key={date} style={{ height: '1.5rem' }} className={hidden ? 'opacity-50' : ''}>
                 <td className="sticky left-0 border border-border p-0 text-sm font-medium text-fg-muted whitespace-nowrap">
-                  <div className="bg-card-bg h-full flex items-center justify-between px-2 py-0">
+                  <div className="bg-card-bg h-full flex items-center px-2 py-0">
                     <span>{displayDate}</span>
-                    {onHideDate && (
-                      <button
-                        onClick={() => onHideDate(date)}
-                        className="ml-1 px-1 py-0 text-[0.6rem] border border-border text-fg-muted hover:border-accent hover:text-accent transition-colors"
-                      >
-                        {hidden ? '表' : '非'}
-                      </button>
-                    )}
                   </div>
                 </td>
                 {BAND_MEMBERS.map((member) => (
@@ -123,6 +115,20 @@ export default function AvailabilityCalendar({
                     />
                   </td>
                 ))}
+                {onHideDate && (
+                  <td
+                    className="border border-border p-0"
+                    style={{ verticalAlign: 'middle', height: '1.5rem', width: '40px' }}
+                  >
+                    <button
+                      onClick={() => onHideDate(date)}
+                      className="h-full w-full flex items-center justify-center px-1 py-0 text-[0.6rem] border-none text-fg-muted hover:text-accent transition-colors"
+                      title={hidden ? '表示' : '非表示'}
+                    >
+                      {hidden ? '表' : '非'}
+                    </button>
+                  </td>
+                )}
               </tr>
             );
           })}
