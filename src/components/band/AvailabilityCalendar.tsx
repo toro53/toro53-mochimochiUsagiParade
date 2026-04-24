@@ -96,22 +96,23 @@ export default function AvailabilityCalendar({
 
             return (
               <tr key={date} style={{ height: '4rem' }} className={hidden ? 'opacity-50' : ''}>
-                <td className="sticky left-0 bg-card-bg border border-border px-4 text-sm font-medium text-fg-muted whitespace-nowrap flex items-center justify-between" style={{ height: '4rem' }}>
-                  <span>{displayDate}</span>
-                  {onHideDate && (
-                    <button
-                      onClick={() => onHideDate(date)}
-                      className="ml-2 px-2 py-1 text-xs border border-border text-fg-muted hover:border-accent hover:text-accent transition-colors"
-                    >
-                      {hidden ? '表示' : '非表示'}
-                    </button>
-                  )}
+                <td className="sticky left-0 border border-border p-0 text-sm font-medium text-fg-muted whitespace-nowrap">
+                  <div className="bg-card-bg h-full flex items-center justify-between px-4 py-3">
+                    <span>{displayDate}</span>
+                    {onHideDate && (
+                      <button
+                        onClick={() => onHideDate(date)}
+                        className="ml-2 px-2 py-1 text-xs border border-border text-fg-muted hover:border-accent hover:text-accent transition-colors"
+                      >
+                        {hidden ? '表示' : '非表示'}
+                      </button>
+                    )}
+                  </div>
                 </td>
                 {BAND_MEMBERS.map((member) => (
                   <td
                     key={`${date}-${member}`}
                     className="border border-border p-2"
-                    style={{ height: '4rem' }}
                   >
                     <DayCell
                       date={date}
