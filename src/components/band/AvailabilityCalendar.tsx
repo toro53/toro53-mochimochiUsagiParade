@@ -122,7 +122,7 @@ export default function AvailabilityCalendar({
                   >
                     <button
                       onClick={() => onHideDate(date)}
-                      className="h-full w-full flex items-center justify-center px-1 py-0 text-[0.6rem] border-none text-fg-muted hover:text-accent transition-colors"
+                      className="h-full w-full flex items-center justify-center px-1 py-0 text-[0.55rem] border-none text-fg-muted hover:text-accent transition-colors whitespace-nowrap"
                       title={hidden ? '表示' : '非表示'}
                     >
                       {hidden ? '表示' : '非表示'}
