@@ -112,31 +112,21 @@ export default function AdjustPage() {
               </label>
             )}
           </div>
-          <div className="space-y-8">
-            {adjustSettings.map((setting) => (
-              <div key={setting.id} className="vintage-card p-6 overflow-auto">
-                <h3 className="font-serif text-fg mb-4">
-                  {setting.startDate} 〜 {setting.endDate}
-                </h3>
-                {setting.description && (
-                  <p className="text-sm text-fg-muted mb-4">{setting.description}</p>
-                )}
-                <div className="text-[0.85rem] text-fg-muted mb-4">
-                  セルをクリックして状態を切り替えます、日付行の「非表示」ボタンで日ごと非表示：
-                  <span className="ml-4">○ = 参加可能</span>
-                  <span className="ml-4">△ = 未定</span>
-                  <span className="ml-4">✕ = 参加不可</span>
-                </div>
-                <AvailabilityCalendar
-                  startDate={setting.startDate}
-                  endDate={setting.endDate}
-                  dateAvailabilities={dateAvailabilities}
-                  onStatusChange={handleStatusChange}
-                  onHideDate={handleHideDate}
-                  showHidden={showHidden}
-                />
-              </div>
-            ))}
+          <div className="vintage-card p-6 overflow-auto">
+            <div className="text-[0.85rem] text-fg-muted mb-4">
+              セルをクリックして状態を切り替えます、日付行の「非表示」ボタンで日ごと非表示：
+              <span className="ml-4">○ = 参加可能</span>
+              <span className="ml-4">△ = 未定</span>
+              <span className="ml-4">✕ = 参加不可</span>
+            </div>
+            <AvailabilityCalendar
+              startDate={adjustSettings.reduce((min, s) => (s.startDate < min ? s.startDate : min), adjustSettings[0].startDate)}
+              endDate={adjustSettings.reduce((max, s) => (s.endDate > max ? s.endDate : max), adjustSettings[0].endDate)}
+              dateAvailabilities={dateAvailabilities}
+              onStatusChange={handleStatusChange}
+              onHideDate={handleHideDate}
+              showHidden={showHidden}
+            />
           </div>
         </div>
       ) : (
