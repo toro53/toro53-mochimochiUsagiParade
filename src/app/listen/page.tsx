@@ -29,6 +29,14 @@ export default function ListenPage() {
         </div>
         <NewRelease />
         <Discography />
+        <div className="text-center py-16">
+          <Link
+            href="/"
+            className="inline-block px-8 py-3 bg-fg text-bg font-semibold rounded-full hover:bg-fg-muted transition-colors"
+          >
+            TOPへ
+          </Link>
+        </div>
       </main>
       <Footer />
     </>
