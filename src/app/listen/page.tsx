@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Nav from "@/components/Nav";
 import NewRelease from "@/components/NewRelease";
 import Discography from "@/components/Discography";
 import Footer from "@/components/Footer";
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 export default function ListenPage() {
   return (
     <>
+      <Nav />
       <main className="min-h-screen bg-bg pt-16 pb-32">
         <div className="text-center py-10 px-8">
           <Link
