@@ -125,7 +125,7 @@ export default function AvailabilityCalendar({
                       className="h-full w-full flex items-center justify-center px-1 py-0 text-[0.6rem] border-none text-fg-muted hover:text-accent transition-colors"
                       title={hidden ? '表示' : '非表示'}
                     >
-                      {hidden ? '表' : '非'}
+                      {hidden ? '表示' : '非表示'}
                     </button>
                   </td>
                 )}
