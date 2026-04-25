@@ -8,7 +8,13 @@
       "Bash(git push *)",
       "Bash(git commit -m 'fix\\(band\\): 認証チェック完了まで待機してリダイレクト *)",
       "Bash(git commit -m 'fix\\(band\\): セルクリックで最後の状態からループするよう修正 *)",
-      "Bash(git commit -m 'refactor\\(band\\): セルを3状態ループに簡略化 *)"
+      "Bash(git commit -m 'refactor\\(band\\): セルを3状態ループに簡略化 *)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__tabs_close_mcp",
+      "Bash(git commit *)",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer",
+      "Bash(grep -E \"\\\\.\\(tsx?|jsx?\\)$\")"
     ]
   }
 }

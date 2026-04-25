@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 
 const links = [
-  { href: "#news", label: "NEWS" },
-  { href: "#live", label: "LIVE" },
-  { href: "#discography", label: "WORKS" },
-  { href: "#about", label: "ABOUT" },
+  { href: "/#news", label: "NEWS" },
+  { href: "/#live", label: "LIVE" },
+  { href: "/#discography", label: "WORKS" },
+  { href: "/#about", label: "ABOUT" },
 ];
 
 export default function Nav() {
@@ -28,7 +28,7 @@ export default function Nav() {
     >
       <div className="max-w-[960px] mx-auto flex items-center justify-between max-sm:flex-col max-sm:items-center max-sm:gap-[0.45rem]">
         <a
-          href="#hero"
+          href="/"
           className="font-[family-name:var(--font-serif-jp)] text-[clamp(0.8rem,2.5vw,1rem)] tracking-[0.05em] text-fg no-underline opacity-85 whitespace-nowrap"
         >
           もちもちうさぎパレード
