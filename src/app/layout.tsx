@@ -24,9 +24,6 @@ export const metadata: Metadata = {
   title: "もちもちうさぎパレード",
   description: "同人音楽サークル もちもちうさぎパレード。M3・ボーマス等のイベントに参加するロック系同人サークルです。",
   keywords: ["もちもちうさぎパレード", "同人音楽", "M3", "ボーマス", "同人サークル", "ロック"],
-  icons: {
-    icon: "/favicon.svg",
-  },
   openGraph: {
     title: "もちもちうさぎパレード",
     description: "同人音楽サークル もちもちうさぎパレード。M3・ボーマス等のイベントに参加するロック系同人サークルです。",

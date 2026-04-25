@@ -15,7 +15,8 @@
       "mcp__Claude_in_Chrome__navigate",
       "mcp__Claude_in_Chrome__computer",
       "Bash(grep -E \"\\\\.\\(tsx?|jsx?\\)$\")",
-      "PowerShell(Move-Item -Path \"C:\\\\GIT\\\\MochimochiUsagiParade\\\\public\\\\favicon.svg\" -Destination \"C:\\\\GIT\\\\MochimochiUsagiParade\\\\app\\\\favicon.svg\")"
+      "PowerShell(Move-Item -Path \"C:\\\\GIT\\\\MochimochiUsagiParade\\\\public\\\\favicon.svg\" -Destination \"C:\\\\GIT\\\\MochimochiUsagiParade\\\\app\\\\favicon.svg\")",
+      "Bash(ls -lh C:\\\\\\\\GIT\\\\\\\\MochimochiUsagiParade\\\\\\\\public\\\\\\\\favicon.svg)"
     ]
   }
 }
