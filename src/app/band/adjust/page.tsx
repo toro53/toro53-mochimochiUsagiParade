@@ -14,6 +14,7 @@ export default function AdjustPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [showHidden, setShowHidden] = useState(false);
+  const [step1Open, setStep1Open] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -97,10 +98,23 @@ export default function AdjustPage() {
 
       {/* Step 1: Target Date Registration */}
       <div className="mb-8">
-        <h2 className="text-[1.1rem] font-serif text-fg mb-4">ステップ 1: 対象日を登録</h2>
-        <div className="vintage-card p-6">
-          <AdjustCalendar onRegister={handleRegisterDates} />
-        </div>
+        <button
+          onClick={() => setStep1Open(prev => !prev)}
+          className="flex items-center gap-2 text-[1.1rem] font-serif text-fg mb-4 hover:text-accent transition-colors w-full text-left"
+        >
+          <span
+            className="text-[0.85rem] text-fg-muted transition-transform duration-200"
+            style={{ display: 'inline-block', transform: step1Open ? 'rotate(90deg)' : 'rotate(0deg)' }}
+          >
+            ▶
+          </span>
+          ステップ 1: 対象日を登録
+        </button>
+        {step1Open && (
+          <div className="vintage-card p-6">
+            <AdjustCalendar onRegister={handleRegisterDates} />
+          </div>
+        )}
       </div>
 
       {/* Step 2: Registered Settings and Availability Input */}
