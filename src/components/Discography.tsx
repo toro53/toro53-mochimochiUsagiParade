@@ -85,12 +85,9 @@ export default function Discography() {
 
   const handleShuffle = () => {
     const allTracks: Track[] = works.flatMap((w) =>
-      w.tracks.map((t) => ({
-        title: t.title,
-        albumTitle: w.title,
-        file: t.file,
-        jacket: w.img,
-      }))
+      w.tracks.flatMap((t) =>
+        t.file ? [{ title: t.title, albumTitle: w.title, file: t.file, jacket: w.img }] : []
+      )
     );
     const shuffled = shuffleArray(allTracks);
     if (shuffled.length > 0) play(shuffled[0], shuffled);

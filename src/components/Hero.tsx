@@ -7,8 +7,16 @@ import { usePlayer } from "@/context/PlayerContext";
 // bgColor: ジャケットの雰囲気に合わせた暗い背景色
 const slides = [
   {
-    title: "死灰、復燃えて",
+    title: "Parade In The Room",
     event: "最新作",
+    img: "/Music/parade-in-the-room/jacket.webp",
+    audio: "/Music/parade-in-the-room/快晴に孤独.mp3",
+    href: "https://torosanshin.booth.pm/items/8977644",
+    bgColor: "#12181c",
+  },
+  {
+    title: "死灰、復燃えて",
+    event: "M3-2026春",
     img: "/Music/shikaimata/jacket.png",
     audio: "/Music/shikaimata/死灰、復燃えて.mp3",
     href: "https://torosanshin.booth.pm/items/8255437",
@@ -359,7 +367,8 @@ export default function Hero() {
             <button
               onClick={togglePlay}
               aria-label={playing ? "一時停止" : "再生"}
-              className="bg-transparent border border-accent-light text-accent-light w-[2.8rem] h-[2.8rem] rounded-full cursor-pointer flex items-center justify-center transition-[background,color] hover:bg-accent-light hover:text-bg"
+              disabled={!slides[current].audio}
+              className="bg-transparent border border-accent-light text-accent-light w-[2.8rem] h-[2.8rem] rounded-full cursor-pointer flex items-center justify-center transition-[background,color] hover:bg-accent-light hover:text-bg disabled:opacity-30 disabled:pointer-events-none"
             >
               {playing ? (
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">

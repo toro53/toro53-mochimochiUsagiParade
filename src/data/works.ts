@@ -3,15 +3,31 @@ export type Work = {
   event: string;
   img: string;
   href?: string;
-  tracks: { title: string; file: string }[];
+  // file が無い曲は曲名だけ表示される（試聴準備中）
+  tracks: { title: string; file?: string }[];
 };
 
 const m = (album: string, file: string) => `/Music/${album}/${file}`;
 
 export const works: Work[] = [
   {
-    title: "死灰、復燃えて",
+    title: "Parade In The Room",
     event: "最新作",
+    img: m("parade-in-the-room", "jacket.webp"),
+    href: "https://torosanshin.booth.pm/items/8977644",
+    tracks: [
+      { title: "Dialog0",              file: m("parade-in-the-room", "Dialog0.mp3") },
+      { title: "快晴に孤独",           file: m("parade-in-the-room", "快晴に孤独.mp3") },
+      { title: "イカロスの隣人",       file: m("parade-in-the-room", "イカロスの隣人.mp3") },
+      { title: "旅に出よう",           file: m("parade-in-the-room", "旅に出よう.mp3") },
+      { title: "月面鈍行",             file: m("parade-in-the-room", "月面鈍行.mp3") },
+      { title: "シュレーディンガーの星", file: m("parade-in-the-room", "シュレーディンガーの星.mp3") },
+      { title: "NOISYEMOTION",         file: m("parade-in-the-room", "noisyemotion.mp3") },
+    ],
+  },
+  {
+    title: "死灰、復燃えて",
+    event: "M3-2026春",
     img: "/Music/shikaimata/jacket.png",
     href: "https://torosanshin.booth.pm/items/8255437",
     tracks: [

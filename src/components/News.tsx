@@ -4,6 +4,36 @@ import { useState } from "react";
 
 const newsItems = [
   {
+    date: "2027.01.09",
+    tag: "ライブ",
+    title: "下北沢周辺にてライブ予定",
+    description: "詳細は後日お知らせします。",
+  },
+  {
+    date: "2026.10.25",
+    tag: "イベント",
+    title: "M3-2026秋 新譜「Parade In The Room」頒布します",
+    description: "全7曲収録。BOOTH でも取り扱います。",
+    link: "https://torosanshin.booth.pm/items/8977644",
+  },
+  {
+    date: "2026.09.10",
+    tag: "お知らせ",
+    title: "auly mosquito コラム「響きあう詩人たち」で取り上げていただきました",
+    link: "https://auly-mosquito.com/blog/2026/06/06/take-a-walk-slower-than-the-light0037/",
+  },
+  {
+    date: "2026.08.23",
+    tag: "ライブ",
+    title: "Oh My Spectacle'S主催 Where Are My Glasses?",
+    description: "VRChat LIVE CLUB AMPLIFIER にて開催",
+  },
+  {
+    date: "2026.06.14",
+    tag: "ライブ",
+    title: "VRChat 新宿ワールドにて野良ライブ",
+  },
+  {
     date: "2026.05.17",
     tag: "ライブ",
     title: "ATOMS主催 Good Luck / builder release party",

@@ -12,14 +12,10 @@ type Props = {
 export default function AlbumModal({ w, onClose }: Props) {
   const { play, currentTrack, isPlaying, pause, resume } = usePlayer();
 
-  const toTrack = (t: { title: string; file: string }): Track => ({
-    title: t.title,
-    albumTitle: w.title,
-    file: t.file,
-    jacket: w.img,
-  });
-
-  const allTracks = w.tracks.map(toTrack);
+  // 音源未設定の曲は再生キューに入れない
+  const allTracks: Track[] = w.tracks.flatMap((t) =>
+    t.file ? [{ title: t.title, albumTitle: w.title, file: t.file, jacket: w.img }] : []
+  );
   const isThisAlbum = currentTrack && allTracks.some((t) => t.file === currentTrack.file);
 
   const handleAlbumPlay = () => {
@@ -78,11 +74,22 @@ export default function AlbumModal({ w, onClose }: Props) {
           </div>
 
           {/* トラックリスト */}
-          {allTracks.length > 0 && (
+          {w.tracks.length > 0 && (
             <div className="disc-modal-tracks">
               <div className="disc-modal-track-label">Tracklist</div>
               <ol>
-                {allTracks.map((t, i) => {
+                {w.tracks.map((wt, i) => {
+                  const t = allTracks.find((a) => a.file === wt.file);
+                  if (!t) {
+                    return (
+                      <li key={i}>
+                        <button disabled>
+                          <span className="track-num">{String(i + 1).padStart(2, "0")}</span>
+                          <span className="track-title">{wt.title}</span>
+                        </button>
+                      </li>
+                    );
+                  }
                   const active = currentTrack?.file === t.file;
                   return (
                     <li key={i} className={active ? "active" : ""}>

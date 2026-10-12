@@ -572,6 +572,11 @@
     background: rgba(255, 255, 255, 0.04);
   }
 
+  .disc-modal-tracks li button:disabled {
+    cursor: default;
+    background: none;
+  }
+
   .disc-modal-tracks li.active button {
     background: rgba(58, 170, 196, 0.08);
   }
