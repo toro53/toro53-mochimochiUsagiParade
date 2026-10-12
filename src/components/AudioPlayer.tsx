@@ -205,7 +205,9 @@ export default function AudioPlayer() {
 
       {/* 音量 (デスクトップのみ) */}
       <div className="player-volume">
-        <span className="text-[0.75rem] text-fg-muted">🔊</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-accent-light flex-shrink-0" aria-hidden="true">
+          <path d="M3 9V15H7L12 20V4L7 9H3ZM16.5 12C16.5 10.23 15.48 8.71 14 7.97V16.02C15.48 15.29 16.5 13.77 16.5 12ZM14 3.23V5.29C16.89 6.15 19 8.83 19 12C19 15.17 16.89 17.85 14 18.71V20.77C18.01 19.86 21 16.28 21 12C21 7.72 18.01 4.14 14 3.23Z"/>
+        </svg>
         <input
           type="range"
           min={0}
@@ -213,7 +215,8 @@ export default function AudioPlayer() {
           step={0.01}
           value={volume}
           onChange={changeVolume}
-          className="w-16 accent-accent"
+          className="volume-slider w-16"
+          style={{ "--vol": `${volume * 100}%` } as React.CSSProperties}
         />
       </div>
     </div>

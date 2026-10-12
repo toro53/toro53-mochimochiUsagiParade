@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePlayer } from "@/context/PlayerContext";
 
 const videos = [
   {
@@ -14,7 +15,15 @@ const videos = [
 ];
 
 export default function LiveVideos() {
+  const { pause: pausePlayer } = usePlayer();
   const [active, setActive] = useState<string | null>(null);
+
+  // 動画を開くときは再生中の曲（プレイヤー・Hero）を止める
+  const open = (id: string) => {
+    pausePlayer();
+    document.querySelectorAll("audio").forEach((a) => a.pause());
+    setActive(id);
+  };
 
   // Escape キーで閉じる
   useEffect(() => {
@@ -40,7 +49,7 @@ export default function LiveVideos() {
             <button
               key={v.id}
               className="live-thumb"
-              onClick={() => setActive(v.id)}
+              onClick={() => open(v.id)}
               aria-label={`${v.title} を再生`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

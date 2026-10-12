@@ -184,6 +184,70 @@
     flex-shrink: 0;
   }
 
+  /* 音量スライダー: シークバーと同じ細い線 + 小さなつまみ。塗り幅は --vol で指定 */
+  .volume-slider {
+    --vol: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 14px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .volume-slider::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      var(--accent-light) var(--vol),
+      var(--border) var(--vol)
+    );
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 8px;
+    margin-top: -3px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    transition: transform 0.15s;
+  }
+
+  .volume-slider::-moz-range-track {
+    height: 2px;
+    background: var(--border);
+  }
+
+  .volume-slider::-moz-range-progress {
+    height: 2px;
+    background: var(--accent-light);
+  }
+
+  .volume-slider::-moz-range-thumb {
+    width: 8px;
+    height: 8px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-light);
+    transition: transform 0.15s;
+  }
+
+  .volume-slider:hover::-webkit-slider-thumb,
+  .volume-slider:focus-visible::-webkit-slider-thumb {
+    transform: scale(1.4);
+  }
+
+  .volume-slider:hover::-moz-range-thumb,
+  .volume-slider:focus-visible::-moz-range-thumb {
+    transform: scale(1.4);
+  }
+
+  .volume-slider:focus-visible {
+    outline: 1px solid var(--accent-light);
+    outline-offset: 3px;
+  }
+
   .player-mobile-bottom {
     display: none;
   }

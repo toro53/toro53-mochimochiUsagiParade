@@ -229,11 +229,14 @@ export default function Hero() {
       if (audio.duration) setProgress((audio.currentTime / audio.duration) * 100);
     };
     const onEnd = () => { setPlaying(false); setProgress(0); };
+    const onPause = () => setPlaying(false);
     audio.addEventListener("timeupdate", onTime);
     audio.addEventListener("ended", onEnd);
+    audio.addEventListener("pause", onPause);
     return () => {
       audio.removeEventListener("timeupdate", onTime);
       audio.removeEventListener("ended", onEnd);
+      audio.removeEventListener("pause", onPause);
     };
   }, []);
 
@@ -407,7 +410,8 @@ export default function Hero() {
                 value={muted ? 0 : volume}
                 onChange={changeVolume}
                 aria-label="音量"
-                className="w-[72px] accent-accent-light cursor-pointer max-sm:hidden"
+                className="volume-slider w-[72px] max-sm:hidden"
+                style={{ "--vol": `${(muted ? 0 : volume) * 100}%` } as React.CSSProperties}
               />
             </div>
           </div>
