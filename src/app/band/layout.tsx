@@ -1,5 +1,14 @@
+import type { Metadata } from 'next';
 import { AuthProvider } from '@/context/AuthContext';
 import { ScheduleProvider } from '@/context/ScheduleContext';
+
+// メンバー向けページなので検索結果に出さない
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function BandLayout({
   children,

@@ -1,6 +1,8 @@
 export type Work = {
   title: string;
   event: string;
+  // 頒布開始日（M3 の開催日）。YYYY-MM-DD
+  date: string;
   img: string;
   href?: string;
   // file が無い曲は曲名だけ表示される（試聴準備中）
@@ -13,6 +15,7 @@ export const works: Work[] = [
   {
     title: "Parade In The Room",
     event: "最新作",
+    date: "2026-10-25",
     img: m("parade-in-the-room", "jacket.webp"),
     href: "https://torosanshin.booth.pm/items/8977644",
     tracks: [
@@ -28,6 +31,7 @@ export const works: Work[] = [
   {
     title: "死灰、復燃えて",
     event: "M3-2026春",
+    date: "2026-04-26",
     img: "/Music/shikaimata/jacket.png",
     href: "https://torosanshin.booth.pm/items/8255437",
     tracks: [
@@ -39,6 +43,7 @@ export const works: Work[] = [
   {
     title: "夏、嘘をついたぜ",
     event: "M3-2025秋",
+    date: "2025-10-26",
     img: "/Music/summer-lies/jacket.jpg",
     href: "https://torosanshin.booth.pm/items/7558547",
     tracks: [
@@ -49,6 +54,7 @@ export const works: Work[] = [
   {
     title: "晴天に一羽",
     event: "M3-2025春",
+    date: "2025-04-27",
     img: m("clear-sky-one-bird", "jacket.png"),
     href: "https://torosanshin.booth.pm/items/6822016",
     tracks: [
@@ -60,6 +66,7 @@ export const works: Work[] = [
   {
     title: "シュレーディンガーの星",
     event: "M3-2024秋",
+    date: "2024-10-27",
     img: m("schrodingers-star", "jacket.png"),
     href: "https://torosanshin.booth.pm/items/6208804",
     tracks: [
@@ -71,6 +78,7 @@ export const works: Work[] = [
   {
     title: "花明かり",
     event: "M3-2024春",
+    date: "2024-04-28",
     img: m("flower-light", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/5660837",
     tracks: [
@@ -83,6 +91,7 @@ export const works: Work[] = [
   {
     title: "月面鈍行",
     event: "M3-2023春",
+    date: "2023-04-30",
     img: m("lunar-local-train", "jacket.png"),
     href: "https://torosanshin.booth.pm/items/4724535",
     tracks: [
@@ -95,6 +104,7 @@ export const works: Work[] = [
   {
     title: "忘憂のもの",
     event: "M3-2022秋",
+    date: "2022-10-30",
     img: m("forget-melancholy", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/4267952",
     tracks: [
@@ -107,6 +117,7 @@ export const works: Work[] = [
   {
     title: "憑き身に憂",
     event: "M3-2022秋",
+    date: "2022-10-30",
     img: "/Music/possessed-melancholy/jacket.jpg",
     href: "https://torosanshin.booth.pm/items/3826662",
     tracks: [
@@ -116,6 +127,7 @@ export const works: Work[] = [
   {
     title: "空中分解する春",
     event: "M3-2022春",
+    date: "2022-04-24",
     img: m("midair-disintegration", "jacket.png"),
     href: "https://torosanshin.booth.pm/items/3809571",
     tracks: [
@@ -128,6 +140,7 @@ export const works: Work[] = [
   {
     title: "月見に卯",
     event: "M3-2021秋",
+    date: "2021-10-31",
     img: m("moon-viewing", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/3318343",
     tracks: [
@@ -139,6 +152,7 @@ export const works: Work[] = [
   {
     title: "嘘憑き EP",
     event: "M3-2021春",
+    date: "2021-04-25",
     img: m("usotsuki-ep", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/2898014",
     tracks: [

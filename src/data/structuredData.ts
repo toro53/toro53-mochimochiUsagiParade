@@ -22,15 +22,9 @@ export const homeJsonLd = {
       "@id": GROUP_ID,
       name: "もちもちうさぎパレード",
       url: SITE_URL,
-      logo: abs("/favicon.svg"),
-      image: abs(works[0].img),
       description:
         "同人音楽サークル もちもちうさぎパレード。M3・ボーマス等のイベントに参加するロック系同人サークルです。",
       genre: ["ロック", "同人音楽"],
-      member: [
-        { "@type": "Person", name: "toro4nba" },
-        { "@type": "Person", name: "sinra_vansho" },
-      ],
       sameAs: [
         "https://x.com/mochiusaparade",
         "https://www.instagram.com/mochimochi_usagi_parade/",
@@ -40,19 +34,18 @@ export const homeJsonLd = {
         "@type": "MusicAlbum",
         name: w.title,
         image: abs(w.img),
+        datePublished: w.date,
         ...(w.href && { url: w.href }),
         byArtist: { "@id": GROUP_ID },
         numTracks: w.tracks.length,
         track: {
           "@type": "ItemList",
-          numberOfItems: w.tracks.length,
           itemListElement: w.tracks.map((t, i) => ({
             "@type": "ListItem",
             position: i + 1,
             item: {
               "@type": "MusicRecording",
               name: t.title,
-              byArtist: { "@id": GROUP_ID },
             },
           })),
         },
