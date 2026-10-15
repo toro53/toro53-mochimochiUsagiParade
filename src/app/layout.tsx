@@ -3,6 +3,7 @@ import { Noto_Serif_JP, IM_Fell_English_SC } from "next/font/google";
 import "./globals.css";
 import { PlayerProvider } from "@/context/PlayerContext";
 import AudioPlayer from "@/components/AudioPlayer";
+import { SITE_URL } from "@/data/structuredData";
 
 const notoSerifJP = Noto_Serif_JP({
   variable: "--font-serif-jp",
@@ -20,7 +21,7 @@ const imFell = IM_Fell_English_SC({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mochimochi-usagi-parade.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: "もちもちうさぎパレード",
   description: "同人音楽サークル もちもちうさぎパレード。M3・ボーマス等のイベントに参加するロック系同人サークルです。",
   keywords: ["もちもちうさぎパレード", "同人音楽", "M3", "ボーマス", "同人サークル", "ロック"],
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "もちもちうさぎパレード",
     description: "同人音楽サークル もちもちうさぎパレード。M3・ボーマス等のイベントに参加するロック系同人サークルです。",
-    url: "https://mochimochi-usagi-parade.vercel.app",
+    url: SITE_URL,
     siteName: "もちもちうさぎパレード",
     images: [
       {
