@@ -3,6 +3,8 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { flushSync } from "react-dom";
 import { usePlayer } from "@/context/PlayerContext";
+import { works, type Work } from "@/data/works";
+import AlbumModal from "@/components/AlbumModal";
 
 // bgColor: ジャケットの雰囲気に合わせた暗い背景色
 const slides = [
@@ -112,6 +114,9 @@ export default function Hero() {
   const [volume, setVolume] = useState(0.75);
   const [progress, setProgress] = useState(0);
   const [autoScroll, setAutoScroll] = useState(true);
+  // 中央のジャケットを押したときに開くアルバム詳細（Discography と同じモーダル）
+  const [modalWork, setModalWork] = useState<Work | null>(null);
+  const closeModal = useCallback(() => setModalWork(null), []);
   const sectionRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -189,22 +194,23 @@ export default function Hero() {
     applyBg(slides[0].bgColor);
   }, [applyBg]);
 
-  // オートスクロール（再生したら停止）
+  // オートスクロール（再生したら停止、モーダル表示中は一時停止）
   useEffect(() => {
-    if (!autoScroll) return;
+    if (!autoScroll || modalWork) return;
     const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
-  }, [autoScroll, next]);
+  }, [autoScroll, modalWork, next]);
 
   // Keyboard navigation
   useEffect(() => {
+    if (modalWork) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
       if (e.key === "ArrowRight") next();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [prev, next]);
+  }, [prev, next, modalWork]);
 
   // Swap audio src on slide change
   useEffect(() => {
@@ -340,10 +346,19 @@ export default function Hero() {
                   aria-label={!isCenter ? (offset < 0 ? "前の作品" : "次の作品") : undefined}
                 >
                   {isCenter ? (
-                    <a href={slides[idx].href} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const w = works.find((w) => w.title === slides[idx].title);
+                        if (w) setModalWork(w);
+                        else window.open(slides[idx].href, "_blank", "noopener,noreferrer");
+                      }}
+                      aria-label={`${slides[idx].title} の詳細を見る`}
+                      className="block w-full h-full p-0 border-none bg-transparent cursor-pointer"
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={slides[idx].img} alt={slides[idx].title} className="w-full h-full object-cover block shadow-[0_20px_56px_rgba(0,0,0,0.65)]" />
-                    </a>
+                    </button>
                   ) : (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={slides[idx].img} alt={slides[idx].title} className="w-full h-full object-cover block" />
@@ -443,6 +458,8 @@ export default function Hero() {
       </div>
 
       <audio ref={audioRef} />
+
+      {modalWork && <AlbumModal w={modalWork} onClose={closeModal} />}
 
       {/* scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-[0.4rem] opacity-40">
