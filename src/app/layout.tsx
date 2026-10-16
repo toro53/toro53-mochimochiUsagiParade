@@ -4,6 +4,10 @@ import "./globals.css";
 import { PlayerProvider } from "@/context/PlayerContext";
 import AudioPlayer from "@/components/AudioPlayer";
 import { SITE_URL } from "@/data/structuredData";
+import { GoogleAnalytics } from "@next/third-parties/google";
+
+// Google アナリティクス 4 の測定 ID（G-XXXXXXXXXX）。空ならタグを読み込まない
+const GA_ID = "G-ZP1EME9NPS";
 
 const notoSerifJP = Noto_Serif_JP({
   variable: "--font-serif-jp",
@@ -71,6 +75,7 @@ export default function RootLayout({
           <AudioPlayer />
         </PlayerProvider>
       </body>
+      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }
