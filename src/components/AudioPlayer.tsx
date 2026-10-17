@@ -14,6 +14,23 @@ export default function AudioPlayer() {
   const [volume, setVolume] = useState(0.8);
   const [modalOpen, setModalOpen] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const hasTrack = currentTrack !== null;
+
+  // バーの高さを --player-h に出す。アルバムモーダルはこの分だけ下を空けてバーを操作できるようにする
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    const root = document.documentElement;
+    const update = () => root.style.setProperty("--player-h", `${bar.offsetHeight}px`);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(bar);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty("--player-h");
+    };
+  }, [hasTrack]);
 
   // 現在再生中のアルバムを works から検索
   const currentWork = currentTrack
@@ -138,7 +155,7 @@ export default function AudioPlayer() {
   );
 
   return (
-    <div className="player-bar">
+    <div className="player-bar" ref={barRef}>
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} />
 

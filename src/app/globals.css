@@ -487,15 +487,17 @@
     }
   }
 
+  /* プレイヤーバー（z-index: 1000）より下に置き、バーの高さ分だけ下を空ける */
   .disc-modal-overlay {
     position: fixed;
     inset: 0;
-    z-index: 2000;
+    z-index: 900;
     background: rgba(10, 18, 22, 0.88);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1.25rem;
+    padding-bottom: calc(1.25rem + var(--player-h, 0px));
     animation: discFadeIn 0.2s ease;
   }
 
@@ -505,7 +507,7 @@
     align-items: center;
     width: 100%;
     max-width: 800px;
-    max-height: 88vh;
+    max-height: min(88vh, 100%);
     background: var(--bg-dark);
     border: 1px solid var(--border);
     animation: discScaleIn 0.22s cubic-bezier(0.22, 1, 0.36, 1);
@@ -727,7 +729,7 @@
     .disc-modal-inner {
       grid-template-columns: 1fr;
       grid-template-rows: auto 1fr;
-      max-height: 92vh;
+      max-height: min(92vh, 100%);
     }
 
     .disc-modal-jacket {
