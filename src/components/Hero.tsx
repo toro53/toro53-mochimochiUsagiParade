@@ -11,7 +11,7 @@ const slides = [
   {
     title: "Parade In The Room",
     event: "最新作",
-    img: "/Music/parade-in-the-room/jacket.webp",
+    img: "/Music/parade-in-the-room/jacket.jpg",
     audio: "/Music/parade-in-the-room/快晴に孤独.mp3",
     href: "https://torosanshin.booth.pm/items/8977644",
     bgColor: "#12181c",

@@ -16,7 +16,7 @@ export const works: Work[] = [
     title: "Parade In The Room",
     event: "最新作",
     date: "2026-10-25",
-    img: m("parade-in-the-room", "jacket.webp"),
+    img: m("parade-in-the-room", "jacket.jpg"),
     href: "https://torosanshin.booth.pm/items/8977644",
     tracks: [
       { title: "Dialog0",              file: m("parade-in-the-room", "Dialog0.mp3") },
