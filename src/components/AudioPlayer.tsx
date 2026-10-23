@@ -81,6 +81,8 @@ export default function AudioPlayer() {
   // シークバーはデスクトップ用とモバイル用の 2 つあるので、ref ではなく操作中の要素から位置を取る
   const ratioAt = (e: React.PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
+    // 非表示 (幅 0) のバーだと NaN になるので 0 に倒す
+    if (!rect.width) return 0;
     return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
   };
 
@@ -101,7 +103,7 @@ export default function AudioPlayer() {
     draggingRef.current = false;
     const audio = audioRef.current;
     const t = ratioAt(e) * duration;
-    if (audio) audio.currentTime = t;
+    if (audio && isFinite(t)) audio.currentTime = t;
     setProgress(t);
     setDragRatio(null);
   };
