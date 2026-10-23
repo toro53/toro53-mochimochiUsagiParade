@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { flushSync } from "react-dom";
-import { usePlayer } from "@/context/PlayerContext";
+import { usePlayer, type Track } from "@/context/PlayerContext";
 import { works, type Work } from "@/data/works";
 import AlbumModal from "@/components/AlbumModal";
 
@@ -106,20 +106,23 @@ const slides = [
   },
 ];
 
+// スライドの曲を含むアルバムの全曲をキューにする。works に無い曲はその 1 曲だけ
+function slideQueue(slide: (typeof slides)[number]): Track[] {
+  const w = works.find((w) => w.tracks.some((t) => t.file === slide.audio));
+  if (!w) return [{ title: slide.title, albumTitle: slide.title, file: slide.audio, jacket: slide.img }];
+  return w.tracks.flatMap((t) =>
+    t.file ? [{ title: t.title, albumTitle: w.title, file: t.file, jacket: w.img }] : []
+  );
+}
+
 export default function Hero() {
-  const { pause: pausePlayer, isPlaying: playerIsPlaying } = usePlayer();
+  const { play, pause, resume, currentTrack, isPlaying } = usePlayer();
   const [current, setCurrent] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const [volume, setVolume] = useState(0.75);
-  const [progress, setProgress] = useState(0);
   const [autoScroll, setAutoScroll] = useState(true);
   // 中央のジャケットを押したときに開くアルバム詳細（Discography と同じモーダル）
   const [modalWork, setModalWork] = useState<Work | null>(null);
   const closeModal = useCallback(() => setModalWork(null), []);
   const sectionRef = useRef<HTMLElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const animatingRef = useRef(false);
@@ -154,9 +157,6 @@ export default function Hero() {
       if (animatingRef.current) return;
       animatingRef.current = true;
       applyBg(slides[i].bgColor);
-
-      const audio = audioRef.current;
-      if (audio) { audio.pause(); setPlaying(false); setProgress(0); }
 
       const track = trackRef.current;
       if (!track) { setCurrent(i); animatingRef.current = false; return; }
@@ -212,101 +212,21 @@ export default function Hero() {
     return () => window.removeEventListener("keydown", onKey);
   }, [prev, next, modalWork]);
 
-  // Swap audio src on slide change
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.pause();
-    setPlaying(false);
-    setProgress(0);
-    if (slides[current].audio) {
-      audio.src = slides[current].audio;
-      audio.load();
-    } else {
-      audio.removeAttribute("src");
-    }
-  }, [current]);
-
-  // Audio event listeners
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const onTime = () => {
-      if (audio.duration) setProgress((audio.currentTime / audio.duration) * 100);
-    };
-    const onEnd = () => { setPlaying(false); setProgress(0); };
-    const onPause = () => setPlaying(false);
-    audio.addEventListener("timeupdate", onTime);
-    audio.addEventListener("ended", onEnd);
-    audio.addEventListener("pause", onPause);
-    return () => {
-      audio.removeEventListener("timeupdate", onTime);
-      audio.removeEventListener("ended", onEnd);
-      audio.removeEventListener("pause", onPause);
-    };
-  }, []);
-
-  // グローバルプレイヤーが再生を始めたら Hero を止める
-  useEffect(() => {
-    if (playerIsPlaying) {
-      const audio = audioRef.current;
-      if (audio && !audio.paused) {
-        if (fadeRef.current) clearInterval(fadeRef.current);
-        audio.pause();
-        setPlaying(false);
-      }
-    }
-  }, [playerIsPlaying]);
-
-  const fadeIn = (audio: HTMLAudioElement, target: number) => {
-    if (fadeRef.current) clearInterval(fadeRef.current);
-    audio.volume = 0;
-    if (target === 0) return;
-    fadeRef.current = setInterval(() => {
-      if (audio.volume < target - 0.05) {
-        audio.volume = Math.min(target, audio.volume + 0.05);
-      } else {
-        audio.volume = target;
-        if (fadeRef.current) clearInterval(fadeRef.current);
-      }
-    }, 50);
-  };
-
-  const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = parseFloat(e.target.value);
-    setVolume(v);
-    setMuted(v === 0);
-    if (audioRef.current) audioRef.current.volume = v;
-  };
+  // 再生は画面下のプレイヤーバー (グローバルプレイヤー) で行う
+  const queue = slideQueue(slides[current]);
+  const isThisSlide = !!currentTrack && queue.some((t) => t.file === currentTrack.file);
+  const playing = isThisSlide && isPlaying;
 
   const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
     if (playing) {
-      if (fadeRef.current) clearInterval(fadeRef.current);
-      audio.pause();
-      setPlaying(false);
+      pause();
+    } else if (isThisSlide) {
+      resume();
     } else {
       setAutoScroll(false); // 一度再生したらオートスクロール停止
-      // グローバルプレイヤーを止めてから再生
-      pausePlayer();
-      audio.play().then(() => { setPlaying(true); fadeIn(audio, muted ? 0 : volume); }).catch(() => {});
+      const start = queue.find((t) => t.file === slides[current].audio) ?? queue[0];
+      if (start) play(start, queue);
     }
-  };
-
-  const toggleMute = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const next = !muted;
-    setMuted(next);
-    audio.volume = next ? 0 : volume;
-  };
-
-  const seek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !audio.duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
   };
 
   return (
@@ -379,67 +299,25 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* audio controls */}
-        <div className="flex flex-col items-center gap-[0.9rem] w-[min(260px,80vw)]">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={togglePlay}
-              aria-label={playing ? "一時停止" : "再生"}
-              disabled={!slides[current].audio}
-              className="bg-transparent border border-accent-light text-accent-light w-[2.8rem] h-[2.8rem] rounded-full cursor-pointer flex items-center justify-center transition-[background,color] hover:bg-accent-light hover:text-bg disabled:opacity-30 disabled:pointer-events-none"
-            >
-              {playing ? (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                  <rect x="2" y="1" width="4" height="12" />
-                  <rect x="8" y="1" width="4" height="12" />
-                </svg>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                  <polygon points="3,1 13,7 3,13" />
-                </svg>
-              )}
-            </button>
-
-            {/* mute button + volume slider */}
-            <div className="flex items-center gap-[0.4rem]">
-              <button
-                onClick={toggleMute}
-                aria-label={muted ? "ミュート解除" : "ミュート"}
-                className={`bg-transparent border-none cursor-pointer flex items-center justify-center p-[0.2rem] flex-shrink-0 ${muted ? "text-border" : "text-accent-light"}`}
-              >
-                {muted ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97V10.18L16.45 12.63C16.48 12.43 16.5 12.22 16.5 12ZM19 12C19 12.94 18.8 13.82 18.46 14.64L19.97 16.15C20.63 14.91 21 13.5 21 12C21 7.72 18.01 4.14 14 3.23V5.29C16.89 6.15 19 8.83 19 12ZM4.27 3L3 4.27 7.73 9H3V15H7L12 20V13.27L16.25 17.52C15.58 18.04 14.83 18.45 14 18.7V20.76C15.38 20.45 16.63 19.82 17.68 18.96L19.73 21 21 19.73 12 10.73 4.27 3ZM12 4L9.91 6.09 12 8.18V4Z"/>
-                  </svg>
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 9V15H7L12 20V4L7 9H3ZM16.5 12C16.5 10.23 15.48 8.71 14 7.97V16.02C15.48 15.29 16.5 13.77 16.5 12ZM14 3.23V5.29C16.89 6.15 19 8.83 19 12C19 15.17 16.89 17.85 14 18.71V20.77C18.01 19.86 21 16.28 21 12C21 7.72 18.01 4.14 14 3.23Z"/>
-                  </svg>
-                )}
-              </button>
-              <input
-                type="range"
-                min={0}
-                max={1}
-                step={0.01}
-                value={muted ? 0 : volume}
-                onChange={changeVolume}
-                aria-label="音量"
-                className="volume-slider w-[72px] max-sm:hidden"
-                style={{ "--vol": `${(muted ? 0 : volume) * 100}%` } as React.CSSProperties}
-              />
-            </div>
-          </div>
-
-          <div
-            onClick={seek}
-            className="w-full h-[2px] bg-border cursor-pointer relative"
+        {/* 再生ボタン（再生・シーク・音量は画面下のプレイヤーバーで行う） */}
+        <div className="flex items-center justify-center">
+          <button
+            onClick={togglePlay}
+            aria-label={playing ? "一時停止" : "再生"}
+            disabled={!slides[current].audio}
+            className="bg-transparent border border-accent-light text-accent-light w-[2.8rem] h-[2.8rem] rounded-full cursor-pointer flex items-center justify-center transition-[background,color] hover:bg-accent-light hover:text-bg disabled:opacity-30 disabled:pointer-events-none"
           >
-            <div
-              className="h-full bg-accent-light transition-[width] duration-[0.25s] linear"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
+            {playing ? (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                <rect x="2" y="1" width="4" height="12" />
+                <rect x="8" y="1" width="4" height="12" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                <polygon points="3,1 13,7 3,13" />
+              </svg>
+            )}
+          </button>
         </div>
 
         {/* dots */}
@@ -456,8 +334,6 @@ export default function Hero() {
           ))}
         </div>
       </div>
-
-      <audio ref={audioRef} />
 
       {modalWork && <AlbumModal w={modalWork} onClose={closeModal} />}
 
