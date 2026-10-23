@@ -172,6 +172,7 @@ export default function AudioPlayer() {
   const shownTime = dragRatio !== null ? dragRatio * duration : progress;
   const shownPct = duration ? (shownTime / duration) * 100 : 0;
 
+  // スマホ (640px 以下) は指で狙いやすいよう当たり判定を 40px にし、負のマージンでレイアウトの高さは変えない
   // コンポーネントにすると再描画のたびに作り直されてドラッグが切れるので、関数で JSX を返す
   const renderSeekBar = () => (
     <>
@@ -192,15 +193,15 @@ export default function AudioPlayer() {
           setDragRatio(null);
         }}
         onKeyDown={onSeekKey}
-        className="seek-bar flex-1 h-[16px] flex items-center cursor-pointer relative min-w-0 touch-none group"
+        className="seek-bar flex-1 h-[16px] max-[640px]:h-[40px] max-[640px]:-my-3 flex items-center cursor-pointer relative min-w-0 touch-none group"
       >
-        <div className="w-full h-[3px] bg-border relative">
+        <div className="w-full h-[3px] bg-[var(--border)] relative">
           <div
-            className={`absolute left-0 top-0 h-full bg-accent ${dragRatio === null ? "transition-[width] duration-300 ease-linear" : ""}`}
+            className={`absolute left-0 top-0 h-full bg-[var(--accent)] ${dragRatio === null ? "transition-[width] duration-300 ease-linear" : ""}`}
             style={{ width: `${shownPct}%` }}
           />
           <div
-            className={`absolute top-1/2 w-[10px] h-[10px] -ml-[5px] -mt-[5px] rounded-full bg-accent transition-opacity ${dragRatio !== null ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"}`}
+            className={`absolute top-1/2 w-[10px] h-[10px] -ml-[5px] -mt-[5px] rounded-full bg-[var(--accent)] transition-opacity ${dragRatio !== null ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"}`}
             style={{ left: `${shownPct}%` }}
           />
         </div>
