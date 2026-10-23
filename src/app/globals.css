@@ -248,6 +248,11 @@
     outline-offset: 3px;
   }
 
+  .seek-bar:focus-visible {
+    outline: 1px solid var(--accent-light);
+    outline-offset: 2px;
+  }
+
   .player-mobile-bottom {
     display: none;
   }

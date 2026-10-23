@@ -13,7 +13,9 @@ export default function AudioPlayer() {
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
   const [modalOpen, setModalOpen] = useState(false);
-  const progressRef = useRef<HTMLDivElement>(null);
+  // ドラッグ中のシーク位置 (0〜1)。null のときは再生位置をそのまま表示
+  const [dragRatio, setDragRatio] = useState<number | null>(null);
+  const draggingRef = useRef(false);
   const barRef = useRef<HTMLDivElement>(null);
   const hasTrack = currentTrack !== null;
 
@@ -76,13 +78,41 @@ export default function AudioPlayer() {
     return `${m}:${sec.toString().padStart(2, "0")}`;
   };
 
-  const seek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const bar = progressRef.current;
+  // シークバーはデスクトップ用とモバイル用の 2 つあるので、ref ではなく操作中の要素から位置を取る
+  const ratioAt = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  };
+
+  const onSeekDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!duration) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    draggingRef.current = true;
+    setDragRatio(ratioAt(e));
+  };
+
+  const onSeekMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    setDragRatio(ratioAt(e));
+  };
+
+  const onSeekUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
     const audio = audioRef.current;
-    if (!bar || !audio || !duration) return;
-    const rect = bar.getBoundingClientRect();
-    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    audio.currentTime = ratio * duration;
+    const t = ratioAt(e) * duration;
+    if (audio) audio.currentTime = t;
+    setProgress(t);
+    setDragRatio(null);
+  };
+
+  const onSeekKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const audio = audioRef.current;
+    if (!audio || !duration) return;
+    const step = e.key === "ArrowRight" ? 5 : e.key === "ArrowLeft" ? -5 : 0;
+    if (!step) return;
+    e.preventDefault();
+    audio.currentTime = Math.max(0, Math.min(duration, audio.currentTime + step));
   };
 
   const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +127,7 @@ export default function AudioPlayer() {
   const hasPrev = idx > 0;
   const hasNext = idx < queue.length - 1;
 
-  const Controls = () => (
+  const renderControls = () => (
     <>
       <button
         onClick={prev}
@@ -137,20 +167,43 @@ export default function AudioPlayer() {
     </>
   );
 
-  const SeekBar = () => (
+  const shownTime = dragRatio !== null ? dragRatio * duration : progress;
+  const shownPct = duration ? (shownTime / duration) * 100 : 0;
+
+  // コンポーネントにすると再描画のたびに作り直されてドラッグが切れるので、関数で JSX を返す
+  const renderSeekBar = () => (
     <>
-      <span className="text-[0.58rem] text-fg-muted flex-shrink-0">{fmt(progress)}</span>
+      <span className="text-[0.58rem] text-fg-muted flex-shrink-0 tabular-nums">{fmt(shownTime)}</span>
       <div
-        ref={progressRef}
-        onClick={seek}
-        className="flex-1 h-[3px] bg-border cursor-pointer relative min-w-0"
+        role="slider"
+        tabIndex={0}
+        aria-label="再生位置"
+        aria-valuemin={0}
+        aria-valuemax={Math.floor(duration)}
+        aria-valuenow={Math.floor(shownTime)}
+        aria-valuetext={fmt(shownTime)}
+        onPointerDown={onSeekDown}
+        onPointerMove={onSeekMove}
+        onPointerUp={onSeekUp}
+        onPointerCancel={() => {
+          draggingRef.current = false;
+          setDragRatio(null);
+        }}
+        onKeyDown={onSeekKey}
+        className="seek-bar flex-1 h-[16px] flex items-center cursor-pointer relative min-w-0 touch-none group"
       >
-        <div
-          className="absolute left-0 top-0 h-full bg-accent transition-[width] duration-300 ease-linear"
-          style={{ width: `${duration ? (progress / duration) * 100 : 0}%` }}
-        />
+        <div className="w-full h-[3px] bg-border relative">
+          <div
+            className={`absolute left-0 top-0 h-full bg-accent ${dragRatio === null ? "transition-[width] duration-300 ease-linear" : ""}`}
+            style={{ width: `${shownPct}%` }}
+          />
+          <div
+            className={`absolute top-1/2 w-[10px] h-[10px] -ml-[5px] -mt-[5px] rounded-full bg-accent transition-opacity ${dragRatio !== null ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"}`}
+            style={{ left: `${shownPct}%` }}
+          />
+        </div>
       </div>
-      <span className="text-[0.58rem] text-fg-muted flex-shrink-0">{fmt(duration)}</span>
+      <span className="text-[0.58rem] text-fg-muted flex-shrink-0 tabular-nums">{fmt(duration)}</span>
     </>
   );
 
@@ -206,18 +259,18 @@ export default function AudioPlayer() {
 
       {/* デスクトップ: コントロール */}
       <div className="player-controls-row">
-        <Controls />
+        {renderControls()}
       </div>
 
       {/* デスクトップ: シークバー */}
       <div className="player-seek-row">
-        <SeekBar />
+        {renderSeekBar()}
       </div>
 
       {/* モバイル: コントロール＋シーク 統合行 */}
       <div className="player-mobile-bottom">
-        <Controls />
-        <SeekBar />
+        {renderControls()}
+        {renderSeekBar()}
       </div>
 
       {/* 音量 (デスクトップのみ) */}
